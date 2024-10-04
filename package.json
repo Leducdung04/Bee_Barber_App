@@ -23,6 +23,7 @@
     "react-native-animated-nav-tab-bar": "^3.1.11",
     "react-native-curved-bottom-bar": "^3.3.1",
     "react-native-dotenv": "^3.4.11",
+    "react-native-fast-image": "^8.6.3",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-safe-area-context": "^4.11.0",
     "react-native-screens": "^3.34.0",
