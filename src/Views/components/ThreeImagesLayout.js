@@ -4,7 +4,6 @@ import { View, Image, Text, StyleSheet, ImageBackground } from 'react-native';
 const ThreeImagesLayout = ({image1, image2, image3, text}) => {
   return (
     <View style={styles.container}>
-      {/* Text overlay positioned absolutely */}
       <Text style={styles.overlayText}>{text}</Text>
       
       <View style={[styles.leftSection, styles.shadow]}>
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
     width: 290,
     height: 210,
     padding: 10,
-    position: 'relative', // Enable absolute positioning within the container
+    position: 'relative',
   },
   leftSection: {
     flex: 2,

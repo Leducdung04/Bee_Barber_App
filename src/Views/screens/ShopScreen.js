@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import React from 'react';
 import CustomButton from '../components/CustomButton';
-import Grid from '../components/GridLayout';
 import GridDesign from '../components/GridLayout';
 import CategoriesGridLayout from '../components/CategoriesGridLayout';
 import TopSearch from '../components/TopSearch';
 import PartnershipBranding from '../components/PartnershipBranding';
+import MaterialTopTab from '../components/ProductRecomendations';
 
 const ShopScreen = () => {
 
@@ -36,6 +36,7 @@ const ShopScreen = () => {
             </Text>
           </ImageBackground>
         </View>
+        <MaterialTopTab/>
         <TopSearch/>
         <PartnershipBranding/>
       </ScrollView>

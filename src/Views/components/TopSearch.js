@@ -60,7 +60,7 @@ const TopSearch = () => {
     
     const newScrollBarWidth = scrollRatio * scrollTrackWidth.current;
     
-    setScrollBarWidth(Math.min(newScrollBarWidth, scrollTrackWidth.current)); // Ensure it doesn't exceed the track width
+    setScrollBarWidth(Math.min(newScrollBarWidth, scrollTrackWidth.current)); 
 
   };
 
