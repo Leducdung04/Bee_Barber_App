@@ -4,6 +4,7 @@ import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWit
 import usebanner from '../../ViewModels/scrollBanner';
 const widthScreen= Dimensions.get('window').width
 const heightScreen= Dimensions.get('window').height
+
 const ListBanner = ({listBanner}) => {
   const {
     scrollToNextImage,
