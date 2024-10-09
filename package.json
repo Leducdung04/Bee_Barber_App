@@ -26,6 +26,7 @@
     "react-native-animated-nav-tab-bar": "^3.1.11",
     "react-native-curved-bottom-bar": "^3.3.1",
     "react-native-dotenv": "^3.4.11",
+    "react-native-element-dropdown": "^2.12.1",
     "react-native-fast-image": "^8.6.3",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-pager-view": "^6.4.1",
