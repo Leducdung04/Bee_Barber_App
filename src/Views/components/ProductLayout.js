@@ -36,20 +36,19 @@ export default ProductLayout;
 const styles = StyleSheet.create({
   productContainer: {
     flexDirection: 'column',
-    marginBottom: 20,
+    flex:1,
     padding: 15,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    width: '48%', 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 4,
     elevation: 4,
-    width: '48%', 
-    margin: 4,
+    borderWidth:0.2,
   },
   productImage: {
-    width: 120,
+    width: 130,
     height: 120,
     borderRadius: 8,
     marginBottom: 10,
@@ -72,7 +71,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   rating: {
-
     flexDirection: 'row',
     justifyContent: 'center',
   },

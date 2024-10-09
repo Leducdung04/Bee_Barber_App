@@ -1,5 +1,4 @@
 import {
-  Image,
   ImageBackground,
   SafeAreaView,
   ScrollView,
@@ -16,7 +15,6 @@ import PartnershipBranding from '../components/PartnershipBranding';
 import MaterialTopTab from '../components/ProductRecomendations';
 
 const ShopScreen = () => {
-
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView contentContainerStyle={{flexGrow: 1,paddingBottom:100}}>
@@ -48,7 +46,7 @@ export default ShopScreen;
 
 const styles = StyleSheet.create({
   imageContainer: {
-    marginVertical: 20,
+    marginTop: 20,
   },
   imageBackground: {
     height: 160,

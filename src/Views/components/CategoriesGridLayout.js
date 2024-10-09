@@ -1,13 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {View, Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 export default function CategoriesGridLayout() {
+  const nav = useNavigation()
   const imageList = [
     {
       image: require('../../Resources/assets/images/anh3.png'),
       name: 'Sản Phẩm Mới',
-      action: () => console.log('Sản Phẩm Mới')
-      
+      action: () => nav.navigate("CategoriesProductsScreen")
     },
     {
       image: require('../../Resources/assets/images/anh5.png'),

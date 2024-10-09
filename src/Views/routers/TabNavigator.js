@@ -17,6 +17,7 @@ import AppointmentHistoryScreen from '../screens/AppointmentHistoryScreen';
 import colors from '../../Resources/styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import globalStyles from '../../Resources/styles/globalStyles';
+import { useNavigation } from '@react-navigation/native';
 
 const TabNavigator = () => {
   const _renderIcon = (routeName, selectedTab) => {
@@ -75,6 +76,7 @@ const TabNavigator = () => {
       </TouchableOpacity>
     );
   };
+  const nav = useNavigation()
   return (
     <CurvedBottomBar.Navigator
       type="DOWN"
@@ -160,7 +162,7 @@ const TabNavigator = () => {
             <View style={{flexDirection: 'row', marginHorizontal: 16,gap:8 }}>
               <CircleBorder name="search-outline" size={25} />
               <CircleBorder name="cart-outline" size={25} badgeCount={2}/>
-              <CircleBorder name="sort-variant" size={25}/>
+              <CircleBorder name="sort-variant" size={25} onPress={ () => nav.navigate("Thêm")}  />
             </View>
           )
         }}
