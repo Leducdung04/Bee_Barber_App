@@ -76,7 +76,9 @@ const TabNavigator = () => {
       </TouchableOpacity>
     );
   };
+
   const nav = useNavigation()
+  
   return (
     <CurvedBottomBar.Navigator
       type="DOWN"

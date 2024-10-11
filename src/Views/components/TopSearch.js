@@ -104,9 +104,8 @@ const TopSearch = () => {
           scrollEventThrottle={19}
           showsHorizontalScrollIndicator={false}>
           {searchItems.map((item, index) => (
-            <TouchableOpacity onPress={item.action}>
+            <TouchableOpacity onPress={item.action} key={index}>
               <ThreeImagesLayout
-                key={index}
                 image1={item.image1}
                 image2={item.image2}
                 image3={item.image3}

@@ -129,24 +129,18 @@ const MaterialTopApp = () => {
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView horizontal style={styles.tabContainer}>
-      {tabs.map((item, index) => (
+        {tabs.map((item, index) => (
           <TouchableOpacity
             key={index}
             style={styles.tabButton}
-            onPress={() => handleTabPress(index)}
-          >
-            <Text
-              style={styles.tabText}
-            >
-              {item}
-            </Text>
+            onPress={() => handleTabPress(index)}>
+            <Text style={styles.tabText}>{item}</Text>
             {selectedTab === index && <View style={styles.indicator} />}
           </TouchableOpacity>
         ))}
       </ScrollView>
       <View style={{flex: 1}}>
         <ProductRecomendationsList products={productData[selectedTab] || []} />
-      
       </View>
     </View>
   );
@@ -160,7 +154,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     backgroundColor: 'white',
     position: 'relative',
-
   },
   tabButton: {
     paddingVertical: 10,
