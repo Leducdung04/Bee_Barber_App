@@ -81,7 +81,7 @@ const TabNavigator = () => {
           <Animated.View style={styles.btnCircleUp}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => Alert.alert('Click Action')}
+              onPress={() => {navigate('AppointmentScreen')}}
             >
               <Image source={require('../../Resources/assets/icons/appointment.png')} style={{width:32,height:32}}/>
             </TouchableOpacity>
@@ -114,6 +114,7 @@ const TabNavigator = () => {
                       style={{marginStart:4,height: 26, width: 26,marginHorizontal:12}}/>
                </View>
             ),
+            
           }}
 
           
