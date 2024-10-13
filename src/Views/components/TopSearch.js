@@ -19,7 +19,7 @@ const TopSearch = () => {
       image2: require('../../Resources/assets/images/anh10.jpg'),
       image3: require('../../Resources/assets/images/anh11.jpg'),
       text: 'Sữa rửa mặt',
-      action: () => console.log('Sữa rửa mặt'),
+      action: () => nav.navigate('TopSearchScreen'),
     },
     {
       image1: require('../../Resources/assets/images/anh12.jpg'),
