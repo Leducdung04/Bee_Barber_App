@@ -9,6 +9,9 @@ import CircleBorder from '../components/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoriesSortingProduct from '../screens/CategoriesSortingProduct';
 import TopSearchScreen from '../screens/TopSearchScreen';
+import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
+import AppointmentScreen from '../screens/AppointmentScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -232,7 +235,13 @@ const AppNavigation = () => {
           }}
           headerBackButtonMenuEnabled
         />
-      </Stack.Navigator>
+         <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
+        options={{ title: 'Đặt lịch giữ chỗ ' }}
+      />
+      <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
+         options={{ title: 'Dịch vụ theo danh mục' }}
+      />
+   </Stack.Navigator>
     </Provider>
   );
 };

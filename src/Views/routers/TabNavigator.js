@@ -81,122 +81,87 @@ const TabNavigator = () => {
   
   return (
     <CurvedBottomBar.Navigator
-      type="DOWN"
-      style={styles.bottomBar}
-      shadowStyle={styles.shawdow}
-      height={65}
-      circleWidth={50}
-      bgColor="white"
-      initialRouteName="title1"
-      borderTopLeftRight
-      screenOptions={{
-        headerShown: false,
-      }}
-      renderCircle={({selectedTab, navigate}) => (
-        <Animated.View style={styles.btnCircleUp}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => Alert.alert('Click Action')}>
-            <Image
-              source={require('../../Resources/assets/icons/appointment.png')}
-              style={{width: 32, height: 32}}
-            />
-          </TouchableOpacity>
-        </Animated.View>
-      )}
-      tabBar={renderTabBar}>
-      <CurvedBottomBar.Screen
-        name="title1"
-        position="LEFT"
-        component={HomeScreen}
-        options={{
-          title: '',
-          headerShown: true,
-          // headerBackground: () => (
-          //   <View  style={{backgroundColor:'white',height:85,justifyContent:'center'}}>
-          //       <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
-          //   </View>
-          // ),
-          headerLeft: ({tintColor}) => (
-            <Image
-              source={require('../../Resources/assets/logo/Bee_Barber.png')}
-              style={{marginStart: 16, height: 30, width: 170}}
-            />
-          ),
-          headerRight: ({tintColor}) => (
-            <View style={{flexDirection: 'row', marginHorizontal: 32}}>
-              <Image
-                source={require('../../Resources/assets/icons/cart.png')}
-                style={{
-                  marginStart: 4,
-                  height: 26,
-                  width: 26,
-                  marginHorizontal: 24,
-                }}
-              />
-              <Image
-                source={require('../../Resources/assets/icons/notification.png')}
-                style={{
-                  marginStart: 4,
-                  height: 26,
-                  width: 26,
-                  marginHorizontal: 12,
-                }}
-              />
-            </View>
-          ),
+        type="DOWN"
+        style={styles.bottomBar}
+        shadowStyle={styles.shawdow}
+        height={65}
+        circleWidth={50}
+        bgColor="white"
+        initialRouteName="title1"
+        borderTopLeftRight
+        screenOptions={{
+          headerShown:false
         }}
-      />
-      <CurvedBottomBar.Screen
-        name="title2"
-        component={ShopScreen}
-        position="LEFT"
-        options={{
-          title: '',
-          headerShown: true,
-          headerLeft: ({tintColor}) => (
-            <Image
-              source={require('../../Resources/assets/logo/Bee_Barber.png')}
-              style={{marginStart: 9, height: 30, width: 170}}
-            />
-          ),
-          headerRight: ({tintColor}) => (
-            <View style={{flexDirection: 'row', marginHorizontal: 16,gap:8 }}>
-              <CircleBorder name="search-outline" size={25} />
-              <CircleBorder name="cart-outline" size={25} badgeCount={2}/>
-              <CircleBorder name="sort-variant" size={25} onPress={ () => nav.navigate("Thêm")}  />
-            </View>
-          )
-        }}
-      />
-      <CurvedBottomBar.Screen
-        name="title3"
-        component={AppointmentHistoryScreen}
-        position="RIGHT"
-        options={{
-          title: '',
-          headerShown: true,
-          headerTitleAlign: 'center',
-          headerBackground: () => (
-            <View
-              style={{
-                backgroundColor: 'white',
-                height: 85,
-                justifyContent: 'center',
-              }}>
-              <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
-            </View>
-          ),
-        }}
-      />
-      <CurvedBottomBar.Screen
-        name="title4"
-        component={ShopScreen}
-        position="RIGHT"
-      />
-    </CurvedBottomBar.Navigator>
-  );
-};
+        renderCircle={({ selectedTab, navigate }) => (
+          <Animated.View style={styles.btnCircleUp}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {navigate('AppointmentScreen')}}
+            >
+              <Image source={require('../../Resources/assets/icons/appointment.png')} style={{width:32,height:32}}/>
+            </TouchableOpacity>
+          </Animated.View>
+        )}
+        tabBar={renderTabBar}
+      >
+        <CurvedBottomBar.Screen
+          name="title1"
+          position="LEFT"
+          component={HomeScreen}
+          options={{
+            title:"",
+            headerShown:true,
+            // headerBackground: () => (
+            //   <View  style={{backgroundColor:'white',height:85,justifyContent:'center'}}>
+            //       <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
+            //   </View>
+            // ),
+            headerLeft: ({tintColor})=>(
+               <Image source={require('../../Resources/assets/logo/Bee_Barber.png')}
+                      style={{marginStart:16,height: 30, width: 170}}
+               />
+            ),
+            headerRight: ({ tintColor }) => (
+               <View style={{flexDirection:'row',marginHorizontal:32}}>
+                  <Image source={require('../../Resources/assets/icons/cart.png')}
+                      style={{marginStart:4,height: 26, width:26,marginHorizontal:24}}/>
+               <Image source={require('../../Resources/assets/icons/notification.png')}
+                      style={{marginStart:4,height: 26, width: 26,marginHorizontal:12}}/>
+               </View>
+            ),
+            
+          }}
+
+          
+        />
+        <CurvedBottomBar.Screen
+          name="title2"
+          component={ShopScreen}
+          position="LEFT"
+        />
+        <CurvedBottomBar.Screen
+          name="title3"
+          component={AppointmentHistoryScreen}
+          position="RIGHT"
+          options={{
+            title:'',
+            headerShown:true,
+            headerTitleAlign: 'center',
+            headerBackground: () => (
+              <View  style={{backgroundColor:'white',height:85,justifyContent:'center'}}>
+                  <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
+              </View>
+            ),
+          }}
+        />
+        <CurvedBottomBar.Screen
+          name="title4"
+          component={ShopScreen}
+          position="RIGHT"
+        />
+      </CurvedBottomBar.Navigator>
+  )
+}
 
 export default TabNavigator;
 
