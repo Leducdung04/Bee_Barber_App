@@ -5,6 +5,7 @@ import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
+import colors from '../../Resources/styles/colors';
 
 const Stack = createNativeStackNavigator();
 const AppNavigation = () => {
@@ -15,11 +16,9 @@ const AppNavigation = () => {
          options={{headerShown:false}}
       />
       <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-        options={{ title: 'Đặt lịch giữ chỗ ' }}
+        options={{ title: 'Đặt lịch giữ chỗ ' ,headerTintColor:colors.primary }}
       />
-      <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-         options={{ title: 'Dịch vụ theo danh mục' }}
-      />
+      <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}/>
    </Stack.Navigator>
   )
 }
