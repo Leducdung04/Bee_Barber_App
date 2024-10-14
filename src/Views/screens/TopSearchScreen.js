@@ -1,10 +1,11 @@
 import {
-    Animated,
+  Animated,
   FlatList,
   Modal,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -12,11 +13,18 @@ import React, {useEffect, useRef, useState} from 'react';
 import ProductLayout from '../components/ProductLayout';
 import {Dropdown} from 'react-native-element-dropdown';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import {Divider, Searchbar, Checkbox} from 'react-native-paper';
 
 const TopSearchScreen = () => {
   const [value, setValue] = useState(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
-   const slideAnim = useRef(new Animated.Value(300)).current;
+  const slideAnim = useRef(new Animated.Value(300)).current;
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [selectedBrands, setSelectedBrands] = useState({});
+  const [selectedRating, setSelectedRating] = useState(null);
+  const [priceRange, setPriceRange] = useState({from: '', to: ''});
+  const [showAllBrands, setShowAllBrands] = useState(false);
   const tabs = [
     'Tất cả',
     'Kem Chống Nắng',
@@ -27,21 +35,31 @@ const TopSearchScreen = () => {
     'Miếng dán mụn',
     'Mặt nạ',
   ];
+  const handleSelectBrand = brand => {
+    setSelectedBrands(prev => ({
+      ...prev,
+      [brand]: !prev[brand],
+    }));
+  };
   useEffect(() => {
     if (showFilterModal) {
       Animated.timing(slideAnim, {
-        toValue: 0, 
-        duration: 300, 
+        toValue: 0,
+        duration: 300,
         useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(slideAnim, {
-        toValue: 300, 
+        toValue: 300,
         duration: 300,
         useNativeDriver: true,
       }).start();
     }
   }, [showFilterModal, slideAnim]);
+
+  const handleStarPress = rating => {
+    setSelectedRating(rating);
+  };
 
   const productData = {
     0: [
@@ -160,6 +178,28 @@ const TopSearchScreen = () => {
     setSelectedTab(index);
   };
 
+  const partnerships = [
+    'BENEW',
+    'LABORIE',
+    'UMOS',
+    'UNO',
+    'CERAVE',
+    'LA ROCHE POSAY',
+    'CAFE MINI',
+    'NERMAN',
+    'NÓNG CÙNG MÙA BÓNG',
+    'HALIO',
+    'SIMPLE',
+    'G.G.G',
+    'SELSUN',
+    'DERLADIE',
+    'NEUTROGENA',
+    'ONOFF',
+  ];
+  const displayedBrands = showAllBrands
+    ? partnerships
+    : partnerships.slice(0, 5);
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{height: 50}}>
@@ -193,7 +233,9 @@ const TopSearchScreen = () => {
             setValue(item.value);
           }}
         />
-        <TouchableOpacity style={styles.filterButton}  onPress={() => setShowFilterModal(true)}> 
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => setShowFilterModal(true)}>
           <Text style={styles.filterText}>Lọc</Text>
           <MaterialCommunityIcons
             name="filter-outline"
@@ -208,12 +250,122 @@ const TopSearchScreen = () => {
           <Animated.View
             style={[
               styles.modalContent,
-              {transform: [{translateX: slideAnim}]}, 
+              {transform: [{translateX: slideAnim}]},
             ]}>
-            <Text style={styles.modalText}>This is the Filter Modal</Text>
             <TouchableOpacity onPress={() => setShowFilterModal(false)}>
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Fontisto name="close-a" color="black" size={15} />
             </TouchableOpacity>
+            <Text style={styles.modalText}>BỘ LỌC</Text>
+            <Divider />
+            <Text style={styles.modalSubText}>Khoảng Giá</Text>
+            <View style={{flexDirection: 'row'}}>
+              <View style={styles.priceRangeRow}>
+                <View style={styles.priceRangeContainer}>
+                  <Text style={styles.priceRangeText}>Từ</Text>
+                  <TextInput
+                    style={styles.priceInput}
+                    placeholder="đ _ _ _ _"
+                    keyboardType="numeric"
+                    value={priceRange.from}
+                    onChangeText={text =>
+                      setPriceRange({...priceRange, from: text})
+                    }
+                  />
+                </View>
+                <View style={styles.priceRangeContainer}>
+                  <Text style={styles.priceRangeText}>Đến</Text>
+                  <TextInput
+                    style={styles.priceInput}
+                    placeholder="đ _ _ _ _"
+                    keyboardType="numeric"
+                    value={priceRange.to}
+                    onChangeText={text =>
+                      setPriceRange({...priceRange, to: text})
+                    }
+                  />
+                </View>
+              </View>
+            </View>
+            <Divider />
+            <Text style={styles.modalSubText}>Đánh giá</Text>
+            <View style={styles.ratingContainer}>
+              {[5, 4, 3, 2, 1].map(rating => (
+                <View key={rating} style={styles.ratingRow}>
+                  {Array.from({length: rating}, (_, index) => (
+                    <MaterialCommunityIcons
+                      key={index}
+                      name="star"
+                      size={32}
+                      color="gold"
+                    />
+                  ))}
+
+                  {Array.from({length: 5 - rating}, (_, index) => (
+                    <MaterialCommunityIcons
+                      key={index}
+                      name="star-outline"
+                      size={32}
+                      color="gray"
+                    />
+                  ))}
+
+                  <Text style={styles.starText}>{`${rating} sao`}</Text>
+                </View>
+              ))}
+            </View>
+
+            <Divider />
+            <Text style={styles.modalSubText}>Thương hiệu</Text>
+            <Searchbar
+              placeholder="Search"
+              onChangeText={setSearchQuery}
+              value={searchQuery}
+            />
+            <FlatList
+              data={displayedBrands}
+              renderItem={({item}) => (
+                <View style={styles.brandContainer}>
+                  <Checkbox
+                    status={selectedBrands[item] ? 'checked' : 'unchecked'}
+                    onPress={() => handleSelectBrand(item)}
+                  />
+                  <Text>{item}</Text>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              ListFooterComponent={
+                !showAllBrands ? (
+                  <TouchableOpacity
+                    onPress={() => setShowAllBrands(true)}
+                    style={styles.seeMoreContainer}>
+                    <Text style={styles.seeMoreText}>Xem thêm</Text>
+                    <MaterialCommunityIcons name="chevron-down" size={22} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => setShowAllBrands(false)}
+                    style={styles.seeMoreContainer}>
+                    <Text style={styles.seeMoreText}>Ẩn bớt</Text>
+                    <MaterialCommunityIcons name="chevron-up" size={22} />
+                  </TouchableOpacity>
+                )
+              }
+            />
+
+            <Divider />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 20,
+              }}>
+              <TouchableOpacity style={styles.clearFiltersButton}>
+                <Text style={styles.clearFiltersText}>Bỏ tất cả bộ lọc</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.applyFiltersButton}>
+                <Text style={styles.applyFiltersText}>Áp dụng bộ lọc</Text>
+              </TouchableOpacity>
+            </View>
           </Animated.View>
         </View>
       </Modal>
@@ -305,20 +457,125 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
-    alignItems: 'flex-end', 
+    alignItems: 'flex-end',
   },
   modalContent: {
-    width: 250,
+    width: 290,
     height: '100%',
     backgroundColor: 'white',
     padding: 20,
   },
+  clearFiltersButton: {
+    borderWidth: 1,
+    borderColor: 'black',
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  clearFiltersText: {
+    color: 'black',
+    textAlign: 'center',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  applyFiltersButton: {
+    backgroundColor: 'blue',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  applyFiltersText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 13,
+    fontWeight: '500',
+  },
   modalText: {
     fontSize: 18,
-    marginBottom: 20,
+    marginBottom: 15,
+    textAlign: 'center',
+    fontWeight: '600',
+    color: 'black',
+  },
+  modalSubText: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginVertical: 10,
+    color: 'dimgrey',
   },
   closeButtonText: {
     fontSize: 16,
     color: 'blue',
   },
+  ratingContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  brandContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  priceRangeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  priceInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    width: '45%',
+    color: 'lightslategrey',
+  },
+  priceRangeText: {
+    fontWeight: '600',
+    color: 'darkgrey',
+  },
+  priceRangeRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginVertical: 10,
+  },
+  seeMoreContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  seeMoreText: {
+    color: 'grey',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
+  starRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  starCountText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: 'gray',
+    fontWeight: '500',
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  starText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: 'dimgrey',
+    fontWeight: '600',
+  },
+  
 });

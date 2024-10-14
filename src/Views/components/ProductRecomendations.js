@@ -1,22 +1,6 @@
-import React, {useRef, useState} from 'react';
-import {
-  View,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, FlatList, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import ProductLayout from './ProductLayout';
-
-const ProductRecomendationsList = ({products}) => (
-  <FlatList
-    data={products}
-    numColumns={2}
-    renderItem={({item}) => <ProductLayout item={item} />}
-    keyExtractor={item => item.id}
-  />
-);
 
 const MaterialTopApp = () => {
   const tabs = [
@@ -29,6 +13,7 @@ const MaterialTopApp = () => {
   ];
 
   const [selectedTab, setSelectedTab] = useState(0);
+
   const productData = {
     0: [
       {
@@ -126,8 +111,19 @@ const MaterialTopApp = () => {
     setSelectedTab(index);
   };
 
-  return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+  const ProductRecomendationsList = ({products}) => (
+    <FlatList
+      data={products}
+      numColumns={2}
+      renderItem={({item}) => <ProductLayout item={item} />}
+      keyExtractor={item => item.id}
+      scrollEnabled={false}
+      ListHeaderComponent={HeaderTabs}
+    />
+  );
+
+  const HeaderTabs = () => {
+    return (
       <ScrollView horizontal style={styles.tabContainer}>
         {tabs.map((item, index) => (
           <TouchableOpacity
@@ -139,9 +135,12 @@ const MaterialTopApp = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <View style={{flex: 1}}>
-        <ProductRecomendationsList products={productData[selectedTab] || []} />
-      </View>
+    );
+  };
+
+  return (
+    <View style={{flex: 1, backgroundColor: 'white'}}>
+      <ProductRecomendationsList products={productData[selectedTab] || []} />
     </View>
   );
 };
@@ -153,26 +152,15 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     paddingHorizontal: 7,
     backgroundColor: 'white',
-    position: 'relative',
   },
   tabButton: {
     paddingVertical: 10,
     paddingHorizontal: 10,
     marginRight: 10,
   },
-  activeTab: {
-    backgroundColor: 'blue',
-  },
   tabText: {
     fontSize: 16,
     color: 'black',
-  },
-  productItem: {
-    backgroundColor: '#eaeaea',
-    padding: 16,
-    margin: 10,
-    borderRadius: 10,
-    flex: 1,
   },
   indicator: {
     marginTop: 5,
