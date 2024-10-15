@@ -43,6 +43,22 @@ const TabNavigator = () => {
         name = 'Shop';
         break;
       case 'title3':
+
+          iconSource = selectedTab === 'title3'
+          ? require('../../Resources/assets/icons/historyFill.png')
+          : require('../../Resources/assets/icons/history.png');
+          size = 30
+          name='History'
+          break;
+      case 'title4':
+          iconSource = selectedTab === 'title4'
+          ? require('../../Resources/assets/icons/userFill.png')
+          : require('../../Resources/assets/icons/user.png');
+          size = 25
+          name='Account'
+          break;
+        
+
         iconSource =
           selectedTab === 'title3'
             ? require('../../Resources/assets/icons/historyFill.png')
@@ -58,6 +74,7 @@ const TabNavigator = () => {
         size = 25;
         name = 'Tài khoản';
         break;
+
     }
 
     return (
