@@ -43,8 +43,6 @@ const AppNavigation = () => {
      
     <Provider>
       <Stack.Navigator initialRouteName="TabNavigator">
-         {/* <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-        options={{ title: 'Đặt lịch giữ chỗ ' ,headerTintColor:colors.primary }} */}
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen
           name="TabNavigator"
@@ -276,8 +274,8 @@ const AppNavigation = () => {
           }}
         />
    </Stack.Navigator>
-  )
-}
+   </Provider>
+)}
 
 export default AppNavigation;
 
