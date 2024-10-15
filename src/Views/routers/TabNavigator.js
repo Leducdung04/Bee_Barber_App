@@ -85,6 +85,7 @@ const TabNavigator = () => {
             >
               <Image source={require('../../Resources/assets/icons/appointment.png')} style={{width:32,height:32}}/>
             </TouchableOpacity>
+            <Text style={{position:'absolute',bottom:-24}}>Đặt lịch</Text>
           </Animated.View>
         )}
         tabBar={renderTabBar}
