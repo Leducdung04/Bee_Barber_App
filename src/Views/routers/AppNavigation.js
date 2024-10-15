@@ -11,7 +11,8 @@ import CategoriesSortingProduct from '../screens/CategoriesSortingProduct';
 import TopSearchScreen from '../screens/TopSearchScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
-
+import UserProfile from '../screens/UserProfile'
+import Cart from '../screens/Cart';
 
 const Stack = createNativeStackNavigator();
 
@@ -241,6 +242,20 @@ const AppNavigation = () => {
       <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
          options={{ title: 'Dịch vụ theo danh mục' }}
       />
+      <Stack.Screen 
+          name="UserProfile" 
+          component={UserProfile} 
+          options={{ title: 'Thông tin tài khoản',
+            headerTitleAlign: 'center'  
+           }}
+        />
+      <Stack.Screen 
+          name="Cart" 
+          component={Cart} 
+          options={{ title: 'Giỏ Hàng' ,
+            headerTitleAlign: 'center'  
+          }}
+        />
    </Stack.Navigator>
     </Provider>
   );
