@@ -35,14 +35,14 @@ const TabNavigator = () => {
           ? require('../../Resources/assets/icons/historyFill.png')
           : require('../../Resources/assets/icons/history.png');
           size = 30
-          name='Lịch sử'
+          name='History'
           break;
       case 'title4':
           iconSource = selectedTab === 'title4'
           ? require('../../Resources/assets/icons/userFill.png')
           : require('../../Resources/assets/icons/user.png');
           size = 25
-          name='Tài khoản'
+          name='Account'
           break;
         
     }
