@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, FlatList, Image, Dimensions, Text, StyleSheet, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
-import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
-import usebanner from '../../ViewModels/scrollBanner';
+import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhostWithIP';
+import usebanner from '../../../ViewModels/scrollBanner';
 const widthScreen= Dimensions.get('window').width
 const heightScreen= Dimensions.get('window').height
+
 const ListBanner = ({listBanner}) => {
   const {
     scrollToNextImage,

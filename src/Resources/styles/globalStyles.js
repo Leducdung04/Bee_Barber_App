@@ -12,7 +12,20 @@ const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',  // Màu trắng
     textAlign: 'center',
+  },
+  textTitle:{
+    fontWeight:'bold',
+    fontSize:20,
+    color:colors.primary
+  },
+  containerShadow:{
+    elevation: 5, // Android
+    shadowColor: 'gray', // iOS
+    shadowOffset: { width: 0, height: 2 }, // iOS
+    shadowOpacity: 0.25, // iOS
+    shadowRadius: 3.84, // iOS
   }
+
   
 });
 export default globalStyles;
