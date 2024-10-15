@@ -81,7 +81,7 @@ const TabNavigator = () => {
           <Animated.View style={styles.btnCircleUp}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => Alert.alert('Click Action')}
+              onPress={() => navigate('AppointmentScreen')} // Thay 'TênMànHìnhMới' bằng tên màn hình bạn muốn chuyển đến
             >
               <Image source={require('../../Resources/assets/icons/appointment.png')} style={{width:32,height:32}}/>
             </TouchableOpacity>
