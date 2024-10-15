@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import HomeScreen from '../screens/HomeScreen';
 import ShopScreen from '../screens/ShopScreen';
+import AccountScreen from '../screens/AccountScreen';
 
 import CircleBorder from '../components/CircleBorder';
 import {CurvedBottomBar} from 'react-native-curved-bottom-bar';
@@ -174,7 +175,7 @@ const TabNavigator = () => {
         />
         <CurvedBottomBar.Screen
           name="title4"
-          component={ShopScreen}
+          component={AccountScreen}
           position="RIGHT"
         />
       </CurvedBottomBar.Navigator>

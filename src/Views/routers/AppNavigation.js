@@ -14,6 +14,9 @@ import AppointmentScreen from '../screens/AppointmentScreen';
 import colors from '../../Resources/styles/colors';
 
 
+import UserProfile from '../screens/UserProfile'
+import Cart from '../screens/Cart';
+
 const Stack = createNativeStackNavigator();
 
 const AppNavigation = () => {
@@ -242,8 +245,22 @@ const AppNavigation = () => {
          <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
         options={{ title: 'Đặt lịch giữ chỗ ' }}/>
       <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-         options={{ title: 'Dịch vụ theo danh mục' }} />
-      {/* <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}/> */}
+         options={{ title: 'Dịch vụ theo danh mục' }}
+      />
+      <Stack.Screen 
+          name="UserProfile" 
+          component={UserProfile} 
+          options={{ title: 'Thông tin tài khoản',
+            headerTitleAlign: 'center'  
+           }}
+        />
+      <Stack.Screen 
+          name="Cart" 
+          component={Cart} 
+          options={{ title: 'Giỏ Hàng' ,
+            headerTitleAlign: 'center'  
+          }}
+        />
    </Stack.Navigator>
    </Provider>
   );
