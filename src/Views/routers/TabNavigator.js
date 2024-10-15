@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import HomeScreen from '../screens/HomeScreen';
 import ShopScreen from '../screens/ShopScreen';
+import AccountScreen from '../screens/AccountScreen';
 
 import CircleBorder from '../components/CircleBorder';
 import {CurvedBottomBar} from 'react-native-curved-bottom-bar';
@@ -18,6 +19,7 @@ import colors from '../../Resources/styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import globalStyles from '../../Resources/styles/globalStyles';
 import { useNavigation } from '@react-navigation/native';
+import UserProfile from '../screens/UserProfile';
 
 const TabNavigator = () => {
   const _renderIcon = (routeName, selectedTab) => {
@@ -117,6 +119,7 @@ const TabNavigator = () => {
             >
               <Image source={require('../../Resources/assets/icons/appointment.png')} style={{width:32,height:32}}/>
             </TouchableOpacity>
+            <Text style={{position:'absolute',bottom:-24}}>Đặt lịch</Text>
           </Animated.View>
         )}
         tabBar={renderTabBar}
@@ -173,7 +176,7 @@ const TabNavigator = () => {
         />
         <CurvedBottomBar.Screen
           name="title4"
-          component={ShopScreen}
+          component={UserProfile}
           position="RIGHT"
         />
       </CurvedBottomBar.Navigator>

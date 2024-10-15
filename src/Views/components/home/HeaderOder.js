@@ -1,9 +1,12 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import colors from '../../../Resources/styles/colors'
 import LinearGradient from 'react-native-linear-gradient'
+import { useNavigation} from '@react-navigation/native'
+
 
 const HeaderOder = () => {
+  const navigation = useNavigation()
   return (
     <LinearGradient colors={['#A4D0F6',colors.secondary,colors.primary200]}
                       start={{ x: 0, y: 0 }} // Điểm bắt đầu (trái)
@@ -18,6 +21,7 @@ const HeaderOder = () => {
         </View>   
 
         <View style={{justifyContent:'center',marginTop:24}}>
+          <TouchableOpacity onPress={()=>{navigation.navigate('AppointmentScreen')}}>
           <LinearGradient colors={['#A4D0F6','#F4F1F1','#DF9CC9','#95C8F1','#A6CFFF']}
                         start={{ x: 0, y: 0 }} // Điểm bắt đầu (trái)
                         end={{ x: 1, y: 0 }}
@@ -25,6 +29,7 @@ const HeaderOder = () => {
                         >
               <Text style={{textAlign:'center',color:'black',fontSize:16}}>Đặt lịch</Text>
           </LinearGradient>
+          </TouchableOpacity>
         </View>
       
       </LinearGradient>
