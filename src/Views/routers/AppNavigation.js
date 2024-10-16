@@ -1,10 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
 import CategoriesProductsScreen from '../screens/CategoriesProductsScreen';
-import {Menu, Provider} from 'react-native-paper';
+import { Menu, Provider } from 'react-native-paper';
 import CircleBorder from '../components/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoriesSortingProduct from '../screens/CategoriesSortingProduct';
@@ -12,6 +12,7 @@ import TopSearchScreen from '../screens/TopSearchScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
 import colors from '../../Resources/styles/colors';
+import ServicesScreen from '../screens/ServicesScreen';
 
 
 import UserProfile from '../screens/UserProfile'
@@ -26,14 +27,16 @@ const AppNavigation = () => {
   const closeMenu = () => setVisible(false);
 
   return (
-     
+
     <Provider>
       <Stack.Navigator initialRouteName="TabNavigator">
+        {/* <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
+        options={{ title: 'Đặt lịch giữ chỗ ' ,headerTintColor:colors.primary }} */}
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="CategoriesProductsScreen"
@@ -68,7 +71,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{zIndex: 1000,marginTop:32}}>
+                  style={{ zIndex: 1000, marginTop: 32 }}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Trang chủ');
@@ -127,7 +130,7 @@ const AppNavigation = () => {
                 <Menu
                   visible={visible}
                   onDismiss={closeMenu}
-                  mode = 'elevated'
+                  mode='elevated'
                   theme={{ colors: { primary: 'green' } }}
                   anchor={
                     <CircleBorder
@@ -138,7 +141,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{zIndex: 1000,marginTop:32}}>
+                  style={{ zIndex: 1000, marginTop: 32 }}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Option 1 clicked');
@@ -205,7 +208,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{zIndex: 1000,marginTop:32}}>
+                  style={{ zIndex: 1000, marginTop: 32 }}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Trang chủ');
@@ -240,28 +243,34 @@ const AppNavigation = () => {
           }}
           headerBackButtonMenuEnabled
         />
-         <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-        options={{ title: 'Đặt lịch giữ chỗ ' }}/>
-      <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-         options={{ title: 'Dịch vụ theo danh mục' }}
-      />
-      <Stack.Screen 
-          name="UserProfile" 
-          component={UserProfile} 
-          options={{ title: 'Thông tin tài khoản',
-            headerTitleAlign: 'center'  
-           }}
+        <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
+          options={{ title: 'Đặt lịch giữ chỗ ' }} />
+        <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
+          options={{ title: 'Dịch vụ theo danh mục' }}
         />
-      <Stack.Screen 
-          name="Cart" 
-          component={Cart} 
-          options={{ title: 'Giỏ Hàng' ,
-            headerTitleAlign: 'center'  
+        <Stack.Screen name='ServicesScreen' component={ServicesScreen}
+          options={{ title: 'Chọn dịch vụ', headerShown: false }}
+        />
+        <Stack.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={{
+            title: 'Thông tin tài khoản',
+            headerTitleAlign: 'center'
           }}
         />
-   </Stack.Navigator>
-   </Provider>
-)}
+        <Stack.Screen
+          name="Cart"
+          component={Cart}
+          options={{
+            title: 'Giỏ Hàng',
+            headerTitleAlign: 'center'
+          }}
+        />
+      </Stack.Navigator>
+    </Provider>
+  );
+};
 
 export default AppNavigation;
 
