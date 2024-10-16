@@ -1,24 +1,3 @@
-// // Views/components/TimeSelectionComponent.js
-// import React from 'react';
-// import { View, TouchableOpacity, Text } from 'react-native';
-
-// const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect }) => {
-//   return (
-//     <View>
-//       {availableTimes.map((time) => (
-//         <TouchableOpacity
-//           key={time}
-//           onPress={() => onTimeSelect(time)}
-//         >
-//           <Text style={selectedTime === time ? { color: 'blue' } : {}}>{time}</Text>
-//         </TouchableOpacity>
-//       ))}
-//     </View>
-//   );
-// };
-
-// export default TimeSelectionComponent;
-
 // Views/components/TimeSelectionComponent.js
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';

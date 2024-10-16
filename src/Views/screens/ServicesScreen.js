@@ -1,25 +1,58 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, FlatList } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, FlatList, Alert } from 'react-native';
 import React, { useState } from 'react';
 import CheckBox from '@react-native-community/checkbox';
+import { useNavigation } from '@react-navigation/native';
 
-const App = () => {
+const ServicesScreen = ({ route }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
   const [expandedItems, setExpandedItems] = useState({});
   const [isSelected, setSelection] = useState(false);
+  const [selectedServices, setSelectedServices] = useState([]); // Lưu các dịch vụ đã chọn
+  const [totalPrice, setTotalPrice] = useState(0); // Tính tổng tiền
+  const navigation = useNavigation();
 
   const data = [
-    { name: 'ShineCombo 2', time: '⏱ 10p', image: require('./assets/flagvn.png'), mota: 'Combo cắt kỹ, combo gội massage thư giãn cổ vai gáy, combo cạo mặt sáng', ttthem: 'NEW', danhgia: 'Tiêu chuẩn', price: '188K' },
-    { name: 'Cắt + Gội Combo 3', time: '⏱ 40p', image: require('./assets/flagvn.png'), mota: 'Combo cắt kỹ, combo chăm sóc da chuyên sâu sáng đều màu da bằng thiết bị công nghệ', ttthem: 'Tặng massage cổ vai gáy', danhgia: 'Tiêu chuẩn', price: '299K' },
-    { name: 'Cắt + Gội Combo 4', time: '⏱ 60p', image: require('./assets/flagvn.png'), mota: 'Combo cắt kỹ, combo gội massage bấm huyệt đầu, cổ vai gáy, combo massage', ttthem: 'Tặng detox da đầu', danhgia: 'Tiêu chuẩn', price: '379K' },
-    { name: 'Cắt + Gội Combo 5', time: '⏱ 17p', image: require('./assets/flagvn.png'), mota: 'Combo cắt gội massage và lấy nhân mụn chuẩn y khoa giúp trẻ hóa làn da, giảm', ttthem: 'Tặng massage cổ vai gáy', danhgia: 'Tiêu chuẩn', price: '429K' },
-    { name: 'Cắt gội', time: '⏱ 22p', image: require('./assets/flagvn.png'), mota: 'Combo Cắt kỹ và Combo Gội massage', ttthem: 'Đồng giá cả tuần', danhgia: 'Tiêu chuẩn', price: '120K' },
-    { name: 'Kid Combo', time: '⏱ 44p', image: require('./assets/flagvn.png'), mota: 'Cắt xả tạo kiểu - Stylist thân thiện với trẻ nhỏ Bấm viền nhẹ nhàng', danhgia: 'Tiêu chuẩn', price: '70K' },
-    { name: 'Combo lấy ráy tai VIP', time: '⏱ 54p', image: require('./assets/flagvn.png'), mota: 'Lấy ráy tai sạch và đầy sảng khoái với máy massage ráy tai đa điểm, rửa tai bọt, lắm mặt sáng', ttthem: 'Cực thư giãn', danhgia: 'Tiêu chuẩn', price: '70K' },
-    { name: 'Cắt xả', time: '⏱ 25p', image: require('./assets/flagvn.png'), mota: 'Stylist cắt - xả - vuốt sáp tạo kiểu (Không gội & massage)', danhgia: 'Tiêu chuẩn', price: '100K' },
+    { name: 'ShineCombo 2', time: '⏱ 10p', image: require('../../Resources/assets/icons/flagvn.png'), mota: 'Combo cắt kỹ, combo gội massage thư giãn cổ vai gáy, combo cạo mặt sáng', ttthem: 'NEW', danhgia: 'Tiêu chuẩn', price: '188K' },
+    { name: 'Cắt + Gội Combo 3', time: '⏱ 40p', image: require('../../Resources/assets/icons/flagvn.png'), mota: 'Combo cắt kỹ, combo chăm sóc da chuyên sâu sáng đều màu da bằng thiết bị công nghệ', ttthem: 'Tặng massage cổ vai gáy', danhgia: 'Tiêu chuẩn', price: '299K' },
+    { name: 'Cắt + Gội Combo 4', time: '⏱ 60p', image: require('../../Resources/assets/icons/flagvn.png'), mota: 'Combo cắt kỹ, combo gội massage bấm huyệt đầu, cổ vai gáy, combo massage', ttthem: 'Tặng detox da đầu', danhgia: 'Tiêu chuẩn', price: '379K' },
+    { name: 'Cắt + Gội Combo 5', time: '⏱ 17p', image: require('../../Resources/assets/icons/flagvn.png'), mota: 'Combo cắt gội massage và lấy nhân mụn chuẩn y khoa giúp trẻ hóa làn da, giảm', ttthem: 'Tặng massage cổ vai gáy', danhgia: 'Tiêu chuẩn', price: '429K' },
+    { name: 'Cắt gội', time: '⏱ 22p', image: require('../../Resources/assets/icons/flagvn.png'), mota: 'Combo Cắt kỹ và Combo Gội massage', ttthem: 'Đồng giá cả tuần', danhgia: 'Tiêu chuẩn', price: '120K' },
+    { name: 'Kid Combo', time: '⏱ 44p', image: require('../../Resources/assets/icons/flagvn.png'), mota: 'Cắt xả tạo kiểu - Stylist thân thiện với trẻ nhỏ Bấm viền nhẹ nhàng', danhgia: 'Tiêu chuẩn', price: '70K' },
+    { name: 'Combo lấy ráy tai VIP', time: '⏱ 54p', image: require('../../Resources/assets/icons/flagvn.png'), mota: 'Lấy ráy tai sạch và đầy sảng khoái với máy massage ráy tai đa điểm, rửa tai bọt, lắm mặt sáng', ttthem: 'Cực thư giãn', danhgia: 'Tiêu chuẩn', price: '70K' },
+    { name: 'Cắt xả', time: '⏱ 25p', image: require('../../Resources/assets/icons/flagvn.png'), mota: 'Stylist cắt - xả - vuốt sáp tạo kiểu (Không gội & massage)', danhgia: 'Tiêu chuẩn', price: '100K' },
   ];
 
   const filteredData = data.filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const handleAddService = (item) => {
+  setSelectedServices(prev => {
+    const alreadySelected = prev.some(service => service.name === item.name);
+    
+    if (alreadySelected) {
+      // Nếu đã có, loại bỏ và cập nhật tổng giá tiền
+      const updatedServices = prev.filter(service => service.name !== item.name);
+      // Cập nhật tổng giá tiền
+      setTotalPrice(updatedServices.reduce((total, service) => total + parseFloat(service.price), 0));
+      return updatedServices;
+    } else {
+      // Nếu chưa có, thêm và cập nhật tổng giá tiền
+      const updatedServices = [...prev, item];
+      // Cập nhật tổng giá tiền
+      setTotalPrice(updatedServices.reduce((total, service) => total + parseFloat(service.price), 0));
+      return updatedServices;
+    }
+  });
+};
+
+  const handleDone = () => {
+    if (selectedServices.length > 0) {
+      // Truyền dữ liệu dịch vụ đã chọn về AppointmentScreen
+      navigation.navigate('AppointmentScreen', { selectedServices });
+    } else {
+      Alert.alert('Chưa chọn dịch vụ nào!');
+    }
+  };
 
   const toggleItemExpansion = (item) => {
     setExpandedItems((prev) => ({
@@ -43,8 +76,8 @@ const App = () => {
       <View style={styles.container1}>
         {/* TOPBAR */}
         <View style={styles.fulltopbar}>
-          <TouchableOpacity style={styles.touchable} onPress={() => alert('Hello!')}>
-            <Image source={require('./assets/arrow.png')} style={styles.imageArrow} />
+          <TouchableOpacity style={styles.touchable} onPress={navigation.goBack}>
+            <Image source={require('../../Resources/assets/icons/arrow.png')} style={styles.imageArrow} />
           </TouchableOpacity>
           <View style={styles.serviceTextContainer}>
             <Text style={styles.serviceTextBold}>Chọn dịch vụ </Text>
@@ -67,13 +100,13 @@ const App = () => {
             <Text style={styles.serviceTextRegular}>Kiểu xem </Text>
           </View>
           <View style={styles.viewImageFlagVN}>
-            <Image source={require('./assets/flagvn.png')} style={styles.imageFlagVN} />
+            <Image source={require('../../Resources/assets/icons/flagvn.png')} style={styles.imageFlagVN} />
           </View>
         </View>
 
         {/* SEARCH */}
         <View style={styles.viewSearch}>
-          <Image source={require('./assets/search.png')} style={styles.imageSearch} />
+          <Image source={require('../../Resources/assets/icons/search.png')} style={styles.imageSearch} />
           <TextInput
             style={styles.searchBar}
             placeholder="Tìm kiếm..."
@@ -109,43 +142,29 @@ const App = () => {
 
         {/* List of services */}
         <View style={styles.rowContainer}>
-          <View style={styles.viewList}>
-            <FlatList
-              data={filteredData}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <View
-                  style={[styles.item1, selectedItem === item && styles.selectedItem1]} // Không có onPress
-                >
-                  <Image source={item.image} style={styles.itemImage} />
-                  <View style={styles.viewTitle}>
-                    <Text
-                      style={styles.itemText}
-                      numberOfLines={expandedItems[item.name] ? undefined : 2} // Hiển thị tối đa 2 dòng
-                      ellipsizeMode="tail" // Sử dụng '...' khi vượt quá giới hạn
-                    >
-                      {item.name}
-                    </Text>
-                    <Text style={styles.itemText2}>{item.time}</Text>
-                  </View>
-                  <Text
-                    style={styles.itemText3}
-                    numberOfLines={expandedItems[item.mota] ? undefined : 3} // Hiển thị tối đa 2 dòng
-                    ellipsizeMode="tail" // Sử dụng '...' khi vượt quá giới hạn
-                  >
-                    {item.mota}
-                  </Text>
-                  <Text style={styles.itemText4}>{item.ttthem}</Text>
-                  <Text style={styles.itemText5}>{item.danhgia}</Text>
-                  <Text style={styles.itemText6}>{item.price}</Text>
-                  <TouchableOpacity>
-                    <Text style={styles.itemText7}>Thêm dịch vụ</Text>
-                  </TouchableOpacity>
+          <FlatList
+            data={filteredData}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={[styles.item1, selectedItem === item && styles.selectedItem1]}>
+                <Image source={item.image} style={styles.itemImage} />
+                <View style={styles.viewTitle}>
+                  <Text style={styles.itemText} numberOfLines={2}>{item.name}</Text>
+                  <Text style={styles.itemText2}>{item.time}</Text>
                 </View>
-              )}
-              numColumns={2} // Thay đổi số cột thành 2
-            />
-          </View>
+                <Text style={styles.itemText3}>{item.mota}</Text>
+                <Text style={styles.itemText4}>{item.ttthem}</Text>
+                <Text style={styles.itemText5}>{item.danhgia}</Text>
+                <Text style={styles.itemText6}>{item.price}</Text>
+                <TouchableOpacity onPress={() => handleAddService(item)}>
+                  <Text style={styles.itemText7}>
+                    {selectedServices.some(service => service.name === item.name) ? 'Đã thêm' : 'Thêm dịch vụ'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            numColumns={2}
+          />
         </View>
       </View>
 
@@ -179,15 +198,15 @@ const App = () => {
         {/* Button */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, alignItems: 'flex-end' }}>
           <TouchableOpacity>
-            <Text style={[styles.buttonText, { textDecorationLine: 'underline' }]}>Đã chọn 0 dịch vụ</Text>
+            <Text style={[styles.buttonText, { textDecorationLine: 'underline' }]}>Đã chọn {selectedServices.length} dịch vụ</Text>
           </TouchableOpacity>
 
           <View style={{ flexDirection: 'column', alignItems: 'flex-end', marginLeft: 110 }}>
             <Text style={styles.textprice}>Tổng thanh toán</Text>
-            <Text style={styles.price}>0K</Text>
+            <Text style={styles.price}>{totalPrice}K</Text>
           </View>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleDone}>
             <Text style={styles.buttonText1}>Xong</Text>
           </TouchableOpacity>
         </View>
@@ -196,7 +215,7 @@ const App = () => {
   );
 };
 
-export default App;
+export default ServicesScreen;
 
 const styles = StyleSheet.create({
   container: {
