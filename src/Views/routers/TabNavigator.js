@@ -19,6 +19,7 @@ import colors from '../../Resources/styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
 import globalStyles from '../../Resources/styles/globalStyles';
 import { useNavigation } from '@react-navigation/native';
+import UserProfile from '../screens/UserProfile';
 
 const TabNavigator = () => {
   const _renderIcon = (routeName, selectedTab) => {
@@ -175,7 +176,7 @@ const TabNavigator = () => {
         />
         <CurvedBottomBar.Screen
           name="title4"
-          component={AccountScreen}
+          component={UserProfile}
           position="RIGHT"
         />
       </CurvedBottomBar.Navigator>
