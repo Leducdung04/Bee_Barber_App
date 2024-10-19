@@ -243,7 +243,7 @@ const AppNavigation = () => {
          <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
         options={{ title: 'Đặt lịch giữ chỗ ' }}/>
       <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-         options={{ title: 'Dịch vụ theo danh mục' }}
+         options={{ title: 'Dịch vụ theo danh mục'}}
       />
       <Stack.Screen 
           name="UserProfile" 

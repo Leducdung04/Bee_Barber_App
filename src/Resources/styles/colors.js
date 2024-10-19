@@ -1,5 +1,6 @@
 
 const colors = {
+    backgroundColor:'#f9f9f9',
     primary: '#153A80',     // Màu chính của ứng dụng (Primary Color)
     primary100: '#3666c0',
     primary200:'#4b7bdc',
