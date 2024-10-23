@@ -1,92 +1,40 @@
-// // Views/components/ServiceSelectionComponent.js
-// import React from 'react';
-// import { FlatList, TouchableOpacity, Text } from 'react-native';
-
-// const ServiceSelectionComponent = ({ items, selectedItems, onSelectedItemsChange }) => {
-//   const renderItem = ({ item }) => (
-//     <TouchableOpacity onPress={() => onSelectedItemsChange(item.id)}>
-//       <Text>{item.name}</Text>
-//       {selectedItems.includes(item.id) && <Text>✓</Text>}
-//     </TouchableOpacity>
-//   );
-
-//   return (
-//     <FlatList
-//       data={items}
-//       renderItem={renderItem}
-//       keyExtractor={(item) => item.id}
-//     />
-//   );
-// };
-
-// export default ServiceSelectionComponent;
-
 // Views/components/ServiceSelectionComponent.js
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, FlatList } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ServiceSelectionComponent = ({ items, selectedItems, onSelectedItemsChange }) => {
   const [serviceModalVisible, setServiceModalVisible] = useState(false);
+  const route = useRoute();
+  const { selectedServices = [] } = route.params || {}; // Lấy dữ liệu từ ServicesScreen
+  const navigation = useNavigation();
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => onSelectedItemsChange(item.id)}
-    >
-      <Text style={styles.itemText}>{item.name}</Text>
-      {selectedItems.includes(item.id) && <Text style={styles.checkmark}>✓</Text>}
-    </TouchableOpacity>
-  );
+  const handleNavigate = () => {
+    navigation.navigate('ServicesScreen');
+  };
 
   return (
     <View>
-      <TouchableOpacity style={styles.button} onPress={() => setServiceModalVisible(true)}>
-        <Text>{selectedItems.length > 0 ? `Đã chọn ${selectedItems.length} dịch vụ` : "Chọn dịch vụ..."}</Text>
+      <TouchableOpacity style={styles.button} onPress={handleNavigate}>
+        <Text>{selectedServices.length > 0 ? `Đã chọn ${selectedServices.length} dịch vụ` : "Chọn dịch vụ..."}</Text>
         <Text style={styles.primaryText}>→</Text>
       </TouchableOpacity>
 
-      {selectedItems.length === 0 && (
+      {selectedServices.length == 0 && (
         <Text style={styles.warningText}>Vui lòng chọn dịch vụ!</Text>
       )}
 
-      {selectedItems.length > 0 && (
-        <View style={styles.selectedContainer}>
-          <Text>Dịch vụ đã chọn:</Text>
-          <View style={styles.selectedItems}>
-            {selectedItems.map(id => {
-              const selectedItem = items.find(item => item.id === id);
-              return (
-                <View key={id} style={styles.individualItem}>
-                  <Text style={styles.selectedItemText}>{selectedItem?.name}</Text>
-                </View>
-              );
-            })}
-          </View>
+      {selectedServices && selectedServices.length > 0 ? (
+        <View>
+          {selectedServices.map((service, index) => (
+            <Text key={index}>
+              {service.name} - {service.price}K
+            </Text>
+          ))}
         </View>
+      ) : (
+        <Text>Chưa chọn dịch vụ nào</Text>
       )}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={serviceModalVisible}
-        onRequestClose={() => setServiceModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={items}
-              renderItem={renderItem}
-              keyExtractor={item => item.id}
-            />
-            <TouchableOpacity
-              style={styles.confirmButton}
-              onPress={() => setServiceModalVisible(false)}
-            >
-              <Text style={styles.confirmButtonText}>Xác nhận</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };

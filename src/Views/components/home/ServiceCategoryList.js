@@ -12,14 +12,12 @@ const widthScreen= Dimensions.get('window').width
 const heightScreen= Dimensions.get('window').height
 const Item_Category =({index,item,widthItem})=>{
   const navigation = useNavigation()
-
   function onClick(){
     navigation.navigate('ServiceByCategoryScreen',item)
   }
   const url = replaceLocalhostWithIP(item.image)
-  const itemHeight = index % 2 === 0 ? (widthScreen / 2) * 1.4 : (widthScreen / 2) * 1.2;
-
-   return <TouchableOpacity onPress={()=>onClick()}>
+  const itemHeight = widthScreen >440 && index % 2 === 0 ? (widthScreen / 2) * 1.4 : (widthScreen / 2) * 1.2;
+   return  <TouchableOpacity onPress={()=>onClick()}>
    <View style={[globalStyles.containerShadow,{margin:4,height:itemHeight,marginVertical:8}]}>
       <Image style={{height:itemHeight,width:widthItem,borderRadius:12}}
                             source={{uri : url}}>
@@ -27,10 +25,10 @@ const Item_Category =({index,item,widthItem})=>{
       <View style={{height:itemHeight/3,width:widthItem,
            position:'absolute',
            bottom:10,
-           justifyContent:'space-around'
+           justifyContent:'space-around',
       }}>
-        <Text style={[globalStyles.textTitle,{textAlign:'center',marginHorizontal:12}]}>{item.name}</Text>
-        <Text style={[globalStyles.textTitle,{textAlign:'center',marginHorizontal:12,fontWeight:'condensed',fontSize:16}]}>Tìm hiểu thêm ➪</Text>
+        <Text  style={[globalStyles.textTitle,{textAlign:'center',marginHorizontal:12,fontSize:19.5}]}>{item.name}</Text>
+        <Text style={[globalStyles.textTitle,{textAlign:'center',marginHorizontal:12,fontWeight:'condensed',fontSize:15}]}>Tìm hiểu thêm ➪</Text>
       </View>
     </View>
     </TouchableOpacity>
@@ -38,16 +36,17 @@ const Item_Category =({index,item,widthItem})=>{
 
 const ServiceCategoryList = ({categoryList}) => {
   const [numColumnsList, setnumColumnsList] = useState(2)
-  const [widthItem, setwidthItem] = useState((widthScreen/2)-12)
+  const [widthItem, setwidthItem] = useState((widthScreen/2)-16)
 
   useEffect(() => {
-     if(widthScreen <360){
+     if(widthScreen <440){
         setnumColumnsList(2)
-        setwidthItem((widthScreen/2)-12)
+        setwidthItem((widthScreen/2.7)-16)
      }else{
         setnumColumnsList(3)
-        setwidthItem((widthScreen/3)-12)
+        setwidthItem((widthScreen/3)-16)
      }
+     console.log("chiều rộng màn hình :",widthScreen)
   }, [])
 
   return (

@@ -176,7 +176,7 @@ const TabNavigator = () => {
         />
         <CurvedBottomBar.Screen
           name="title4"
-          component={UserProfile}
+          component={AccountScreen}
           position="RIGHT"
         />
       </CurvedBottomBar.Navigator>
