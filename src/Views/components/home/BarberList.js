@@ -1,38 +1,37 @@
-import { FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhostWithIP'
-import colors from '../../../Resources/styles/colors'
-import globalStyles from '../../../Resources/styles/globalStyles'
 import LinearGradient from 'react-native-linear-gradient'
-import { ActivityIndicator } from 'react-native-paper'
+import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhostWithIP'
+import globalStyles from '../../../Resources/styles/globalStyles'
+import colors from '../../../Resources/styles/colors'
 
+const BarberList = ({barberList}) => {
 
-const CategoryProductList = ({categoryProductList}) => {
-
-  const Item_Category_Product= ({item})=>{
-       const url=replaceLocalhostWithIP(item.image)
-       console.log(item.image);
-       console.log("ảnh",url)
-    return <TouchableOpacity><View style={{marginHorizontal:8}}>
-                <ImageBackground source={require('../../../Resources/assets/images/backgrougCategoryPt.png')} style={{width:62,height:62,margin:12,justifyContent:'center',alignItems:'center'}}>
-                        <Image source={{uri:url}} style={{width:36,height:36}}/>
-                </ImageBackground>
-                <Text style={{width:80,textAlign:'center',color:'black'}}>{item.name}</Text>
-            </View></TouchableOpacity>
-  }
+    const Item_Barber=({item})=>{
+       console.log('item Barber',item)
+        const imageUrl = item.image ? replaceLocalhostWithIP(item.image) : require('../../../Resources/assets/images/barberBackgroug.png');
+  
+        return <View style={{margin:8,alignItems:'center'}}>
+              <View style={{backgroundColor:'#c2dcf7',borderRadius:12}}>
+              <Image  source={typeof imageUrl === 'string' ? { uri: imageUrl } : imageUrl} style={{width:130,height:220,borderRadius:12}}/>
+              </View>
+              <Text style={{color:colors.primary,marginTop:6,fontWeight:'bold'}}>{item.name}</Text>
+        </View>
+       
+    }
   return (
     <View style={{margin:12}}>
       <View style={styles.titleContainer}>
         <View style={styles.TitleContainerRight}></View>
-        <Text style={[globalStyles.textTitle,{marginStart:12}]}>Barber Shop </Text>
+        <Text style={[globalStyles.textTitle,{marginStart:12}]}>Stylist </Text>
       </View>
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={categoryProductList}
+        data={barberList}
         keyExtractor={(item) => item._id.toString()}
-        renderItem={({item})=> <Item_Category_Product item={item}/>}
-
+        renderItem={({item})=> <Item_Barber item={item}/>}
+        ListFooterComponent={()=><View style={{height:400}}></View>}
         ListEmptyComponent={()=>{
           return <View style={{marginHorizontal:8,flexDirection:'row'}}>
             <LinearGradient
@@ -75,17 +74,16 @@ const CategoryProductList = ({categoryProductList}) => {
   )
 }
 
-export default CategoryProductList
+export default BarberList
 
 const styles = StyleSheet.create({
-  titleContainer:{
-    flexDirection:'row',
-},
-TitleContainerRight:{
-    width:6,height:30,backgroundColor:colors.primary300,borderRadius:4
-},
     gridItem:{
-      width:54,height:54,borderRadius:36,marginHorizontal:12
-    }
- 
+        width:54,height:54,borderRadius:36,marginHorizontal:12
+    },
+    titleContainer:{
+      flexDirection:'row',
+  },
+  TitleContainerRight:{
+      width:6,height:30,backgroundColor:colors.primary300,borderRadius:4
+  }
 })
