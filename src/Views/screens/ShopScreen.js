@@ -22,7 +22,6 @@ const ShopScreen = () => {
           <CustomButton title="Sổ địa chỉ" />
           <CustomButton title="Đơn hàng" />
         </View>
-        <GridDesign />
         <CategoriesGridLayout />
         <View style={styles.imageContainer}>
           <ImageBackground
@@ -36,7 +35,6 @@ const ShopScreen = () => {
         </View>
         <MaterialTopTab/>
         <TopSearch/>
-        <PartnershipBranding/>
       </ScrollView>
     </SafeAreaView>
   );

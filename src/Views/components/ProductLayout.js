@@ -1,8 +1,8 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const ProductLayout = ({item}) => {
+const ProductLayout = ({item, onPress}) => {
 
   const renderStars = rating => {
     const stars = [];
@@ -20,39 +20,44 @@ const ProductLayout = ({item}) => {
   };
 
   return (
-    <View style={styles.productContainer}>
-      <Image source={item.image} style={styles.productImage} />
-      <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.name}</Text>
-        <Text style={styles.productPrice}>{item.priceRange}</Text>
-        <View style={styles.rating}>{renderStars(item.rating)}</View>
+    <TouchableOpacity style={styles.touchableContainer} onPress={onPress}>
+      <View style={styles.productContainer}>
+        <Image source={item.image} style={styles.productImage} />
+        <View style={styles.productInfo}>
+          <Text style={styles.productName}>{item.name}</Text>
+          <Text style={styles.productPrice}>{item.priceRange}</Text>
+          {/* <View style={styles.rating}>{renderStars(item.rating)}</View> */}
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 export default ProductLayout;
 
 const styles = StyleSheet.create({
+  touchableContainer: {
+    margin: 2,
+  },
   productContainer: {
     flexDirection: 'column',
-    flex:1,
-    padding: 15,
+    flex: 1,
+    padding: 17,
     backgroundColor: '#fff',
-    width: '48%', 
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.15,
-    shadowRadius: 4,
+    shadowRadius: 1,
     elevation: 4,
-    borderWidth:0.2,
+    
+    borderRadius: 10,
   },
   productImage: {
-    width: 130,
-    height: 120,
+    width: 187,
+    height: 142,
     borderRadius: 8,
     marginBottom: 10,
-    resizeMode: 'cover',
+    resizeMode: 'center',
   },
   productInfo: {
     alignItems: 'baseline',

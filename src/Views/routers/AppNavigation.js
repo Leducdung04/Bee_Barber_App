@@ -17,6 +17,7 @@ import ServicesScreen from '../screens/ServicesScreen';
 
 import UserProfile from '../screens/UserProfile'
 import Cart from '../screens/Cart';
+import ProductScreen from '../screens/ProductScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -108,9 +109,10 @@ const AppNavigation = () => {
         />
         <Stack.Screen
           headerBackButtonMenuEnabled
-          name="Thêm"
+          name="CategoriesSortingProduct"
           component={CategoriesSortingProduct}
           options={{
+            title:"Thêm",
             headerShown: true,
             headerRight: () => (
               <View style={styles.headerRight}>
@@ -243,6 +245,77 @@ const AppNavigation = () => {
           }}
           headerBackButtonMenuEnabled
         />
+         <Stack.Screen
+          headerBackButtonMenuEnabled
+          name="ProductScreen"
+          component={ProductScreen}
+          options={{
+            title:"Thêm",
+            headerShown: true,
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <CircleBorder
+                  name="search-outline"
+                  size={20}
+                  background="#f7f7f7"
+                  border="#e3e3e3"
+                />
+                <CircleBorder
+                  name="cart-outline"
+                  size={20}
+                  badgeCount={2}
+                  background="#f7f7f7"
+                  border="#e3e3e3"
+                />
+                <Menu
+                  visible={visible}
+                  onDismiss={closeMenu}
+                  mode='elevated'
+                  theme={{ colors: { primary: 'green' } }}
+                  anchor={
+                    <CircleBorder
+                      name="dots-three-vertical"
+                      size={20}
+                      background="#f7f7f7"
+                      border="#e3e3e3"
+                      onPress={openMenu}
+                    />
+                  }
+                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  <Menu.Item
+                    onPress={() => {
+                      console.log('Option 1 clicked');
+                      closeMenu();
+                    }}
+                    leadingIcon={() => (
+                      <MaterialCommunityIcons
+                        name="home-outline"
+                        size={23}
+                        color="black"
+                      />
+                    )}
+                    title="Trang chủ"
+                  />
+                  <Menu.Item
+                    onPress={() => {
+                      console.log('Đơn hàng');
+                      closeMenu();
+                    }}
+                    leadingIcon={() => (
+                      <MaterialCommunityIcons
+                        name="clipboard-check-outline"
+                        size={23}
+                        color="black"
+                      />
+                    )}
+                    title="Đơn hàng"
+                  />
+                </Menu>
+              </View>
+            ),
+          }}
+        />
+        
         <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
           options={{ title: 'Đặt lịch giữ chỗ ' }} />
         <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}

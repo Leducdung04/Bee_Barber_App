@@ -8,11 +8,13 @@ import {
 import React, {useRef, useState} from 'react';
 import ThreeImagesLayout from './ThreeImagesLayout';
 import { useNavigation } from '@react-navigation/native';
+import use from '../../ViewModels/useShopTab';
 
 const TopSearch = () => {
   const scrollTrackWidth = useRef(0);
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
   const nav = useNavigation()
+  
   const searchItems = [
     {
       image1: require('../../Resources/assets/images/anh9.jpg'),
@@ -26,42 +28,42 @@ const TopSearch = () => {
       image2: require('../../Resources/assets/images/anh9.jpg'),
       image3: require('../../Resources/assets/images/anh10.jpg'),
       text: 'Sáp vuốt tóc',
-      action: () => console.log('Sáp vuốt tóc'),
+      action: () => nav.navigate('TopSearchScreen'),
     },
     {
       image1: require('../../Resources/assets/images/anh12.jpg'),
       image2: require('../../Resources/assets/images/anh10.jpg'),
       image3: require('../../Resources/assets/images/anh9.jpg'),
       text: 'Kem chống nắng',
-      action: () => console.log('Kem chống nắng'),
+      action: () => nav.navigate('TopSearchScreen'),
     },
     {
       image1: require('../../Resources/assets/images/anh9.jpg'),
       image2: require('../../Resources/assets/images/anh10.jpg'),
       image3: require('../../Resources/assets/images/anh11.jpg'),
       text: 'Dưỡng da',
-      action: () => console.log('Dưỡng da'),
+      action: () => nav.navigate('TopSearchScreen'),
     },
     {
       image1: require('../../Resources/assets/images/anh12.jpg'),
       image2: require('../../Resources/assets/images/anh9.jpg'),
       image3: require('../../Resources/assets/images/anh10.jpg'),
       text: 'Pre Styling',
-      action: () => console.log('Pre Styling'),
+      action: () => nav.navigate('TopSearchScreen'),
     },
     {
       image1: require('../../Resources/assets/images/anh12.jpg'),
       image2: require('../../Resources/assets/images/anh10.jpg'),
       image3: require('../../Resources/assets/images/anh9.jpg'),
       text: 'Gôm giữ nếp',
-      action: () => console.log('Gôm giữ nếp'),
+      action: () => nav.navigate('TopSearchScreen'),
     },
     {
       image1: require('../../Resources/assets/images/anh12.jpg'),
       image2: require('../../Resources/assets/images/anh10.jpg'),
       image3: require('../../Resources/assets/images/anh9.jpg'),
       text: 'Khử mùi cơ thể',
-      action: () => console.log('Khử mùi cơ thể'),
+      action: () => nav.navigate('TopSearchScreen'),
     },
   ];
 

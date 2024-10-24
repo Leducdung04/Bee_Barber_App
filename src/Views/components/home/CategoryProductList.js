@@ -11,6 +11,7 @@ const CategoryProductList = ({categoryProductList}) => {
 
   const Item_Category_Product= ({item})=>{
        const url=replaceLocalhostWithIP(item.image)
+       console.log(item.image);
        console.log("ảnh",url)
     return <View style={{marginHorizontal:8}}>
                 <ImageBackground source={require('../../../Resources/assets/images/backgrougCategoryPt.png')} style={{width:62,height:62,margin:12,justifyContent:'center',alignItems:'center'}}>

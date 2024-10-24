@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {View, FlatList, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import ProductLayout from './ProductLayout';
+import { useNavigation } from '@react-navigation/native';
 
 const MaterialTopApp = () => {
   const tabs = [
@@ -14,6 +15,8 @@ const MaterialTopApp = () => {
 
   const [selectedTab, setSelectedTab] = useState(0);
 
+  const nav = useNavigation()
+
   const productData = {
     0: [
       {
@@ -22,6 +25,7 @@ const MaterialTopApp = () => {
         name: 'Pomade Tạo Kiểu',
         priceRange: '300.000 - 500.000 VND',
         rating: 4.5,
+        onPress : () => nav.navigate("ProductScreen")
       },
       {
         id: '2',
@@ -115,7 +119,7 @@ const MaterialTopApp = () => {
     <FlatList
       data={products}
       numColumns={2}
-      renderItem={({item}) => <ProductLayout item={item} />}
+      renderItem={({item}) => <ProductLayout item={item} onPress={item.onPress} />}
       keyExtractor={item => item.id}
       scrollEnabled={false}
       ListHeaderComponent={HeaderTabs}

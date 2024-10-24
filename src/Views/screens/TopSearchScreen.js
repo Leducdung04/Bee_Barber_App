@@ -314,7 +314,7 @@ const TopSearchScreen = () => {
               ))}
             </View>
 
-            <Divider />
+            {/* <Divider />
             <Text style={styles.modalSubText}>Thương hiệu</Text>
             <Searchbar
               placeholder="Search"
@@ -350,7 +350,7 @@ const TopSearchScreen = () => {
                   </TouchableOpacity>
                 )
               }
-            />
+            /> */}
 
             <Divider />
             <View
@@ -358,6 +358,7 @@ const TopSearchScreen = () => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginTop: 20,
+              
               }}>
               <TouchableOpacity style={styles.clearFiltersButton}>
                 <Text style={styles.clearFiltersText}>Bỏ tất cả bộ lọc</Text>
