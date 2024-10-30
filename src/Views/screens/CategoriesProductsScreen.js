@@ -3,8 +3,9 @@ import React, {useRef, useState} from 'react';
 import {Dropdown} from 'react-native-element-dropdown';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Drawer} from 'react-native-paper';
+import useShopTab from "../../ViewModels/useShopTab"
 
-import ProductLayout from '../components/ProductLayout';
+import ProductLayout from '../components/shop/ProductLayout';
 
 const CategoriesProductsScreen = () => {
   const [value, setValue] = useState(null);
@@ -12,6 +13,9 @@ const CategoriesProductsScreen = () => {
   const [active, setActive] = useState('');
   const drawerAnimation = useRef(new Animated.Value(-300)).current; // Hidden position
 
+  const {productList,categoryProductList}  = useShopTab()
+  console.log("Hellllll",productList);
+  
   const data = [
     {label: 'Mặc định', value: '1'},
     {label: 'Đánh giá cao', value: '2'},
@@ -37,37 +41,6 @@ const CategoriesProductsScreen = () => {
       useNativeDriver: true,
     }).start(() => setDrawerVisible(false));
   };
-
-  const productData = [
-    {
-      id: '1',
-      image: require('../../Resources/assets/images/anh9.jpg'),
-      name: 'Pomade Tạo Kiểu',
-      priceRange: '300.000 - 500.000 VND',
-      rating: 4.5,
-    },
-    {
-      id: '2',
-      image: require('../../Resources/assets/images/anh11.jpg'),
-      name: 'Dầu Gội Chăm Sóc Tóc',
-      priceRange: '250.000 - 400.000 VND',
-      rating: 4.0,
-    },
-    {
-      id: '3',
-      image: require('../../Resources/assets/images/anh9.jpg'),
-      name: 'Pomade Tạo Kiểu',
-      priceRange: '300.000 - 500.000 VND',
-      rating: 4.5,
-    },
-    {
-      id: '4',
-      image: require('../../Resources/assets/images/anh11.jpg'),
-      name: 'Dầu Gội Chăm Sóc Tóc',
-      priceRange: '250.000 - 400.000 VND',
-      rating: 4.0,
-    },
-  ];
 
   return (
     <View style={styles.container}>
@@ -100,7 +73,7 @@ const CategoriesProductsScreen = () => {
       </View>
 
       <FlatList
-        data={productData}
+        data={productList}
         numColumns={2}
         renderItem={({item}) => <ProductLayout item={item} />}
         keyExtractor={item => item.id}

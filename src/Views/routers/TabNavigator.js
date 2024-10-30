@@ -13,7 +13,6 @@ import ShopScreen from '../screens/ShopScreen';
 import AccountScreen from '../screens/AccountScreen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Menu, Provider } from 'react-native-paper';
-import CircleBorder from '../components/CircleBorder';
 import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
 import AppointmentHistoryScreen from '../screens/AppointmentHistoryScreen';
 import colors from '../../Resources/styles/colors';

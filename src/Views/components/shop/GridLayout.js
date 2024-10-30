@@ -6,28 +6,28 @@ export default function GridDesign() {
     <View style={styles.container}>
       <View style={styles.gridItem}>
         <Image
-          source={require('../../Resources/assets/icons/fast-delivery.png')}
+          source={require('../../../Resources/assets/icons/fast-delivery.png')}
           style={styles.icon}
         />
         <Text style ={styles.text}>Giao Hàng Siêu Tốc</Text>
       </View>
       <View style={styles.gridItem}>
         <Image
-          source={require('../../Resources/assets/icons/package.png')}
+          source={require('../../../Resources/assets/icons/package.png')}
           style={styles.icon}
         />
         <Text style ={styles.text}>Hoàn tiền 120%</Text>
       </View>
       <View style={styles.gridItem}>
         <Image
-          source={require('../../Resources/assets/icons/return-box.png')}
+          source={require('../../../Resources/assets/icons/return-box.png')}
           style={styles.icon}
         />
         <Text style ={styles.text}>Đổi trả tận nơi</Text>
       </View>
       <View style={styles.gridItem}>
         <Image
-          source={require('../../Resources/assets/icons/product-approved.png')}
+          source={require('../../../Resources/assets/icons/product-approved.png')}
           style={styles.icon}
         />
         <Text style ={styles.text}>Cam kết 7 ngày hiệu quả</Text>

@@ -8,60 +8,60 @@ import {
 import React, {useRef, useState} from 'react';
 import ThreeImagesLayout from './ThreeImagesLayout';
 import { useNavigation } from '@react-navigation/native';
-import use from '../../ViewModels/useShopTab';
+import useShopTab from '../../../ViewModels/useShopTab';
 
 const TopSearch = () => {
   const scrollTrackWidth = useRef(0);
   const [scrollBarWidth, setScrollBarWidth] = useState(0);
   const nav = useNavigation()
-  
+  const {productList,categoryList,categoryProductList}  = useShopTab()
   const searchItems = [
     {
-      image1: require('../../Resources/assets/images/anh9.jpg'),
-      image2: require('../../Resources/assets/images/anh10.jpg'),
-      image3: require('../../Resources/assets/images/anh11.jpg'),
+      image1: require('../../../Resources/assets/images/anh9.jpg'),
+      image2: require('../../../Resources/assets/images/anh10.jpg'),
+      image3: require('../../../Resources/assets/images/anh11.jpg'),
       text: 'Sữa rửa mặt',
       action: () => nav.navigate('TopSearchScreen'),
     },
     {
-      image1: require('../../Resources/assets/images/anh12.jpg'),
-      image2: require('../../Resources/assets/images/anh9.jpg'),
-      image3: require('../../Resources/assets/images/anh10.jpg'),
+      image1: require('../../../Resources/assets/images/anh12.jpg'),
+      image2: require('../../../Resources/assets/images/anh9.jpg'),
+      image3: require('../../../Resources/assets/images/anh10.jpg'),
       text: 'Sáp vuốt tóc',
       action: () => nav.navigate('TopSearchScreen'),
     },
     {
-      image1: require('../../Resources/assets/images/anh12.jpg'),
-      image2: require('../../Resources/assets/images/anh10.jpg'),
-      image3: require('../../Resources/assets/images/anh9.jpg'),
+      image1: require('../../../Resources/assets/images/anh12.jpg'),
+      image2: require('../../../Resources/assets/images/anh10.jpg'),
+      image3: require('../../../Resources/assets/images/anh9.jpg'),
       text: 'Kem chống nắng',
       action: () => nav.navigate('TopSearchScreen'),
     },
     {
-      image1: require('../../Resources/assets/images/anh9.jpg'),
-      image2: require('../../Resources/assets/images/anh10.jpg'),
-      image3: require('../../Resources/assets/images/anh11.jpg'),
+      image1: require('../../../Resources/assets/images/anh9.jpg'),
+      image2: require('../../../Resources/assets/images/anh10.jpg'),
+      image3: require('../../../Resources/assets/images/anh11.jpg'),
       text: 'Dưỡng da',
       action: () => nav.navigate('TopSearchScreen'),
     },
     {
-      image1: require('../../Resources/assets/images/anh12.jpg'),
-      image2: require('../../Resources/assets/images/anh9.jpg'),
-      image3: require('../../Resources/assets/images/anh10.jpg'),
+      image1: require('../../../Resources/assets/images/anh12.jpg'),
+      image2: require('../../../Resources/assets/images/anh9.jpg'),
+      image3: require('../../../Resources/assets/images/anh10.jpg'),
       text: 'Pre Styling',
       action: () => nav.navigate('TopSearchScreen'),
     },
     {
-      image1: require('../../Resources/assets/images/anh12.jpg'),
-      image2: require('../../Resources/assets/images/anh10.jpg'),
-      image3: require('../../Resources/assets/images/anh9.jpg'),
+      image1: require('../../../Resources/assets/images/anh12.jpg'),
+      image2: require('../../../Resources/assets/images/anh10.jpg'),
+      image3: require('../../../Resources/assets/images/anh9.jpg'),
       text: 'Gôm giữ nếp',
       action: () => nav.navigate('TopSearchScreen'),
     },
     {
-      image1: require('../../Resources/assets/images/anh12.jpg'),
-      image2: require('../../Resources/assets/images/anh10.jpg'),
-      image3: require('../../Resources/assets/images/anh9.jpg'),
+      image1: require('../../../Resources/assets/images/anh12.jpg'),
+      image2: require('../../../Resources/assets/images/anh10.jpg'),
+      image3: require('../../../Resources/assets/images/anh9.jpg'),
       text: 'Khử mùi cơ thể',
       action: () => nav.navigate('TopSearchScreen'),
     },
@@ -79,6 +79,7 @@ const TopSearch = () => {
     setScrollBarWidth(Math.min(newScrollBarWidth, scrollTrackWidth.current));
   };
  
+ console.log("Hello",categoryList);
  
   return (
     <View style={styles.container}>

@@ -3,7 +3,12 @@ import {API, API_GET_LIST_PRODUCT} from '@env';
 export const get_List_Product = async () => {
   try {
     const response = await fetch(`${API}${API_GET_LIST_PRODUCT}`);
+    console.log(`${API}${API_GET_LIST_PRODUCT}`);
+    
     const data = await response.json();
+    console.log('lấy dữ liệu Sản Phẩm thành công');
+    console.log("Hello",data);
+  
     return data;
     console.log('lấy dữ liệu thành công');
     console.log(data);

@@ -22,10 +22,10 @@ const ProductLayout = ({item, onPress}) => {
   return (
     <TouchableOpacity style={styles.touchableContainer} onPress={onPress}>
       <View style={styles.productContainer}>
-        <Image source={item.image} style={styles.productImage} />
+        <Image source={item.imageUrl} style={styles.productImage} />
         <View style={styles.productInfo}>
           <Text style={styles.productName}>{item.name}</Text>
-          <Text style={styles.productPrice}>{item.priceRange}</Text>
+          <Text style={styles.productPrice}>{item.price}</Text>
           {/* <View style={styles.rating}>{renderStars(item.rating)}</View> */}
         </View>
       </View>

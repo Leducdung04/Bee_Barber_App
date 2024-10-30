@@ -11,23 +11,23 @@ import {
   const PartnershipBranding = () => {
     const BrandImages = [
       {
-        image: require('../../Resources/assets/logo/Brands/davines.jpg'),
+        image: require('../../../Resources/assets/logo/Brands/davines.jpg'),
         action: () => console.log('Davines'),
       },
       {
-        image: require('../../Resources/assets/logo/Brands/glanzen.jpg'),
+        image: require('../../../Resources/assets/logo/Brands/glanzen.jpg'),
         action: () => console.log('Glanzen'),
       },
       {
-        image: require('../../Resources/assets/logo/Brands/reuzel.jpg'),
+        image: require('../../../Resources/assets/logo/Brands/reuzel.jpg'),
         action: () => console.log('Reuzel'),
       },
       {
-        image: require('../../Resources/assets/logo/Brands/SNPBeauty.jpg'),
+        image: require('../../../Resources/assets/logo/Brands/SNPBeauty.jpg'),
         action: () => console.log('SNPBeauty'),
       },
       {
-        image: require('../../Resources/assets/logo/Brands/theplantbase.jpg'),
+        image: require('../../../Resources/assets/logo/Brands/theplantbase.jpg'),
         action: () => console.log('The Plant Base'),
       },
     ];

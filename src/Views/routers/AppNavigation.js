@@ -5,7 +5,7 @@ import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
 import CategoriesProductsScreen from '../screens/CategoriesProductsScreen';
 import { Menu, Provider } from 'react-native-paper';
-import CircleBorder from '../components/CircleBorder';
+import CircleBorder from '../components/shop/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoriesSortingProduct from '../screens/CategoriesSortingProduct';
 import TopSearchScreen from '../screens/TopSearchScreen';
@@ -180,6 +180,74 @@ const AppNavigation = () => {
         <Stack.Screen
           name="TopSearchScreen"
           component={TopSearchScreen}
+          options={{
+            headerShown: true,
+            title: 'Chăm sóc da',
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <CircleBorder
+                  name="search-outline"
+                  size={20}
+                  background="#f7f7f7"
+                  border="#e3e3e3"
+                />
+                <CircleBorder
+                  name="cart-outline"
+                  size={20}
+                  badgeCount={2}
+                  background="#f7f7f7"
+                  border="#e3e3e3"
+                />
+                <Menu
+                  visible={visible}
+                  onDismiss={closeMenu}
+                  anchor={
+                    <CircleBorder
+                      name="dots-three-vertical"
+                      size={20}
+                      background="#f7f7f7"
+                      border="#e3e3e3"
+                      onPress={openMenu}
+                    />
+                  }
+                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  <Menu.Item
+                    onPress={() => {
+                      console.log('Trang chủ');
+                      closeMenu();
+                    }}
+                    title="Trang chủ"
+                    leadingIcon={() => (
+                      <MaterialCommunityIcons
+                        name="home-outline"
+                        size={23}
+                        color="black"
+                      />
+                    )}
+                  />
+                  <Menu.Item
+                    onPress={() => {
+                      console.log('Đơn hàng');
+                      closeMenu();
+                    }}
+                    title="Đơn hàng"
+                    leadingIcon={() => (
+                      <MaterialCommunityIcons
+                        name="clipboard-check-outline"
+                        size={23}
+                        color="black"
+                      />
+                    )}
+                  />
+                </Menu>
+              </View>
+            ),
+          }}
+          headerBackButtonMenuEnabled
+        />
+        <Stack.Screen
+          name="ProductScreen"
+          component={ProductScreen}
           options={{
             headerShown: true,
             title: 'Chăm sóc da',

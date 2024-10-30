@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import ProductLayout from '../components/ProductLayout';
+import ProductLayout from '../components/shop/ProductLayout';
 import {Dropdown} from 'react-native-element-dropdown';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';

@@ -7,12 +7,12 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import CustomButton from '../components/CustomButton';
-import GridDesign from '../components/GridLayout';
-import CategoriesGridLayout from '../components/CategoriesGridLayout';
-import TopSearch from '../components/TopSearch';
-import PartnershipBranding from '../components/PartnershipBranding';
-import MaterialTopTab from '../components/ProductRecomendations';
+import CustomButton from '../components/shop/CustomButton';
+import GridDesign from '../components/shop/GridLayout';
+import CategoriesGridLayout from '../components/shop/CategoriesGridLayout';
+import TopSearch from '../components/shop/TopSearch';
+import PartnershipBranding from '../components/shop/PartnershipBranding';
+import MaterialTopTab from '../components/shop/ProductRecomendations';
 
 const ShopScreen = () => {
   return (

@@ -4,6 +4,7 @@ export const get_List_Category_Product = async () => {
   try {
     const response = await fetch(`${API}${API_GET_LIST_CATEGORY_PRODUCT}`);
     const data = await response.json();
+    console.log('lấy dữ liệu Thể Loại Sản Phẩm thành công');
     return data;
     console.log('lấy dữ liệu thành công');
     console.log(data);

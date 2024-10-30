@@ -6,42 +6,42 @@ export default function CategoriesGridLayout() {
   const nav = useNavigation()
   const imageList = [
     {
-      image: require('../../Resources/assets/images/anh3.png'),
+      image: require('../../../Resources/assets/images/anh3.png'),
       name: 'Sản Phẩm Mới',
       action: () => nav.navigate("CategoriesProductsScreen")
     },
     {
-      image: require('../../Resources/assets/images/anh5.png'),
+      image: require('../../../Resources/assets/images/anh5.png'),
       name : "Săn sale deal hời",
       action: () => console.log("Săn sale deal hời")
     },
     {
-      image: require('../../Resources/assets/images/anh1.png'),
+      image: require('../../../Resources/assets/images/anh1.png'),
       name: 'Sản phẩm độc quyền',
       action: () => console.log('Sản phẩm độc quyền')
     },
     {
-      image: require('../../Resources/assets/images/anh2.png'),
+      image: require('../../../Resources/assets/images/anh2.png'),
       name: 'Nhanh hết mụn',
       action: () => console.log('Nhanh hết mụn')
     },
     {
-      image: require('../../Resources/assets/images/anh6.png'),
+      image: require('../../../Resources/assets/images/anh6.png'),
       name: 'Skin care',
       action: () => console.log('Skin care')
     },
     {
-      image: require('../../Resources/assets/images/anh8.png'),
+      image: require('../../../Resources/assets/images/anh8.png'),
       name: 'Muốn tóc đẹp',
       action: () => console.log('Muốn tóc đẹp')
     },
     {
-      image: require('../../Resources/assets/images/anh7.png'),
+      image: require('../../../Resources/assets/images/anh7.png'),
       name: 'Thơm tho sạch sẽ',
       action: () => console.log('Thơm tho sạch sẽ')
     },
     {
-      image: require('../../Resources/assets/images/anh4.png'),
+      image: require('../../../Resources/assets/images/anh4.png'),
       name: 'Râu care',
       action: () => console.log('Râu care')
     },

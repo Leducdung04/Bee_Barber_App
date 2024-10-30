@@ -32,7 +32,7 @@ const ProductScreen = () => {
       </ScrollView>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.cartButton}>
-          <MaterialIcons name="add-shopping-cart" size={23} color="white" />
+          <MaterialIcons name="add-shopping-cart" size={23} color="black" />
           <Text style={styles.buttonText}>THÊM GIỎ HÀNG</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buyButton}>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4CAF50',
+    backgroundColor: 'white',
     flex: 1,
 
     paddingVertical: 15,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: 'white',
+    color: 'black',
     marginLeft: 8,
   },
   buyButtonText: {
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   subText: {
-    fontSize: 12,
+    fontSize: 14,
     color: 'white',
     marginTop: 4,
   },
