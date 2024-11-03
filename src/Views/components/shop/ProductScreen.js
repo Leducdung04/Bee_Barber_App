@@ -15,7 +15,7 @@ const ProductScreen = () => {
     price: 488000,
     description:
       'High-quality wireless headphones with noise cancellation and 40 hours of battery life. Perfect for music lovers and frequent travelers.',
-    imageUrl: require('../../Resources/assets/images/anh11.jpg'),
+    imageUrl: require('../../../Resources/assets/images/anh11.jpg'),
   };
 
   return (

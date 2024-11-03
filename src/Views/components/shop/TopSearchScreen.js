@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import ProductLayout from '../components/shop/ProductLayout';
+import ProductLayout from './ProductLayout';
 import {Dropdown} from 'react-native-element-dropdown';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -65,56 +65,56 @@ const TopSearchScreen = () => {
     0: [
       {
         id: '1',
-        image: require('../../Resources/assets/images/anh9.jpg'),
+        image: require('../../../Resources/assets/images/anh9.jpg'),
         name: 'Pomade Tạo Kiểu',
         priceRange: '300.000 - 500.000 VND',
         rating: 4.5,
       },
       {
         id: '2',
-        image: require('../../Resources/assets/images/anh11.jpg'),
+        image: require('../../../Resources/assets/images/anh11.jpg'),
         name: 'Dầu Gội Chăm Sóc Tóc',
         priceRange: '250.000 - 400.000 VND',
         rating: 4.0,
       },
       {
         id: '3',
-        image: require('../../Resources/assets/images/anh9.jpg'),
+        image: require('../../../Resources/assets/images/anh9.jpg'),
         name: 'Pomade Tạo Kiểu',
         priceRange: '300.000 - 500.000 VND',
         rating: 4.5,
       },
       {
         id: '4',
-        image: require('../../Resources/assets/images/anh11.jpg'),
+        image: require('../../../Resources/assets/images/anh11.jpg'),
         name: 'Dầu Gội Chăm Sóc Tóc',
         priceRange: '250.000 - 400.000 VND',
         rating: 4.0,
       },
       {
         id: '5',
-        image: require('../../Resources/assets/images/anh9.jpg'),
+        image: require('../../../Resources/assets/images/anh9.jpg'),
         name: 'Pomade Tạo Kiểu',
         priceRange: '300.000 - 500.000 VND',
         rating: 4.5,
       },
       {
         id: '6',
-        image: require('../../Resources/assets/images/anh11.jpg'),
+        image: require('../../../Resources/assets/images/anh11.jpg'),
         name: 'Dầu Gội Chăm Sóc Tóc',
         priceRange: '250.000 - 400.000 VND',
         rating: 4.0,
       },
       {
         id: '7',
-        image: require('../../Resources/assets/images/anh9.jpg'),
+        image: require('../../../Resources/assets/images/anh9.jpg'),
         name: 'Pomade Tạo Kiểu',
         priceRange: '300.000 - 500.000 VND',
         rating: 4.5,
       },
       {
         id: '8',
-        image: require('../../Resources/assets/images/anh11.jpg'),
+        image: require('../../../Resources/assets/images/anh11.jpg'),
         name: 'Dầu Gội Chăm Sóc Tóc',
         priceRange: '250.000 - 400.000 VND',
         rating: 4.0,
@@ -123,14 +123,14 @@ const TopSearchScreen = () => {
     1: [
       {
         id: '3',
-        image: require('../../Resources/assets/images/anh10.jpg'),
+        image: require('../../../Resources/assets/images/anh10.jpg'),
         name: 'Sữa Rửa Mặt',
         priceRange: '200.000 - 350.000 VND',
         rating: 4.7,
       },
       {
         id: '4',
-        image: require('../../Resources/assets/images/anh12.jpg'),
+        image: require('../../../Resources/assets/images/anh12.jpg'),
         name: 'Combo Chăm Sóc Da',
         priceRange: '500.000 - 800.000 VND',
         rating: 4.9,
@@ -139,14 +139,14 @@ const TopSearchScreen = () => {
     2: [
       {
         id: '3',
-        image: require('../../Resources/assets/images/anh10.jpg'),
+        image: require('../../../Resources/assets/images/anh10.jpg'),
         name: 'Sữa Rửa Mặt',
         priceRange: '200.000 - 350.000 VND',
         rating: 4.7,
       },
       {
         id: '4',
-        image: require('../../Resources/assets/images/anh12.jpg'),
+        image: require('../../../Resources/assets/images/anh12.jpg'),
         name: 'Combo Chăm Sóc Da',
         priceRange: '500.000 - 800.000 VND',
         rating: 4.9,

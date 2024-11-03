@@ -1,9 +1,11 @@
 import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhostWithIP'
 
 const ProductLayout = ({item, onPress}) => {
-
+  console.log(item.image);
+  
   const renderStars = rating => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -22,7 +24,7 @@ const ProductLayout = ({item, onPress}) => {
   return (
     <TouchableOpacity style={styles.touchableContainer} onPress={onPress}>
       <View style={styles.productContainer}>
-        <Image source={item.imageUrl} style={styles.productImage} />
+        <Image source={replaceLocalhostWithIP(item.image)} style={styles.productImage} />
         <View style={styles.productInfo}>
           <Text style={styles.productName}>{item.name}</Text>
           <Text style={styles.productPrice}>{item.price}</Text>

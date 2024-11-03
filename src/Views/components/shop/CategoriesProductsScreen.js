@@ -3,9 +3,9 @@ import React, {useRef, useState} from 'react';
 import {Dropdown} from 'react-native-element-dropdown';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Drawer} from 'react-native-paper';
-import useShopTab from "../../ViewModels/useShopTab"
+import useShopTab from "../../../ViewModels/useShopTab"
 
-import ProductLayout from '../components/shop/ProductLayout';
+import ProductLayout from './ProductLayout';
 
 const CategoriesProductsScreen = () => {
   const [value, setValue] = useState(null);

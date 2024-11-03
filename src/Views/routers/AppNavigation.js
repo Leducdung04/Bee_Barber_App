@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
-import CategoriesProductsScreen from '../screens/CategoriesProductsScreen';
+import CategoriesProductsScreen from '../components/shop/CategoriesProductsScreen';
 import { Menu, Provider } from 'react-native-paper';
 import CircleBorder from '../components/shop/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import CategoriesSortingProduct from '../screens/CategoriesSortingProduct';
-import TopSearchScreen from '../screens/TopSearchScreen';
+import CategoriesSortingProduct from '../components/shop/CategoriesSortingProduct';
+import TopSearchScreen from '../components/shop/TopSearchScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
 import colors from '../../Resources/styles/colors';
@@ -17,7 +17,7 @@ import ServicesScreen from '../screens/ServicesScreen';
 
 import UserProfile from '../screens/UserProfile'
 import Cart from '../screens/Cart';
-import ProductScreen from '../screens/ProductScreen';
+import ProductScreen from '../components/shop/ProductScreen';
 
 const Stack = createNativeStackNavigator();
 
