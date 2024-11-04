@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { ActivityIndicator } from 'react-native-paper'
 
 
-const CategoryProductList = ({categoryProductList}) => {
+const CategoryProductList = ({onScrollStart, onScrollEnd,categoryProductList}) => {
 
   const Item_Category_Product= ({item})=>{
        const url=replaceLocalhostWithIP(item.image)
@@ -28,6 +28,8 @@ const CategoryProductList = ({categoryProductList}) => {
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
+        // onScrollBeginDrag={onScrollStart}
+        // onMomentumScrollEnd={onScrollEnd}
         data={categoryProductList}
         keyExtractor={(item) => item._id.toString()}
         renderItem={({item})=> <Item_Category_Product item={item}/>}

@@ -244,7 +244,8 @@ const AppNavigation = () => {
           headerBackButtonMenuEnabled
         />
       <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-        options={{ title: 'Đặt lịch giữ chỗ ' }}/>
+        options={{ title: 'Đặt lịch giữ chỗ ', presentation:'modal', headerShown: false }}/>
+
       <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
          options={{ title: 'Dịch vụ theo danh mục'}}
       />

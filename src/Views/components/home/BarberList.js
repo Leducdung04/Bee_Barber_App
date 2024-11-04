@@ -5,7 +5,7 @@ import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhost
 import globalStyles from '../../../Resources/styles/globalStyles'
 import colors from '../../../Resources/styles/colors'
 
-const BarberList = ({barberList}) => {
+const BarberList = ({onScrollStart, onScrollEnd,barberList}) => {
 
     const Item_Barber=({item})=>{
        console.log('item Barber',item)

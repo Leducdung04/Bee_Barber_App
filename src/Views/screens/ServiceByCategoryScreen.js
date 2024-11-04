@@ -41,7 +41,6 @@ const ServiceByCategoryScreen = ({ route, navigation }) => {
         return <View style={styles.footer}><ButtonComponents onPress={()=>{navigation.navigate('AppointmentScreen')}}>Đặt lịch</ButtonComponents></View>
       }}
         />
-        
     </View>
   )
 }
