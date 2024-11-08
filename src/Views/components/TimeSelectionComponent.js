@@ -2,7 +2,13 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect }) => {
+const TimeSelectionComponent = ({ availableTimes = [], selectedTime, onTimeSelect }) => {
+  // Kiểm tra xem availableTimes có phải là mảng không trước khi sử dụng map()
+  if (!Array.isArray(availableTimes)) {
+    console.warn("availableTimes không phải là mảng hợp lệ", availableTimes);
+    return null; // Hoặc trả về một thông báo khác nếu cần
+  }
+
   return (
     <View style={styles.timeGrid}>
       {availableTimes.map((time) => (
@@ -17,6 +23,7 @@ const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect }) 
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   timeGrid: {
