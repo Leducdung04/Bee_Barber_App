@@ -12,11 +12,10 @@ export const useBookingViewModel = () => {
 
   const [selectedService, setselectedService] = useState(false)
 
-
   const onSelectedItemsChange = (itemId) => {
     const newSelectedItems = selectedItems.includes(itemId)
       ? selectedItems.filter(id => id !== itemId)
-      : [...selectedItems, itemId];
+      : [...selectedItems,itemId];
     setSelectedItems(newSelectedItems);
   };
 

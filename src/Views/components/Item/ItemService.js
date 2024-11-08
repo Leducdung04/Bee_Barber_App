@@ -14,15 +14,16 @@ const ItemService = ({item}) => {
   return (
     <TouchableOpacity >
         <View style={styles.container}>
-            <Text style={styles.textName}>{item.name}</Text>
-            <Text numberOfLines={3} style={styles.textDescription}>{item.description}</Text>
-            <Image source={{uri:url}} style={{width:(widthScreen/2)-40,height:120,borderRadius:8}}/>
-            <View style={{position:'absolute',flexDirection:'row',marginTop:12,bottom:20,start:12}}>
-                <View style={{borderWidth:2,borderColor:colors.primary100,paddingHorizontal:16,paddingVertical:2,borderRadius:8}}>
-                    <Text style={{fontSize:16,color:colors.primary}}>{item.duration} Phút</Text>
+                <Text style={styles.textName}>{item.name}</Text>
+                <Text numberOfLines={3} style={styles.textDescription}>{item.description}</Text>
+                <Image source={{uri:url}} style={{width:(widthScreen/2)-40,height:120,borderRadius:8}}/>
+  
+            <View style={{flexDirection:'row',marginTop:24,bottom:10,justifyContent:'center'}}>
+                <View style={{flex:1,borderWidth:2,borderColor:colors.primary100,paddingVertical:2,borderRadius:8}}>
+                    <Text style={{fontSize:16,color:colors.primary,textAlign:'center'}}>{item.duration} Phút</Text>
                 </View>
-                <View style={{backgroundColor:colors.primary,justifyContent:'center',marginHorizontal:12,borderRadius:8,padding:4}}> 
-                     <Text style={{color:'white',fontWeight:'bold'}}>Chỉ từ {item.price}k</Text>
+                <View style={{flex:1,backgroundColor:colors.primary,justifyContent:'center',marginHorizontal:12,borderRadius:8}}> 
+                     <Text style={{color:'white',fontWeight:'bold',textAlign:'center'}}>Chỉ từ {item.price}k</Text>
                 </View>
             </View>
         </View>
@@ -34,8 +35,9 @@ export default ItemService
 
 const styles = StyleSheet.create({
     container:{
+        flex:1,
         width: (widthScreen/2)-24,
-        height:heightScreen/3,
+        height:310,
         marginVertical:8,
         marginHorizontal:6,
         borderRadius:12,

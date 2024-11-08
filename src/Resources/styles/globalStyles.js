@@ -10,7 +10,7 @@ const globalStyles = StyleSheet.create({
   titleStyle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'black',  // Màu trắng
+    color: 'black',  
     textAlign: 'center',
   },
   textTitle:{
@@ -19,11 +19,11 @@ const globalStyles = StyleSheet.create({
     color:colors.primary
   },
   containerShadow:{
-    elevation: 5, // Android
-    shadowColor: 'gray', // iOS
-    shadowOffset: { width: 0, height: 2 }, // iOS
-    shadowOpacity: 0.25, // iOS
-    shadowRadius: 3.84, // iOS
+    elevation: 5, 
+    shadowColor: 'gray', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84,
   }
 
   

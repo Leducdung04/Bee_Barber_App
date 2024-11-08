@@ -19,14 +19,14 @@ const ListBanner = ({listBanner}) => {
     currentImageIndex,
   } = usebanner({listBanner})
 
-  const renderItem = ({ item }) => {
-    let url = replaceLocalhostWithIP(item.image)
-    console.log('uri',url)
-     return <Image source={{uri: url}} style={{flex:1,width:widthScreen,height:heightScreen/6}} />
-  };
+  // const renderItem = ({ item }) => {
+  //   let url = replaceLocalhostWithIP(item?.image)
+  //   console.log('uri',url)
+  //    return <Image source={{uri: url}} style={{flex:1,width:widthScreen,height:heightScreen/6}} />
+  // };
 
 
-  if (listBanner.length === 0) {
+  if (!listBanner || listBanner.length === 0) {
     return (
         <LinearGradient
           colors={['#D3D3D3', '#F4F4F4', '#E0E0E0']} // Các màu sáng/tối để tạo hiệu ứng shimmer
@@ -53,7 +53,7 @@ const ListBanner = ({listBanner}) => {
       scrollEventThrottle={16}
     >
       {listBanner.map((image, index) => {
-        const url = replaceLocalhostWithIP(image.image);
+        const url = replaceLocalhostWithIP(image?.image);
         return (
           <View key={index}>
             <ImageBackground

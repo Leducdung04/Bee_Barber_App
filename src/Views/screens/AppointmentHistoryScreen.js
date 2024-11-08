@@ -14,20 +14,22 @@ const AppointmentHistoryScreen = () => {
     {
       id: '1',
       Phone:"*678",
-      gio:"5 Giờ 20 phút",
-      time: 'Thứ 2,Ngày 18.11,12h00',
+      appointment_time:"5 Giờ 20 phút",
+      appointment_date: 'Thứ 2,Ngày 18.11,12h00',
       stylist: 'Nguyễn Văn Hải',
       address: '123 Đường ABC, Quận 1, TP.HCM',
-     
+      status:" Lịch Đặt Xắp Tới",
+      price:500000,
     },
     {
       id: '3',
       Phone:"*789",
-      gio:"6 Giờ 40 phút",
-      date: 'Thứ 4,Ngày 19.11,14h00',
+      appointment_time:"6 Giờ 40 phút",
+      appointment_date: 'Thứ 4,Ngày 19.11,14h00',
       stylist: 'Trần Văn Hào',
       address: '456 Đường XYZ, Quận 2, TP.HCM',
-
+      status:" Đã Cắt Xong",
+      price:500000
     }
   ];
 
@@ -37,7 +39,7 @@ const AppointmentHistoryScreen = () => {
     <View style={{flex: 1, marginHorizontal: 20}}>
     <View style={{marginTop: '10%', marginBottom: '2%'}}>
       <Text style={{color: '#003399', fontSize: 15, fontWeight: '600'}}>
-        LỊCH ĐẶT SẮP TỚI
+      {item.status}
       </Text>
     </View>
     <View
@@ -48,10 +50,15 @@ const AppointmentHistoryScreen = () => {
         borderRadius: 10,
         borderColor: '#E0E0E0',
       }}>
-      <Text style={{color: 'black', fontSize: 14, fontWeight: '800'}}>
-        Chỉ Còn <Text style={{color: 'red'}}>20 Giờ 20 phút</Text> là đến lịch
-        hẹn SDT *4758
-      </Text>
+      {item.status === " Lịch Đặt Xắp Tới" ? (
+        <Text style={{ color: 'black', fontSize: 14, fontWeight: '800' }}>
+          Chỉ Còn <Text style={{ color: 'red' }}>{item.appointment_time}</Text> là đến lịch hẹn SDT * {item.Phone}
+        </Text>
+      ) : (
+        <Text style={{ color: 'black', fontSize: 14, fontWeight: '800' }}>
+          Đã Thanh Toán Với Giá: <Text style={{ color: 'red' }}>{item.price}đ</Text>
+        </Text>
+      )}
       <View style={{flexDirection: 'row'}}>
         <Image
           style={{width: 30, height: 30, marginTop: 10}}
@@ -64,7 +71,7 @@ const AppointmentHistoryScreen = () => {
             marginTop: 12,
             marginLeft: 5,
           }}>
-          Thứ 4, Ngày 16.10, 11h00
+          {item.appointment_date}
         </Text>
       </View>
       <View style={{flexDirection: 'row'}}>
@@ -79,7 +86,7 @@ const AppointmentHistoryScreen = () => {
             marginTop: 12,
             marginLeft: 5,
           }}>
-          10 Trần Phú ,P. Hà Đông, Hà Nội
+          {item.address}
         </Text>
       </View>
       <View style={{flexDirection: 'row'}}>
@@ -94,7 +101,7 @@ const AppointmentHistoryScreen = () => {
             marginTop: 12,
             marginLeft: 5,
           }}>
-          Salon sẽ chọn stylist phù hợp
+          {item.stylist}
         </Text>
       </View>
       <View
@@ -171,139 +178,27 @@ const AppointmentHistoryScreen = () => {
   };
  
   return (
-    <View style={{flex: 1, marginHorizontal: 20}}>
-    <View style={{marginTop: '10%', marginBottom: '2%'}}>
-      <Text style={{color: '#003399', fontSize: 15, fontWeight: '600'}}>
-        LỊCH ĐẶT SẮP TỚI
-      </Text>
-    </View>
-    <View
-      style={{
-        padding: 20,
-        backgroundColor: 'white',
-        borderWidth: 1,
-        borderRadius: 10,
-        borderColor: '#E0E0E0',
-      }}>
-      <Text style={{color: 'black', fontSize: 14, fontWeight: '800'}}>
-        Chỉ Còn <Text style={{color: 'red'}}>20 Giờ 20 phút</Text> là đến lịch
-        hẹn SDT *4758
-      </Text>
-      <View style={{flexDirection: 'row'}}>
-        <Image
-          style={{width: 30, height: 30, marginTop: 10}}
-          source={require('../../Resources/assets/icons/calendarfill.jpg')}></Image>
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 15,
-            fontWeight: '300',
-            marginTop: 12,
-            marginLeft: 5,
-          }}>
-          Thứ 4, Ngày 16.10, 11h00
-        </Text>
-      </View>
-      <View style={{flexDirection: 'row'}}>
-        <Image
-          style={{width: 30, height: 30, marginTop: 10}}
-          source={require('../../Resources/assets/icons/vitri.png')}></Image>
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 15,
-            fontWeight: '300',
-            marginTop: 12,
-            marginLeft: 5,
-          }}>
-          10 Trần Phú ,P. Hà Đông, Hà Nội
-        </Text>
-      </View>
-      <View style={{flexDirection: 'row'}}>
-        <Image
-          style={{width: 30, height: 30, marginTop: 10}}
-          source={require('../../Resources/assets/icons/accountFill.png')}></Image>
-        <Text
-          style={{
-            color: 'black',
-            fontSize: 15,
-            fontWeight: '300',
-            marginTop: 12,
-            marginLeft: 5,
-          }}>
-          Salon sẽ chọn stylist phù hợp
-        </Text>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop:20
-        }}>
-        <TouchableOpacity
-          style={{
-            width: 150,
-            height:40,
-            backgroundColor: '#DDDDDD',
-            borderRadius: 5,
-            marginRight:10
-          }}>
-          <Text
-            style={{
-              color: 'black',
-              fontSize: 15,
-              fontWeight: '400',
-              textAlign: 'center',
-              marginTop: 10,
-            }}>
-            Đổi/Hủy Lịch
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-        style={{
-          width: 150,
-          height: 40,
-          backgroundColor: '#3333FF',
-          borderRadius: 5,
-        }}>
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 15,
-            fontWeight: '400',
-            textAlign: 'center',
-            marginTop: 10,
-          }}>
-         Chỉ đường tới Salon
-        </Text>
-      </TouchableOpacity>
-      </View>
-    </View>
-    <Text style={{color: '#003399', fontSize: 15, fontWeight: '600',marginTop:10,marginBottom:10}}>
-    HÀNH TRÌNH TỎA SÁNG    
-    </Text>
-    <View
-    style={{
+ <FlatList
+data={haircutHistory}
+renderItem={renderItem}
+keyExtractor={(item) => item.id}
+contentContainerStyle={styles.listContainer}
+ListFooterComponent={()=>
+  <View
+  style={{
     padding: 20,
     backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 10,
     borderColor: '#E0E0E0',
-    }}>
-    <StarRating></StarRating>
-    
-    </View>
-  </View>
+  }}>
+<StarRating></StarRating>
+</View>  
+} // Đặt StarRating ở cuối danh sách
+/>
   );
 };
-// <FlatList
-// data={haircutHistory}
-// renderItem={renderItem}
-// keyExtractor={(item) => item.id}
-// contentContainerStyle={styles.listContainer}
-// ListFooterComponent={StarRating} // Đặt StarRating ở cuối danh sách
-// />
+
 
 export default AppointmentHistoryScreen;
 

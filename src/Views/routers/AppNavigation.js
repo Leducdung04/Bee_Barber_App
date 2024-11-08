@@ -18,6 +18,7 @@ import ServicesScreen from '../screens/ServicesScreen';
 import UserProfile from '../screens/UserProfile'
 import Cart from '../screens/Cart';
 
+
 const Stack = createNativeStackNavigator();
 
 const AppNavigation = () => {
@@ -243,13 +244,13 @@ const AppNavigation = () => {
           }}
           headerBackButtonMenuEnabled
         />
-        <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-          options={{ headerShown: false }} 
 
-          />
-        <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-          options={{ title: 'Dịch vụ theo danh mục' }}
-        />
+      <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
+        options={{ title: 'Đặt lịch giữ chỗ ', presentation:'modal', headerShown: false }}/>
+
+      <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
+         options={{ title: 'Dịch vụ theo danh mục'}}
+      />
         <Stack.Screen name='ServicesScreen' component={ServicesScreen}
           options={{ title: 'Chọn dịch vụ', headerShown: false }}
         />

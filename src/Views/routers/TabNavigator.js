@@ -20,6 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import globalStyles from '../../Resources/styles/globalStyles';
 import { useNavigation } from '@react-navigation/native';
 import UserProfile from '../screens/UserProfile';
+import TestZaloPay from '../screens/TestZaloPay';
 
 const TabNavigator = () => {
   const _renderIcon = (routeName, selectedTab) => {
@@ -161,7 +162,7 @@ const TabNavigator = () => {
         />
         <CurvedBottomBar.Screen
           name="title3"
-          component={AppointmentHistoryScreen}
+          component={TestZaloPay}
           position="RIGHT"
           options={{
             title:'',
@@ -176,7 +177,7 @@ const TabNavigator = () => {
         />
         <CurvedBottomBar.Screen
           name="title4"
-          component={UserProfile}
+          component={AccountScreen}
           position="RIGHT"
         />
       </CurvedBottomBar.Navigator>
