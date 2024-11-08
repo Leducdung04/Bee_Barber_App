@@ -2,7 +2,6 @@ export function getNext7DaysWithWeekdays() {
     const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
     const result = [];
     const currentDate = new Date();
-
     for (let i = 0; i < 7; i++) {
         const futureDate = new Date();
         futureDate.setDate(currentDate.getDate() + i);
@@ -12,6 +11,5 @@ export function getNext7DaysWithWeekdays() {
             dayOfWeek: dayOfWeek,
         });
     }
-
     return result;
 }
