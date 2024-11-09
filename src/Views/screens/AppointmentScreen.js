@@ -8,7 +8,6 @@ import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWit
 import { getNext7DaysWithWeekdays } from '../../Services/utils/getNext7DaysWithWeekdays';
 import TimeSelectionComponent from '../components/TimeSelectionComponent';
 import { useBookingViewModel } from '../../ViewModels/AppointmentModel';
-import ButtonComponents from '../components/ui/Button';
 
 const AppointmentScreen = ({navigation}) => {
   const {
