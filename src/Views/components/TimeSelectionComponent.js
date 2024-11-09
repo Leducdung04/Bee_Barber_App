@@ -48,11 +48,18 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, FlatList } from 'react-native';
 import colors from '../../Resources/styles/colors';
 
-const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect }) => {
-  // Split the time slots into rows of 3 items each
-  const timesInRows = [];
-  for (let i = 0; i < availableTimes.length; i += 3) {
-    timesInRows.push(availableTimes.slice(i, i + 3));
+const TimeSelectionComponent = ({ availableTimes = [], selectedTime, onTimeSelect }) => {
+  // Kiểm tra xem availableTimes có phải là mảng không trước khi sử dụng map()
+  if (!Array.isArray(availableTimes)) {
+    console.warn("availableTimes không phải là mảng hợp lệ", availableTimes);
+    return null; // Hoặc trả về một thông báo khác nếu cần
+    
+// const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect }) => {
+//   // Split the time slots into rows of 3 items each
+//   const timesInRows = [];
+//   for (let i = 0; i < availableTimes.length; i += 3) {
+//     timesInRows.push(availableTimes.slice(i, i + 3));
+
   }
 
   return (
@@ -79,6 +86,7 @@ const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect }) 
     />
   );
 };
+
 
 const styles = StyleSheet.create({
   timeGrid: {
