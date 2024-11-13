@@ -1787,6 +1787,13 @@
     firebase "10.12.2"
     superstruct "^0.6.2"
 
+"@react-native-firebase/auth@^20.5.0":
+  version "20.5.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-20.5.0.tgz"
+  integrity sha512-sKiifeVqsKWVAZXfYQJ6JjV8C+kuKJ0Jo82Cfj1L667l0OcwOchX9jTOP9dyt9NUEHOEIJMEzexWdFzL7nxT3g==
+  dependencies:
+    plist "^3.1.0"
+
 "@react-native-firebase/messaging@^20.5.0":
   version "20.5.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-20.5.0.tgz"
@@ -2525,8 +2532,10 @@ base64-js@^1.3.1, base64-js@^1.5.1:
   version "0.0.1"
   resolved "file:"
   dependencies:
-    "@react-native-async-storage/async-storage" "^1.24.0"
+    "@react-native-async-storage/async-storage" "^1.17.10"
+    "@react-native-community/checkbox" "^0.5.17"
     "@react-native-firebase/app" "^20.5.0"
+    "@react-native-firebase/auth" "^20.5.0"
     "@react-native-firebase/messaging" "^20.5.0"
     "@react-native-vector-icons/fontawesome5" "^5.15.4-alpha.28"
     "@react-navigation/bottom-tabs" "^6.6.1"
