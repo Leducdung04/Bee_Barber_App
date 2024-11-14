@@ -189,7 +189,7 @@ const TabNavigator = () => {
       />
         <CurvedBottomBar.Screen
           name="title3"
-          component={TestZaloPay}
+          component={AppointmentHistoryScreen}
           position="RIGHT"
           options={{
             title:'',

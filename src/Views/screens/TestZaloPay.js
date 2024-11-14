@@ -2,19 +2,27 @@ import { Alert, Button, Linking, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
 const TestZaloPay = () => {
-    const orderUrl = 'https://qcgateway.zalopay.vn/openinapp?order=eyJ6cHRyYW5zdG9rZW4iOiJBQ214OEI1Tnh5UHROby0tZHhINWxCQXciLCJhcHBpZCI6MjU1M30=';
+    const orderUrl = 'https://qcgateway.zalopay.vn/openinapp?order=eyJ6cHRyYW5zdG9rZW4iOiJBQ0g3UXVjeUNyQkd1UFdkRFA1bHRXUWciLCJhcHBpZCI6MjU1M30=';
 
     const openPaymentUrl = async () => {
-      // Kiểm tra xem URL có thể mở được không
-     // await Linking.openURL(orderUrl);
-      const supported = await Linking.canOpenURL(orderUrl);
-  
-      if (supported) {
-        // Mở URL
+      try {
+        const supported = await Linking.canOpenURL(orderUrl);
+      console.log('supported', supported)
         await Linking.openURL(orderUrl);
-      } else {
-        Alert.alert(`Không thể mở URL: ${orderUrl}`);
+      } catch (error) {
+        Alert.alert('KHông thể mở')
       }
+      // Kiểm tra xem URL có thể mở được không
+     
+      console.log('openPaymentUrl', hh)
+      // const supported = await Linking.canOpenURL(orderUrl);
+      // console.log('supported', supported)
+      // if (supported) {
+      //   // Mở URL
+      //   await Linking.openURL(orderUrl);
+      // } else {
+      //   Alert.alert(`Không thể mở URL: ${orderUrl}`);
+      // }
     };
   
     return (

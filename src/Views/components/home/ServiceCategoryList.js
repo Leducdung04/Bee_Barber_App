@@ -47,6 +47,7 @@ const Item_Category = ({index, item, widthItem}) => {
             justifyContent: 'space-around',
           }}>
           <Text
+          numberOfLines={2}
             style={[
               globalStyles.textTitle,
               {textAlign: 'center', marginHorizontal: 12, fontSize: 19.5},

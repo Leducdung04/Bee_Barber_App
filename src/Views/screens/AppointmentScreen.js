@@ -1,134 +1,81 @@
-import { Alert, Dimensions, FlatList, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
+import { Alert, Dimensions, FlatList, Image, Modal, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { fileMapCacheDirectory } from '../../../metro.config'
 import colors from '../../Resources/styles/colors'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import LinearGradient from 'react-native-linear-gradient';
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
-import { getNext7DaysWithWeekdays } from '../../Services/utils/getNext7DaysWithWeekdays';
 import TimeSelectionComponent from '../components/TimeSelectionComponent';
 import { useBookingViewModel } from '../../ViewModels/AppointmentModel';
-import ButtonComponents from '../components/ui/Button';
-import { get_list_barber } from '../../Services/utils/httpbarber';
-import { get_List_Appointments } from '../../Services/utils/httpAppointmentScreen';
-
-const AppointmentScreen = ({ route, navigation, onSelect }) => {
+import { fomatsDate } from '../../Services/utils/fomatsDate';
+import SelectedServices from '../components/Appointment/SelectedServices';
+import ItemService from '../components/Item/ItemService';
+const AppointmentScreen = ({ route, navigation}) => {
+  
   const {
-    selectedItems,
-    selectedTime,
-    onSelectedItemsChange,
-    handleTimeSelect,
-    methodPay,
-    setmethodPay,
-    setselectedStylist,
-    selectedDay,
-    setselectedDay,
-    // selectedService,
+    modalCheck,
+    daylist,
+    stylists,
+    listTimes,
+    handle_Order_Appointment,
+    day_Selected,
+    setday_Selected,
+    dataChechZaloPay
   } = useBookingViewModel();
 
-  const [daylist, setdaylist] = useState(null)
-
-  const servicesFromRoute = route.params?.selectedServices || [];
-  const { selectedServices = [] } = route.params || {}; // Lấy dữ liệu từ ServicesScreen  
-
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedStylist, setSelectedStylist] = useState(null);
-  const [stylistVisible, setStylistVisible] = useState(false);
-  const [availableServices, setAvailableServices] = useState([]);
-  const [availableTimes, setAvailableTimes] = useState([]);
-  const [stylists, setStylists] = useState([]);
-  // const [selectedDayType, setSelectedDayType] = useState(getDayType(date));
-  const [isDropdownVisible, setDropdownVisible] = useState(false);
-
-  const [selectedService, setSelectedService] = useState([]); // Hoặc giá trị mặc định khác
-
-  const [selectedStylistId, setSelectedStylistId] = useState(null); // State để lưu ID stylist đã chọn
-
-  const listTimes = ["8:00", "8:20", "8:40", "9:00", "9:20", "9:40", "10:00", "10:20", "10:40",
-    "11:00", "11:20", "11:40", "12:00", "12:20", "12:40", "13:00", "13:20", "13:40", "14:00", "14:20",
-    "14:40", "15:00", "15:20", "15:40", "16:00", "16:20", "16:40", "17:00", "17:20", "17:40", "18:00", "18:20",
-    "18:40", "19:00", "19:20", "19:40", "20:00", "20:20", "20:40"]
-
-  // Gọi API khi màn hình được tải
+  const selectedServices = route.params?.selectedServices || [];
+  // dữ liệu được chọn 
+  const [barber_Selected, setbarber_Selected] = useState(null)
+  const [time_Selected, settime_Selected] = useState(null)
+  const [pay_Method, setpay_Method] = useState(null)
+  const [totalAmount, settotalAmount] = useState(0)
+  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await get_List_Appointments();
-        setAvailableServices(data.services);
-        setAvailableTimes(data.availableTimes);
-        setStylists(data.stylists);
-      } catch (error) {
-        console.error('Error fetching appointments data', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await get_list_barber(); // Gọi API để lấy danh sách barber
-        console.log("Dữ liệu nhận được:", data); // In ra dữ liệu nhận được
-        const formattedStylists = data.map(stylist => ({
-          ...stylist,
-          image: stylist.image ? replaceLocalhostWithIP(stylist.image) : null,
-        }));
-        setStylists(formattedStylists);
-      } catch (error) {
-        console.error('Error fetching barber data', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-
-  const handleSelect = (item) => {
-    const isSelected = selectedStylistId === item._id;
-    setSelectedStylistId(isSelected ? null : item._id);
-    const newSelectedStylist = isSelected ? null : item; // Cập nhật stylist đã chọn
-    onSelectedItemsChange(newSelectedStylist); // Gửi lên component cha
-    setSelectedStylist(newSelectedStylist); // Đảm bảo sử dụng setSelectedStylist thay vì setselectedStylist
-    console.log("Stylist được chọn:", newSelectedStylist);
+    const totalPrice = selectedServices.reduce((total, service) => total + service.price, 0);
+    settotalAmount(totalPrice);
+  }, [selectedServices])
+  
+  // xử lý chọn giờ 
+  const handleTimeSelect = (time) => {
+    settime_Selected(time);
   };
-
-
-  const renderStylist = ({ item }) => {
-    const isSelected = selectedStylistId === item._id; // Kiểm tra xem stylist có đang được chọn hay không
-  }
-
   useEffect(() => {
-    async function getDate() {
-      const dayWeeks = await getNext7DaysWithWeekdays()
-      setdaylist(dayWeeks)
-      setselectedDay(dayWeeks[0])
-    }
-    getDate()
-  }, [])
+    console.log('dữ liệu code zalopay',dataChechZaloPay)
+  }, [dataChechZaloPay])
+  
+  const  onHandel_Order = async() => {
+    const currentDate = new Date();
+    const currentTime = currentDate.toLocaleTimeString('en-US', { hour12: false });
+       const appointment = {
+        appointment: {
+            barber_id: barber_Selected?._id,
+            user_id: "66fe1856faa0e86597afdbae",
+            service_id: selectedServices.map(item => item._id),
+            appointment_time: currentTime,
+            appointment_date: currentDate.toISOString().split("T")[0],
+            appointment_status: "pending",
+            price: totalAmount+'000',
+            },
+      payment: {
+            user_id: "66fe1856faa0e86597afdbae",
+            pay_type: "booking",
+            pay_method: pay_Method,
+            time: currentTime,
+            date: currentDate.toISOString().split("T")[0],
+            price: totalAmount
+            }
+       }
 
-  const fomatsDate = (date) => {
-    if (!date) return '';
-    const [year, month, day] = date.split("-");
-    if (!year || !month || !day) return '';
-    const formattedDate = `${day}/${month}`;
-    return formattedDate;
+       handle_Order_Appointment(appointment)
   }
-
-  const Item_Barber = ({ item, setSelectedStylist }) => {
-    const isSelected = selectedStylistId === item._id; // Kiểm tra xem stylist có đang được chọn hay không
+  const Item_Barber = ({ item}) => {
     if (!item) {
-      return null; // Hoặc có thể hiển thị một thông báo lỗi
+      return null; 
     }
-
-    console.log('item Barber', item);
     let checkSelected = 0;
-    if (item._id === selectedStylist?._id) {
+    if (item._id === barber_Selected?._id) {
       checkSelected = 3;
     }
     const imageUrl = item.image ? replaceLocalhostWithIP(item.image) : require('../../Resources/assets/images/barberBackgroug.png');
-    return <TouchableOpacity onPress={() => { handleSelect(item) }}><View style={{ width: 100, margin: 6, alignItems: 'center' }}>
+    return <TouchableOpacity onPress={() => { setbarber_Selected(item) }}><View style={{ width: 100, margin: 6, alignItems: 'center' }}>
       <View style={{ backgroundColor: colors.primary200, borderRadius: 12, padding: checkSelected }}>
         <View style={{ backgroundColor: '#c2dcf7', borderRadius: 8 }}>
           <Image source={typeof imageUrl === 'string' ? { uri: imageUrl } : imageUrl} style={{ width: 90, height: 170, borderRadius: 12 }} />
@@ -138,6 +85,7 @@ const AppointmentScreen = ({ route, navigation, onSelect }) => {
     </View></TouchableOpacity>
 
   }
+ console.log('dịch vụ ',selectedServices)
   const checkSTatus = (check) => {
     const colorcheck = check ? colors.primary : 'gray'
     return <View style={{ alignItems: 'center', width: 26 }}>
@@ -149,22 +97,14 @@ const AppointmentScreen = ({ route, navigation, onSelect }) => {
     </View>
   }
 
-  useEffect(() => {
-    console.log('Dịch vụ đã chọn:', selectedService);
-}, [selectedService]);
-
-const handleServiceSelect = (service) => {
-  // Cập nhật selectedService ở đây
-  setSelectedService(service);
-};
-
   const checkButtom = () => {
-    if (selectedService && selectedStylist && selectedTime && selectedDay && methodPay) {
+    if (selectedServices && barber_Selected && time_Selected && day_Selected && pay_Method) {
       return colors.primary
     } else {
       return 'gray'
-    }
+    };
   }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar animated={true} backgroundColor={'white'} barStyle={'dark-content'}></StatusBar>
@@ -174,7 +114,7 @@ const handleServiceSelect = (service) => {
         overScrollMode="always"       //  hiệu ứng "kéo đàn hồi" cho Android
       >
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => { navigation.goBack() }} style={{ padding: 8, marginStart: 12 }}>
+          <TouchableOpacity onPress={() => { navigation.goBack() }} style={{ marginStart: 24 }}>
             <Image style={{ width: 26, height: 26 }}
               source={require('../../Resources/assets/icons/homeFill.png')}
             />
@@ -184,11 +124,11 @@ const handleServiceSelect = (service) => {
 
         <View style={styles.contentContainer}>
           <View style={{ flexDirection: 'row' }}>
-            {checkSTatus(selectedService.length > 0)}
+            {checkSTatus(selectedServices.length ===0 ?false:true)}
             <View style={{ flex: 1, marginStart: 12 }}>
               <Text style={styles.title}>1. Chọn dịch vụ</Text>
 
-              <View style={{ flex: 1, flexDirection: 'row', backgroundColor: colors.background, height: 45, alignItems: 'center', borderRadius: 6, marginTop: 12 }}>
+              <TouchableOpacity onPress={() => { navigation.navigate('ServicesScreen', { selectedServices }) }}><View style={{ flex: 1, flexDirection: 'row', backgroundColor: colors.background, height: 45, alignItems: 'center', borderRadius: 6, marginTop: 12 }}>
                 <View>
                   <View style={{ height: 8, width: 8, backgroundColor: 'red', borderRadius: 4, position: 'absolute', end: 4 }}></View>
                   <Image style={{ width: 24, height: 24, marginHorizontal: 10 }}
@@ -197,7 +137,7 @@ const handleServiceSelect = (service) => {
                 </View>
 
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text onPress={() => { navigation.navigate('ServicesScreen', { selectedServices }) }}>
+                  <Text>
                     {selectedServices.length > 0
                       ? `Đã chọn ${selectedServices.length} dịch vụ`
                       : "Xem tất cả dịch vụ hấp dẫn"}
@@ -205,33 +145,25 @@ const handleServiceSelect = (service) => {
                   <Text style={{ marginEnd: 24, fontSize: 18, color: 'black' }}>➪</Text>
                 </View>
 
-              </View>
+              </View></TouchableOpacity>
               {/* {selectedServices.length === 0 && (
                 // <Text style={styles.warningText}>Vui lòng chọn dịch vụ!</Text>
               )} */}
 
-              {selectedServices && selectedServices.length > 0 ? (
-                <View>
-                  {selectedServices.map((service, index) => (
-                    <Text key={index}>
-                      {service.name} - {service.price}K
-                    </Text>
-                  ))}
-                </View>
-              ) : (
-                <Text>Bạn chưa chọn dịch vụ nào</Text>
+              {selectedServices && selectedServices.length > 0 ?
+                
+               (
+                <SelectedServices list={selectedServices}/>
+                )
+               : (
+                <View style={{height:50,justifyContent:'center'}}>
+                <Text>Bạn chưa chọn dịch vụ nào</Text></View>
               )}
-
-              {/* xử lý khi có dịch vụ được chọn */}
-              <View style={{ height: 50 }}>
-
-              </View>
-
             </View>
           </View>
 
           <View style={{ flexDirection: 'row', marginTop: -4 }}>
-            {checkSTatus(selectedStylist)}
+            {checkSTatus(barber_Selected)}
             <View style={{ flex: 1, marginStart: 12 }}>
               <Text style={styles.title}>2. Chọn Stylist</Text>
               <View >
@@ -239,7 +171,7 @@ const handleServiceSelect = (service) => {
                   <Image style={{ width: 22, height: 22 }}
                     source={require('../../Resources/assets/icons/stylist.png')}
                   />
-                  <Text style={{ textAlign: 'center', marginStart: 12, color: 'black', fontWeight: 'bold' }}>{selectedStylist ? selectedStylist?.name : 'Stylist'}</Text>
+                  <Text style={{ textAlign: 'center', marginStart: 12, color: 'black', fontWeight: 'bold' }}>{barber_Selected ? barber_Selected?.name : 'Stylist'}</Text>
                 </View>
 
                 <FlatList
@@ -248,7 +180,7 @@ const handleServiceSelect = (service) => {
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
                   keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => <Item_Barber item={item} setSelectedStylist={handleSelect} />} // Truyền setSelectedStylist
+                  renderItem={({ item }) => <Item_Barber item={item}/>} // Truyền setSelectedStylist
                 />
 
               </View>
@@ -259,7 +191,7 @@ const handleServiceSelect = (service) => {
 
 
           <View style={{ flexDirection: 'row', marginTop: -4 }}>
-            {checkSTatus(selectedDay && selectedTime)}
+            {checkSTatus(day_Selected && time_Selected)}
             <View style={{ flex: 1, marginStart: 12 }}>
               <Text style={styles.title}>3. Chọn ngày & giờ</Text>
 
@@ -270,8 +202,8 @@ const handleServiceSelect = (service) => {
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   {/* <Text style={{ color: 'black' }}>{selectedDay?.date == daylist[0]?.date ? 'Hôm nay,' : ''} {selectedDay?.dayOfWeek} ({fomatsDate(selectedDay?.date)})</Text> */}
                   <Text style={{ color: 'black' }}>
-                    {selectedDay && selectedDay.date === (daylist[0]?.date || '') ? 'Hôm nay,' : ''}
-                    {selectedDay?.dayOfWeek} ({selectedDay ? fomatsDate(selectedDay.date) : ''})
+                    {day_Selected && day_Selected.date === (daylist[0]?.date || '') ? 'Hôm nay,' : ''}
+                    {day_Selected?.dayOfWeek} ({day_Selected ? fomatsDate(day_Selected.date) : ''})
                   </Text>
                   <Text style={{ marginEnd: 24, fontSize: 18, color: 'black' }}>➪</Text>
                 </View>
@@ -289,10 +221,10 @@ const handleServiceSelect = (service) => {
                   const [year, month, day] = item.date.split("-");
                   const formattedDate = `${day}/${month}`;
 
-                  const colorItem = selectedDay?.date == item.date ? colors.primary : colors.background
-                  return <TouchableOpacity onPress={() => { setselectedDay(item) }}>
+                  const colorItem = day_Selected?.date == item.date ? colors.primary : colors.background
+                  return <TouchableOpacity onPress={() => { setday_Selected(item)}}>
                     <View style={{ height: 40, width: 90, backgroundColor: colorItem, borderRadius: 6, marginRight: 12, alignItems: 'center', justifyContent: 'center' }}>
-                      <Text style={{ color: selectedDay?.date == item.date ? 'white' : 'black', fontSize: 14, fontWeight: 'bold' }}>{daylist[0].date == item.date ? 'Hôm nay' : fomatsDate(item.date)}</Text>
+                      <Text style={{ color: day_Selected?.date == item.date ? 'white' : 'black', fontSize: 14, fontWeight: 'bold' }}>{daylist[0].date == item.date ? 'Hôm nay' : fomatsDate(item.date)}</Text>
                     </View>
                   </TouchableOpacity>
                 }
@@ -306,22 +238,21 @@ const handleServiceSelect = (service) => {
               </View>
               <TimeSelectionComponent
                 availableTimes={listTimes}
-                selectedTime={selectedTime}
+                selectedTime={time_Selected}
                 onTimeSelect={handleTimeSelect}
               />
-              <View style={{ height: 80 }}>
-                <Text style={{ marginTop: 12 }}>Tổng tiền dịch vụ : 1000 $</Text>
+              <View style={{ height: 20 }}>
               </View>
             </View>
           </View>
 
           {/* phương thức thanh toán  */}
-          <View style={{ flexDirection: 'row' }}>
-            {checkSTatus(methodPay == 0 ? false : true)}
+          <View style={{ flexDirection: 'row' ,marginTop:-4}}>
+            {checkSTatus(pay_Method)}
             <View style={{ flex: 1, marginStart: 12 }}>
               <Text style={styles.title}>4. Phương thức thanh toán</Text>
-              <TouchableOpacity onPress={() => { setmethodPay(1) }}>
-                <View style={[{ borderWidth: methodPay == 1 ? 2 : 0, borderColor: colors.primary200 }, { flex: 1, flexDirection: 'row', backgroundColor: colors.background, height: 60, alignItems: 'center', borderRadius: 12, marginTop: 12 }]}>
+              <TouchableOpacity onPress={() => { setpay_Method('ZaloPay') }}>
+                <View style={[{ borderWidth: pay_Method == 'ZaloPay' ? 2 : 0, borderColor: colors.primary200 }, { flex: 1, flexDirection: 'row', backgroundColor: colors.background, height: 60, alignItems: 'center', borderRadius: 12, marginTop: 12 }]}>
                   <View>
                     <Image style={{ width: 30, height: 30, marginHorizontal: 10 }}
                       source={{ uri: 'https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png' }}
@@ -334,8 +265,8 @@ const handleServiceSelect = (service) => {
 
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { setmethodPay(2) }}>
-                <View style={[{ borderWidth: methodPay == 2 ? 2 : 0, borderColor: colors.primary200 }, { flex: 1, flexDirection: 'row', backgroundColor: colors.background, height: 60, alignItems: 'center', borderRadius: 12, marginTop: 12 }]}>
+              <TouchableOpacity onPress={() => { setpay_Method('cash') }}>
+                <View style={[{ borderWidth: pay_Method == 'cash' ? 2 : 0, borderColor: colors.primary200 }, { flex: 1, flexDirection: 'row', backgroundColor: colors.background, height: 60, alignItems: 'center', borderRadius: 12, marginTop: 12 }]}>
                   <View>
                     <Image style={{ width: 26, height: 26, marginHorizontal: 10 }}
                       source={require('../../Resources/assets/icons/storeFill.png')}
@@ -350,8 +281,8 @@ const handleServiceSelect = (service) => {
               </TouchableOpacity>
 
               {/* xử lý khi có dịch vụ được chọn */}
-              <View style={{ height: 50 }}>
-
+              <View style={{ height: 90 }}>
+                <Text style={{ marginTop:24 ,fontSize:18,fontWeight:'bold',color:colors.primary}}>Tổng tiền dịch vụ : {totalAmount} K</Text>
               </View>
 
             </View>
@@ -362,12 +293,59 @@ const handleServiceSelect = (service) => {
             <View style={{ height: 2, width: 20, backgroundColor: checkButtom() }}>
 
             </View>
-            <TouchableOpacity style={{ flex: 1 }}>
-              <View style={{ flex: 1, height: 50, backgroundColor: checkButtom(), borderRadius: 8, justifyContent: 'center' }}>
+            {selectedServices && barber_Selected && time_Selected && day_Selected && pay_Method ? 
+              <TouchableOpacity onPress={()=>{onHandel_Order()}} style={{ flex: 1 }}>
+              <View style={{ flex: 1, height: 50, backgroundColor: colors.primary, borderRadius: 8, justifyContent: 'center' }}>
                 <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
               </View>
             </TouchableOpacity>
+            :
+            <TouchableOpacity onPress={()=>{Alert.alert('Vui lòng chọn đầu đủ thông tin')}} style={{ flex: 1 }}>
+              <View style={{ flex: 1, height: 50, backgroundColor: 'gray', borderRadius: 8, justifyContent: 'center' }}>
+                <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
+              </View>
+            </TouchableOpacity>
+            }
+            
           </View>
+
+          <Modal visible={modalCheck} animationType='fade' transparent={true}>
+                 <View style={{flex:1,backgroundColor:colors.background}}>
+                       <Text style={{textAlign:'center',marginTop:32,fontSize:20,fontWeight:'bold',color:'green'}}>Bạn đang có giao dịch </Text>
+                       <View style={{backgroundColor:'white',marginHorizontal:24,borderRadius:24,marginTop:24}}>
+                         <Image source={require('../../Resources/assets/logo/Bee_Barber.png')} style={{width:120,height:22,margin:12}}/>
+                         <View style={{marginStart:12}}>
+                              <Text style={{fontWeight:'bold',color:colors.primary200}}>Đặt lịch cắt tóc</Text>
+                              <View>
+                                 <Text style={{marginVertical:4}}>Barber : {barber_Selected?.name}</Text>
+                                 <Text style={{marginVertical:4}}>Danh sách dịch vụ : {selectedServices.length}</Text>
+                                 <Text style={{marginVertical:4}}>Tổng tiền : <Text style={{color:colors.primary,fontWeight:'bold'}}>{totalAmount}.000</Text></Text>
+                                <FlatList style={{marginEnd:12,marginBottom:12}} data={selectedServices} 
+                                          horizontal={true}
+                                          keyExtractor={(item) => item.id}
+                                          showsHorizontalScrollIndicator={false}
+                                          renderItem={({item})=>{
+                                            const url = replaceLocalhostWithIP(item.images)
+                                            return (
+                                                  <View style={{width:120,backgroundColor:colors.background,margin:6,borderRadius:12,padding:4}}>
+                                                          <Text style={styles.textName}>{item.name}</Text>
+                                                          <Image source={{uri:url}} style={{width:100,height:80,borderRadius:8}}/>
+                                            
+                                                      <View style={{flexDirection:'row',marginTop:24,bottom:10,justifyContent:'space-around',alignItems:'center'}}>
+                                                              <Text style={{color:colors.primary200,textAlign:'center'}}>{item.duration}'</Text>
+                                                               <Text style={{color:colors.primary,fontWeight:'bold',textAlign:'center'}}>{item.price}k</Text>
+                                                       
+                                                      </View>
+                                                  </View>
+                                            )
+                                          }}
+                                />
+                                
+                              </View>
+                         </View>
+                       </View>
+                 </View>
+          </Modal>
         </View>
       </ScrollView>
     </SafeAreaView >
@@ -389,11 +367,11 @@ const styles = StyleSheet.create({
   },
   titleHeader: {
     color: colors.primary,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'center',
     flex: 1,
-    marginStart: -38
+    marginStart:50
+    
   },
   contentContainer: {
     paddingHorizontal: 24,
