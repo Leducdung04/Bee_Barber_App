@@ -12,12 +12,13 @@ export const get_List_Product = async () => {
   }
 };
 
-export const get_List_Product_By_Category = async(id) =>{
+export const get_List_Product_By_Category = async (id) => {
   try {
     const response = await fetch(`${API}${API_GET_LIST_PRODUCT_BY_CATEGORY}?category_id=${id}`);
     const data = await response.json();
     return data;
   } catch (error) {
-  
+    console.log('Error fetching products by category', error);
+    return [];
   }
-}
+};

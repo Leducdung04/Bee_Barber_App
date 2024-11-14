@@ -20,6 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import globalStyles from '../../Resources/styles/globalStyles';
 import { useNavigation } from '@react-navigation/native';
 import UserProfile from '../screens/UserProfile';
+import CircleBorder from '../components/shop/CircleBorder';
 
 const TabNavigator = () => {
   const _renderIcon = (routeName, selectedTab) => {
@@ -153,10 +154,38 @@ const TabNavigator = () => {
           
         />
         <CurvedBottomBar.Screen
-          name="title2"
-          component={ShopScreen}
-          position="LEFT"
-        />
+        name="title2"
+        component={ShopScreen}
+        position="LEFT"
+        options={{
+          title: "",
+          headerShown: true,
+          headerLeft: ({ tintColor }) => (
+            <Image
+              source={require('../../Resources/assets/logo/Bee_Barber.png')}
+              style={{ marginStart: 16, height: 30, width: 170 }}
+            />
+          ),
+          headerRight: () => (
+            <View style={styles.headerRight}>
+              <CircleBorder start
+                name="search-outline"
+                size={24}
+              />
+              <CircleBorder
+                name="cart-outline"
+                size={24}
+                badgeCount={2}
+              />
+              <CircleBorder
+                name="sort-variant"
+                size={24}
+                onPress={() => nav.navigate("CategoriesSortingProduct")}
+              />
+            </View>
+          ),
+        }}
+      />
         <CurvedBottomBar.Screen
           name="title3"
           component={AppointmentHistoryScreen}

@@ -8,34 +8,31 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {replaceLocalhostWithIP} from '../../../Services/utils/replaceLocalhostWithIP';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ProductScreen = () => {
-  const product = {
-    name: 'Wireless Headphones',
-    price: 488000,
-    description:
-      'High-quality wireless headphones with noise cancellation and 40 hours of battery life. Perfect for music lovers and frequent travelers.',
-    imageUrl: require('../../../Resources/assets/images/anh11.jpg'),
-  };
-
+  const route = useRoute();
+  const nav = useNavigation();
+  const product = route.params;
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollContainer}>
-        <Image source={product.imageUrl} style={styles.productImage} />
+        <Image source={{uri : replaceLocalhostWithIP(product.image)}} style={styles.productImage} />
         <View style={styles.detailsContainer}>
           <Text style={styles.productPrice}>
-            {product.price.toLocaleString()} VNĐ
+            {product.price_selling.toLocaleString()} VNĐ
           </Text>
           <Text style={styles.productName}>{product.name}</Text>
           <Text style={styles.productDescription}>{product.description}</Text>
         </View>
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.cartButton}>
+        <TouchableOpacity style={styles.cartButton} onPress={() => nav.navigate('Cart')}>
           <MaterialIcons name="add-shopping-cart" size={23} color="black" />
           <Text style={styles.buttonText}>THÊM GIỎ HÀNG</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buyButton}>
+        <TouchableOpacity style={styles.buyButton} >
           <Text style={styles.buyButtonText}>MUA HÀNG</Text>
           <Text style={styles.subText}>Không ưng đổi ngay</Text>
         </TouchableOpacity>

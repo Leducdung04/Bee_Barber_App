@@ -1,124 +1,39 @@
-import React, {useState} from 'react';
+
+import React, {useState, useEffect} from 'react';
 import {View, FlatList, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import ProductLayout from './ProductLayout';
-import { useNavigation } from '@react-navigation/native';
-import useShopTab from '../../../ViewModels/useShopTab'
-
-
+import useShopTab from '../../../ViewModels/useShopTab';
+import { get_List_Product_By_Category } from '../../../Services/utils/httpProduct';
 
 const MaterialTopApp = () => {
+  const { productList, categoryProductList } = useShopTab();
+  const [filteredProducts, setFilteredProducts] = useState(productList);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const {productList,categoryList,categoryProductList}  = useShopTab()
+  useEffect(() => {
+  
+    if (categoryProductList.length > 0 && selectedCategory === null) {
+      const defaultCategoryId = categoryProductList[0]._id;
+      setSelectedCategory(defaultCategoryId);
+    }
+  }, [categoryProductList]);
 
-  const tabs = [
-    'Sản phẩm mới',
-    'Tạo kiểu tóc',
-    'Chăm sóc tóc',
-    'Chăm sóc da',
-    'Chăm sóc cá nhân',
-    'Combo siêu tiết kiệm',
-  ];
+  useEffect(() => {
 
-  const [selectedTab, setSelectedTab] = useState(0);
+    const fetchProductsByCategory = async () => {
+      if (selectedCategory !== null) {
+        const productsByCategory = await get_List_Product_By_Category(selectedCategory);
+        setFilteredProducts(productsByCategory);
+      } else {
+        setFilteredProducts(productList); 
+      }
+    };
 
-  const nav = useNavigation()
+    fetchProductsByCategory();
+  }, [selectedCategory, productList]);
 
-  const productData = {
-    0: [
-      {
-        id: '1',
-        image: require('../../../Resources/assets/images/anh9.jpg'),
-        name: 'Pomade Tạo Kiểu',
-        priceRange: '300.000 - 500.000 VND',
-        rating: 4.5,
-        onPress : () => nav.navigate("ProductScreen",{})
-      },
-      {
-        id: '2',
-        image: require('../../../Resources/assets/images/anh11.jpg'),
-        name: 'Dầu Gội Chăm Sóc Tóc',
-        priceRange: '250.000 - 400.000 VND',
-        rating: 4.0,
-      },
-      {
-        id: '3',
-        image: require('../../../Resources/assets/images/anh9.jpg'),
-        name: 'Pomade Tạo Kiểu',
-        priceRange: '300.000 - 500.000 VND',
-        rating: 4.5,
-      },
-      {
-        id: '4',
-        image: require('../../../Resources/assets/images/anh11.jpg'),
-        name: 'Dầu Gội Chăm Sóc Tóc',
-        priceRange: '250.000 - 400.000 VND',
-        rating: 4.0,
-      },
-      {
-        id: '5',
-        image: require('../../../Resources/assets/images/anh9.jpg'),
-        name: 'Pomade Tạo Kiểu',
-        priceRange: '300.000 - 500.000 VND',
-        rating: 4.5,
-      },
-      {
-        id: '6',
-        image: require('../../../Resources/assets/images/anh11.jpg'),
-        name: 'Dầu Gội Chăm Sóc Tóc',
-        priceRange: '250.000 - 400.000 VND',
-        rating: 4.0,
-      },
-      {
-        id: '7',
-        image: require('../../../Resources/assets/images/anh9.jpg'),
-        name: 'Pomade Tạo Kiểu',
-        priceRange: '300.000 - 500.000 VND',
-        rating: 4.5,
-      },
-      {
-        id: '8',
-        image: require('../../../Resources/assets/images/anh11.jpg'),
-        name: 'Dầu Gội Chăm Sóc Tóc',
-        priceRange: '250.000 - 400.000 VND',
-        rating: 4.0,
-      },
-    ],
-    1: [
-      {
-        id: '3',
-        image: require('../../../Resources/assets/images/anh10.jpg'),
-        name: 'Sữa Rửa Mặt',
-        priceRange: '200.000 - 350.000 VND',
-        rating: 4.7,
-      },
-      {
-        id: '4',
-        image: require('../../../Resources/assets/images/anh12.jpg'),
-        name: 'Combo Chăm Sóc Da',
-        priceRange: '500.000 - 800.000 VND',
-        rating: 4.9,
-      },
-    ],
-    2: [
-      {
-        id: '3',
-        image: require('../../../Resources/assets/images/anh10.jpg'),
-        name: 'Sữa Rửa Mặt',
-        priceRange: '200.000 - 350.000 VND',
-        rating: 4.7,
-      },
-      {
-        id: '4',
-        image: require('../../../Resources/assets/images/anh12.jpg'),
-        name: 'Combo Chăm Sóc Da',
-        priceRange: '500.000 - 800.000 VND',
-        rating: 4.9,
-      },
-    ],
-  };
-
-  const handleTabPress = index => {
-    setSelectedTab(index);
+  const handleTabPress = categoryId => {
+    setSelectedCategory(categoryId); 
   };
 
   const ProductRecomendationsList = ({products}) => (
@@ -126,7 +41,7 @@ const MaterialTopApp = () => {
       data={products}
       numColumns={2}
       renderItem={({item}) => <ProductLayout item={item} onPress={item.onPress} />}
-      keyExtractor={item => item.id}
+      keyExtractor={item => item.id?.toString() || Math.random().toString()} 
       scrollEnabled={false}
       ListHeaderComponent={HeaderTabs}
     />
@@ -135,13 +50,13 @@ const MaterialTopApp = () => {
   const HeaderTabs = () => {
     return (
       <ScrollView horizontal style={styles.tabContainer}>
-        {tabs.map((item, index) => (
+        {categoryProductList.map((item, index) => (
           <TouchableOpacity
-            key={index}
+            key={`${item._id}-${index}`} 
             style={styles.tabButton}
-            onPress={() => handleTabPress(index)}>
-            <Text style={styles.tabText}>{item}</Text>
-            {selectedTab === index && <View style={styles.indicator} />}
+            onPress={() => handleTabPress(item._id)}>
+            <Text style={styles.tabText}>{item.name}</Text>
+            {selectedCategory === item._id && <View style={styles.indicator} />}
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -150,7 +65,7 @@ const MaterialTopApp = () => {
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <ProductRecomendationsList products={productData[selectedTab] || []} />
+      <ProductRecomendationsList products={filteredProducts} />
     </View>
   );
 };

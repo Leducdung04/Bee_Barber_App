@@ -18,10 +18,6 @@ const ShopScreen = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView contentContainerStyle={{flexGrow: 1,paddingBottom:100}}>
-        <View style={{flexDirection: 'row', margin: 10, gap: 9}}>
-          <CustomButton title="Sổ địa chỉ" />
-          <CustomButton title="Đơn hàng" />
-        </View>
         <CategoriesGridLayout />
         <View style={styles.imageContainer}>
           <ImageBackground
@@ -34,7 +30,6 @@ const ShopScreen = () => {
           </ImageBackground>
         </View>
         <MaterialTopTab/>
-        <TopSearch/>
       </ScrollView>
     </SafeAreaView>
   );

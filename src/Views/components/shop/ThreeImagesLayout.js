@@ -1,20 +1,41 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {View, Image, Text, StyleSheet, ImageBackground} from 'react-native';
+import {View, Image, Text, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
 
 const defaultImage = require('../../../Resources/assets/images/anh7.png');
 
-const ThreeImagesLayout = ({ image1, image2, image3, text }) => (
-  <View style={styles.container}>
-    <Text style={styles.overlayText}>{text}</Text>
-    <View style={[styles.leftSection, styles.shadow]}>
-      <Image source={image1 || defaultImage} style={styles.largeImage} resizeMode="cover" />
-    </View>
-    <View style={styles.rightSection}>
-      <Image source={image2 || defaultImage} style={styles.smallImage} />
-      <Image source={image3 || defaultImage} style={styles.smallImage} />
-    </View>
-  </View>
-);
+const ThreeImagesLayout = ({image1, image2, image3, text,category}) => {
+  const navigation = useNavigation();
+
+  const handleCategoryClick = () => {
+    if (category && category._id) {
+      navigation.navigate('TopSearchScreen', { categoryId: category._id });
+    } else {
+      console.warn("Category is undefined or missing an '_id'.");
+    }
+  };
+
+  
+  
+  return (
+    <TouchableOpacity onPress={handleCategoryClick}>
+      <View style={styles.container}>
+        <Text style={styles.overlayText}>{text}</Text>
+        <View style={[styles.leftSection, styles.shadow]}>
+          <Image
+            source={image1 || defaultImage}
+            style={styles.largeImage}
+            resizeMode="cover"
+          />
+        </View>
+        <View style={styles.rightSection}>
+          <Image source={image2 || defaultImage} style={styles.smallImage} />
+          <Image source={image3 || defaultImage} style={styles.smallImage} />
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
