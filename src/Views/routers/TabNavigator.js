@@ -132,11 +132,6 @@ const TabNavigator = () => {
           options={{
             title:"",
             headerShown:true,
-            // headerBackground: () => (
-            //   <View  style={{backgroundColor:'white',height:85,justifyContent:'center'}}>
-            //       <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
-            //   </View>
-            // ),
             headerLeft: ({tintColor})=>(
                <Image source={require('../../Resources/assets/logo/Bee_Barber.png')}
                       style={{marginStart:16,height: 30, width: 170}}
@@ -170,7 +165,7 @@ const TabNavigator = () => {
             headerTitleAlign: 'center',
             headerBackground: () => (
               <View  style={{backgroundColor:'white',height:85,justifyContent:'center'}}>
-                  <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
+                  <Text style={[globalStyles.titleStyle,{color:colors.primary200}]}>Lịch sử cắt ✂</Text>
               </View>
             ),
           }}
