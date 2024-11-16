@@ -11,13 +11,8 @@ import CategoriesSortingProduct from '../screens/CategoriesSortingProduct';
 import TopSearchScreen from '../screens/TopSearchScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
-import colors from '../../Resources/styles/colors';
-import ServicesScreen from '../screens/ServicesScreen';
-
-
 import UserProfile from '../screens/UserProfile'
 import Cart from '../screens/Cart';
-
 
 const Stack = createNativeStackNavigator();
 
@@ -31,13 +26,11 @@ const AppNavigation = () => {
 
     <Provider>
       <Stack.Navigator initialRouteName="TabNavigator">
-        {/* <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-        options={{ title: 'Đặt lịch giữ chỗ ' ,headerTintColor:colors.primary }} */}
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="CategoriesProductsScreen"
@@ -72,7 +65,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  style={{zIndex: 1000,marginTop:32}}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Trang chủ');
@@ -131,7 +124,7 @@ const AppNavigation = () => {
                 <Menu
                   visible={visible}
                   onDismiss={closeMenu}
-                  mode='elevated'
+                  mode = 'elevated'
                   theme={{ colors: { primary: 'green' } }}
                   anchor={
                     <CircleBorder
@@ -142,7 +135,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  style={{zIndex: 1000,marginTop:32}}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Option 1 clicked');
@@ -209,7 +202,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  style={{zIndex: 1000,marginTop:32}}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Trang chủ');
@@ -244,33 +237,27 @@ const AppNavigation = () => {
           }}
           headerBackButtonMenuEnabled
         />
-
-      <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-        options={{ title: 'Đặt lịch giữ chỗ ', presentation:'modal', headerShown: false }}/>
-
-      <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-         options={{ title: 'Dịch vụ theo danh mục'}}
+         <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
+        options={{ title: 'Đặt lịch giữ chỗ ' }}
       />
-        <Stack.Screen name='ServicesScreen' component={ServicesScreen}
-          options={{ title: 'Chọn dịch vụ', headerShown: false }}
+      <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
+         options={{ title: 'Dịch vụ theo danh mục' }}
+      />
+      <Stack.Screen 
+          name="UserProfile" 
+          component={UserProfile} 
+          options={{ title: 'Thông tin tài khoản',
+            headerTitleAlign: 'center'  
+           }}
         />
-        <Stack.Screen
-          name="UserProfile"
-          component={UserProfile}
-          options={{
-            title: 'Thông tin tài khoản',
-            headerTitleAlign: 'center'
+      <Stack.Screen 
+          name="Cart" 
+          component={Cart} 
+          options={{ title: 'Giỏ Hàng' ,
+            headerTitleAlign: 'center'  
           }}
         />
-        <Stack.Screen
-          name="Cart"
-          component={Cart}
-          options={{
-            title: 'Giỏ Hàng',
-            headerTitleAlign: 'center'
-          }}
-        />
-      </Stack.Navigator>
+   </Stack.Navigator>
     </Provider>
   );
 };
