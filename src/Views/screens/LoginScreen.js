@@ -11,60 +11,6 @@ const LoginScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true); // Để kiểm soát trạng thái hiển thị mật khẩu
   
 
-  const handlePhoneNumberChange = (text) => {
-    let formattedPhoneNumber = text.trim();
-    if (formattedPhoneNumber.charAt(0) === '0') {
-      formattedPhoneNumber = '+84' + formattedPhoneNumber.substring(1);
-    }
-    setPhoneNumber(formattedPhoneNumber);
-  };
-
-  const handlePasswordChange = (text) => {
-    setPassword(text);
-  };
-
-  const handleLogin = async () => {
-    
-    if (phoneNumber === '' || password === '') {
-      Alert.alert('Lỗi', 'Số điện thoại và mật khẩu không được để trống.');
-      return;
-    }
-
-    if (!phoneNumber.match(/^\+84\d{9}$/)) {
-      Alert.alert('Lỗi', 'Số điện thoại không hợp lệ.');
-      return;
-    }
-
-    if (password.length < 6) {
-      Alert.alert('Lỗi', 'Mật khẩu phải chứa ít nhất 6 ký tự.');
-      return;
-    }
-
-    try {
-      setPhoneNumber(''); // Clear phone number
-      setPassword(''); // Clear password
-      
-      // Kiểm tra số điện thoại và lấy ID người dùng
-      const checkResult = await checkPhoneAndGetId(phoneNumber);
-       console.log(checkResult,'hhhhhhh');
-      if (!checkResult.registered) {
-        Alert.alert('Lỗi', 'Số điện thoại chưa được đăng ký.');
-        return;
-      }
-
-      // Đăng nhập với Firebase
-      await auth().signInWithEmailAndPassword(phoneNumber + "@example.com", password);
-      Alert.alert('Thành công', 'Đăng nhập thành công!');
-      // Lưu ID người dùng vào AsyncStorage
-      await AsyncStorage.setItem('userId', checkResult.userId);
-     
-      navigation.navigate('TabNavigator'); // Chuyển đến TabNavigator
-    } catch (error) {
-      Alert.alert('Lỗi', 'Số điện thoại hoặc mật khẩu không chính xác.');
-      console.error('Đăng nhập thất bại:', error);
-    }
-  };
-
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.screenContainer}>
@@ -76,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
             placeholder="Số điện thoại"
             keyboardType="phone-pad"
             value={phoneNumber}
-            onChangeText={handlePhoneNumberChange}
+            onChangeText={text=>{setPhoneNumber(text)}}
           />
           <TouchableOpacity onPress={() => setPhoneNumber('')}>
             <Image
@@ -92,7 +38,7 @@ const LoginScreen = ({ navigation }) => {
             placeholder="Mật khẩu"
             secureTextEntry={secureTextEntry}
             value={password}
-            onChangeText={handlePasswordChange}
+            onChangeText={text=>{setPassword(text)}}
           />
           <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
             <Image
@@ -104,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.nextButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.nextButton}>
           <Image
             source={{ uri: 'https://img.icons8.com/ios-glyphs/30/ffffff/chevron-right.png' }}
             style={styles.icon}
