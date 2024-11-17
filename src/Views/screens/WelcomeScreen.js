@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, ImageBackground, Dimensions, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, ImageBackground, Dimensions, FlatList, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../Resources/styles/colors';
@@ -15,20 +15,22 @@ const WelcomeScreen = ({navigation}) => {
 
   const [indexImage, setIndexImage] = useState(0);
   const flatListRef = useRef(null);
+  const [isLodingData, setisLodingData] = useState(true)
+
+  // Xử lý khi lấy dữ liệu data thành công 
+  useEffect(() => {
+    // tạm thời để sau 3s thì tắt 
+    const timer = setTimeout(() => {
+      setisLodingData(false);
+    }, 3000);
+  
+    // Cleanup để xóa timer khi component unmount
+    return () => clearTimeout(timer);
+  }, []);
+  
+  
 
   // Kiểm tra nếu không có banner thì hiển thị màn hình loading
-  if (!listBanner || listBanner.length === 0) {
-    return (
-      <LinearGradient
-        colors={['#D3D3D3', '#F4F4F4', '#E0E0E0']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.loadingContainer}
-      >
-        <ActivityIndicator size="small" color="#D3D3D4" />
-      </LinearGradient>
-    );
-  }
 
   // Hàm xử lý cuộn và cập nhật chỉ số hình ảnh
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
@@ -78,6 +80,10 @@ const WelcomeScreen = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
+       <Modal visible={isLodingData} animationType='fade' >
+       <ImageBackground source={require('../../Resources/assets/images/wellcome.jpg')} style={styles.imageBackground} />
+       <ActivityIndicator style={{position:'absolute',bottom:100,start:0,end:0}} size={38} color={colors.primary}/>
+       </Modal>
     </View>
   );
 };
