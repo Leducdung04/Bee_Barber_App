@@ -1,4 +1,4 @@
-import { API, API_REGISTER_ACCOUNT, API_CHECK_PHONE_NUMBER, API_CHECK_PHONE_AND_GET_ID, API_GET_USER_INFO, API_UPDATE_ACCOUNT } from "@env";
+import { API, API_REGISTER_ACCOUNT, API_CHECK_PHONE_NUMBER, API_CHECK_PHONE_AND_GET_ID, API_GET_USER_INFO, API_UPDATE_ACCOUNT, API_LOGIN_PHONE } from "@env";
 
 export const registerUser = async (phone, password) => {
     try {
@@ -137,4 +137,31 @@ export const updateUserInfo = async (userId, userInfo) => {
     }
 };
 
+
+export const loginPhone = async (phone, password) => {
+    try {
+        const response = await fetch(`${API}${API_LOGIN_PHONE}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                phone: phone,
+                password: password,
+            }),
+        });
+
+        // Kiểm tra phản hồi từ API
+        if (!response.ok) {
+            const errorData = await response.json(); // Lấy thông tin lỗi nếu có
+            throw new Error(`Error: ${errorData.message || response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data; // Trả về dữ liệu sau khi đăng nhập thành công
+    } catch (error) {
+        console.log('Error during phone login', error);
+        return { success: false, message: 'Login failed' };
+    }
+};
 

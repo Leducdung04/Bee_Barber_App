@@ -16,6 +16,9 @@ import Cart from '../screens/Cart';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import TestZaloPay from '../screens/TestZaloPay';
 import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import UpdateUserScreen from '../screens/UpdateUserScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +35,7 @@ const AppNavigation = () => {
       <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{headerShown:false}} />
       <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{headerShown:false}} />
       <Stack.Screen name="Login" component={LoginScreen} options={{headerShown:false}} />
+      <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{headerShown:false}} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen
           name="TabNavigator"
@@ -253,6 +257,13 @@ const AppNavigation = () => {
           name="UserProfile" 
           component={UserProfile} 
           options={{ title: 'Thông tin tài khoản',
+            headerTitleAlign: 'center'  
+           }}
+        />
+        <Stack.Screen 
+          name="UpdateUserScreen" 
+          component={UpdateUserScreen} 
+          options={{ title: 'Cập nhật thông tin',
             headerTitleAlign: 'center'  
            }}
         />

@@ -1,20 +1,51 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
-import { checkPhoneAndGetId } from '../../Services/utils/httpSingup'; // Điều chỉnh đường dẫn tới file API
-
+import { checkPhoneAndGetId, loginPhone } from '../../Services/utils/httpSingup'; // Đảm bảo đường dẫn đúng
 
 const LoginScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true); // Để kiểm soát trạng thái hiển thị mật khẩu
-  
+
+  const handleLogin = async () => {
+    try {
+      // Kiểm tra số điện thoại đã đăng ký hay chưa
+      const { registered, userId } = await checkPhoneAndGetId(phoneNumber);
+
+      if (!registered) {
+        Alert.alert('Lỗi', 'Số điện thoại chưa được đăng ký');
+        return;
+      }
+
+      // Đăng nhập nếu số điện thoại đã được đăng ký
+      const loginResponse = await loginPhone(phoneNumber, password);
+
+      if (loginResponse && loginResponse.message === "Đăng nhập thành công") {
+        // Lưu userId vào AsyncStorage và chuyển trang
+        await AsyncStorage.setItem('userId', loginResponse.data._id);
+
+        navigation.navigate('TabNavigator');
+      } else {
+        Alert.alert('Lỗi', loginResponse?.message || 'Đăng nhập thất bại');
+      }
+    } catch (error) {
+      console.log('Login error:', error);
+      Alert.alert('Lỗi', 'Đăng nhập thất bại');
+    }
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.screenContainer}>
+        {/* Banner Image */}
+        <Image
+          source={require('../../Resources/assets/logo/Bee_Barber.png')} // Placeholder cho ảnh đại diện
+          style={styles.bannerImage}
+        />
+
         <Text style={styles.title}>Đăng nhập</Text>
+        
         {/* Nhập số điện thoại */}
         <View style={styles.inputContainer}>
           <TextInput
@@ -22,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
             placeholder="Số điện thoại"
             keyboardType="phone-pad"
             value={phoneNumber}
-            onChangeText={text=>{setPhoneNumber(text)}}
+            onChangeText={text => setPhoneNumber(text)}
           />
           <TouchableOpacity onPress={() => setPhoneNumber('')}>
             <Image
@@ -31,6 +62,7 @@ const LoginScreen = ({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
+        
         {/* Nhập mật khẩu */}
         <View style={styles.inputContainer}>
           <TextInput
@@ -38,27 +70,37 @@ const LoginScreen = ({ navigation }) => {
             placeholder="Mật khẩu"
             secureTextEntry={secureTextEntry}
             value={password}
-            onChangeText={text=>{setPassword(text)}}
+            onChangeText={text => setPassword(text)}
           />
           <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
             <Image
               source={secureTextEntry
                 ? require('../../Resources/assets/images/eye-off.png') // Hình ảnh mắt đóng
-                : require('../../Resources/assets/images/eye-on.png') // Hình ảnh mắt mở
-              }
+                : require('../../Resources/assets/images/eye-on.png')} // Hình ảnh mắt mở
               style={styles.eyeIcon}
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.nextButton}>
+
+        {/* Nút Đăng nhập */}
+        <TouchableOpacity style={styles.nextButton} onPress={handleLogin}>
           <Image
             source={{ uri: 'https://img.icons8.com/ios-glyphs/30/ffffff/chevron-right.png' }}
             style={styles.icon}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => Alert.alert('Quên mật khẩu', 'Chức năng này chưa được triển khai.')}>
-          <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
-        </TouchableOpacity>
+        
+        {/* Quên mật khẩu và Chưa có tài khoản */}
+        <View style={styles.footerContainer}>
+          <TouchableOpacity onPress={() => Alert.alert('Quên mật khẩu', 'Chức năng này chưa được triển khai.')}>
+            <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+            <Text style={styles.signUpText}>Chưa có tài khoản?</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* Nút quay lại */}
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Image
             source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-left.png' }}
@@ -69,7 +111,6 @@ const LoginScreen = ({ navigation }) => {
     </KeyboardAvoidingView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -82,11 +123,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  bannerImage: {
+    width: '100%',
+    height: 69, // Điều chỉnh kích thước theo nhu cầu
+    marginTop: -100,
+
+  },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     color: '#153A80',
-    marginBottom: 20,
+    marginTop: 70,
     textAlign: 'center',
   },
   inputContainer: {
@@ -97,7 +144,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 20,
     width: '100%',
-    marginTop: 20
+    marginTop: 20,
   },
   input: {
     flex: 1,
@@ -135,12 +182,19 @@ const styles = StyleSheet.create({
     height: 25,
     tintColor: '#fff',
   },
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
   forgotPasswordText: {
     color: '#153A80',
     fontWeight: 'bold',
-    marginTop: 20,
-    textAlign: 'right',
-    marginHorizontal: 20,
+  },
+  signUpText: {
+    color: '#153A80',
+    fontWeight: 'bold',
   },
   backButton: {
     position: 'absolute',

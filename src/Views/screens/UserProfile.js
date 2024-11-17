@@ -36,10 +36,16 @@ const UserProfile = ({ navigation }) => {
   }, [navigation]);
 
 
-  const handleOutPress = () => {
-    navigation.navigate('WelcomeScreen'); // Điều hướng đến màn hình đăng nhập
+  const handleOutPress = async () => {
+    try {
+      await AsyncStorage.removeItem('userId'); // Xóa userId khỏi AsyncStorage
+      navigation.navigate('WelcomeScreen'); // Điều hướng đến màn hình chào mừng
+    } catch (error) {
+      console.error("Lỗi khi xóa userId khỏi AsyncStorage:", error); // In lỗi nếu có
+    }
   };
 
+  
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
