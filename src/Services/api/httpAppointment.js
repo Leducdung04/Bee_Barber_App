@@ -7,14 +7,14 @@ export const Add_Appointment_API = async (appointment) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({appointment}),
+      body: JSON.stringify(appointment),
     });
     const data = await response.json();
     if (!response.ok) {
       console.log('Error:', data);
       return false;
     }
-    console.log("Lấy dữ liệu thành công", data);
+    console.log(" Tạo lịch đặt thành công ", data);
     return data;
   } catch (error) {
     console.log('Error add appointment', error);

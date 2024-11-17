@@ -6,6 +6,7 @@ import {get_list_barber} from '../Services/utils/httpbarber';
 import { getNext7DaysWithWeekdays } from '../Services/utils/getNext7DaysWithWeekdays';
 import { Add_Appointment_API } from '../Services/api/httpAppointment';
 import { deleteZaloPayload, getZaloPay, setZaloPayload } from '../Services/utils/ZaloPay_AsyncStorage';
+import { lightGreen100 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 export const useBookingViewModel = () => {
   const listTimes = [
@@ -22,14 +23,26 @@ export const useBookingViewModel = () => {
   const [day_Selected, setday_Selected] = useState(null)
   const [app_trans_id, setapp_trans_id] = useState(null)
   const [modalCheck, setmodalCheck] = useState(false)
+  const [modalSucces, setmodalSucces] = useState(false)
+  const [modalIsloading, setmodalIsloading] = useState(false)
   const [dataChechZaloPay, setdataChechZaloPay] = useState(null)
 
   async function check() {
     const ZaloPayLocal =await getZaloPay()
     if (ZaloPayLocal !== null){
       const Checking = await checkZaloPay(ZaloPayLocal?.app_trans_id)
+      if(Checking.return_code === 1){
+         // tạo đơn
+        const data=await getZaloPay()
+        console.log('dữ liệu lấy từ dien thoại', data)
+        await Add_Appointment_API(data.appointment)
+        setmodalIsloading(false)
+      }
       setdataChechZaloPay(Checking)
+      setmodalIsloading(false)
       setmodalCheck(true)
+      console.log('status',Checking);
+      // setmodalCheck(true)
     }
 }
 
@@ -69,7 +82,6 @@ export const useBookingViewModel = () => {
   const handleZaloPay = async appointment => {
 
     const responseOrder = await OrderZaloPay(appointment.appointment.price);
-    console.log('responseOrder', responseOrder);
     setapp_trans_id(responseOrder.app_trans_id)
     if (responseOrder === false) {
       Alert.alert('Xảy ra lỗi vui lòng thử lại sau');
@@ -97,11 +109,18 @@ export const useBookingViewModel = () => {
       if(appointment?.payment?.pay_method === 'ZaloPay'){
           handleZaloPay(appointment)
       }else if(appointment?.payment?.pay_method === 'cash'){
-        
+       const dataOrde = await Add_Appointment_API(appointment)
+       if(dataOrde){
+         setmodalSucces(true)
+       }
       }
   }
 
   return {
+    setmodalIsloading,
+    modalIsloading,
+    setmodalSucces,
+    modalSucces,
     handleZaloPay,
     listTimes,
     stylists,
