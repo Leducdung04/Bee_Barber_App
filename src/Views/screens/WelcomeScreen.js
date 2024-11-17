@@ -1,115 +1,126 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, ImageBackground, Dimensions, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
+import colors from '../../Resources/styles/colors';
 
-const { width, height } = Dimensions.get('window');
+const { width: widthScreen, height: heightScreen } = Dimensions.get('window');
 
-const WelcomeScreen = ({ navigation }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+const WelcomeScreen = ({navigation}) => {
+  const listBanner = [
+    require('../../Resources/assets/images/wellcome1.jpg'),
+    require('../../Resources/assets/images/wellcome2.jpg'),
+    require('../../Resources/assets/images/wellcome3.jpg'),
+  ];
 
-  const handleLoginPress = () => {
-    navigation.navigate('LoginScreen'); // Điều hướng đến màn hình đăng nhập
-  };
+  const [indexImage, setIndexImage] = useState(0);
+  const flatListRef = useRef(null);
 
-  const handleRegisterPress = () => {
-    navigation.navigate('RegisterScreen'); // Điều hướng đến màn hình đăng ký
+  // Kiểm tra nếu không có banner thì hiển thị màn hình loading
+  if (!listBanner || listBanner.length === 0) {
+    return (
+      <LinearGradient
+        colors={['#D3D3D3', '#F4F4F4', '#E0E0E0']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.loadingContainer}
+      >
+        <ActivityIndicator size="small" color="#D3D3D4" />
+      </LinearGradient>
+    );
+  }
+
+  // Hàm xử lý cuộn và cập nhật chỉ số hình ảnh
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      setIndexImage(viewableItems[0].index);
+    }
+  }).current;
+
+  const ItemImage = ({ item }) => {
+    return (
+      <ImageBackground source={item} style={styles.imageBackground} />
+    );
   };
 
   return (
-    <LinearGradient
-      colors={['#153A80', '#F5F5F5']} // Màu gradient từ xanh đậm đến xanh nhạt
-      start={{ x: 0.5, y: 0.6 }} // Start from the bottom-middle
-      end={{ x: 0.5, y: 1 }} // End halfway up
-      style={styles.container}
-    >
-      <View style={styles.content}>
-        <Text style={styles.title}>ĐẶT LỊCH SỬ NHANH XEM LẠI LỊCH SỬ CẮT</Text>
-        <Text style={styles.subtitle}>Đặt lịch giữ chỗ chỉ 30 giây</Text>
-        <Text style={styles.subtitle}>Cắt xong trả tiền, hủy lịch không sao</Text>
-        <TouchableOpacity style={styles.button} >
-          <Text style={styles.buttonText} onPress={handleLoginPress}>ĐĂNG NHẬP</Text>
-          <Text style={styles.buttonText}> / </Text>
-          <Text style={styles.buttonText} onPress={handleRegisterPress}>ĐĂNG KÝ</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.textButton} >
-          <Text style={styles.textButtonText}>Tôi muốn khám phá thêm</Text>
-        </TouchableOpacity>
-        <View style={styles.pagination}>
-          {Array(3).fill(0).map((_, index) => (
-            <View
+    <View style={styles.container}>
+      <FlatList
+        data={listBanner}
+        horizontal
+        pagingEnabled // Chỉ cho phép vuốt qua 1 item mỗi lần
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => <ItemImage item={item} />}
+        onViewableItemsChanged={onViewableItemsChanged} // Cập nhật trạng thái khi cuộn
+        viewabilityConfig={{ itemVisiblePercentThreshold: 50 }} // Đảm bảo hình ảnh hiển thị ít nhất 50%
+        ref={flatListRef}
+      />
+
+      <View style={styles.dotContainer}>
+        {listBanner.map((_, index) => {
+          return (
+            <TouchableOpacity
               key={index}
-              style={[styles.dot, activeIndex === index && styles.activeDot]}
+              style= {indexImage === index ? styles.activeDot:styles.dot}
+              
+              onPress={() => flatListRef.current.scrollToIndex({ index, animated: true })}
             />
-          ))}
-        </View>
+          );
+        })}
       </View>
-    </LinearGradient>
+
+      <View style={[styles.dotContainer,{bottom:150}]}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('Login')}}  style={{ flex: 1 }}>
+              <View style={{ flex: 1, height: 45, backgroundColor: colors.primary, borderRadius: 12, justifyContent: 'center',marginHorizontal:100 }}>
+                <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Đăng nhập</Text>
+              </View>
+        </TouchableOpacity>
+      </View>
+
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: heightScreen,
   },
-  content: {
-    flex: 1,
-    justifyContent: 'flex-end',
+  loadingContainer: {
+    width: widthScreen,
+    height: heightScreen,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 50,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: 10,
-    marginHorizontal:40
+  imageBackground: {
+    width: widthScreen,
+    height: heightScreen,
   },
-  subtitle: {
-    fontSize: 16,
-    color: 'white',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: '#153A80',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginBottom: 20,
-    shadowColor: '#000', // Màu của bóng đổ
-    shadowOffset: { width: 0, height: 2 }, // Hướng của bóng đổ
-    shadowOpacity: 0.3, // Độ mờ của bóng đổ
-    shadowRadius: 4, // Độ lan tỏa của bóng đổ
-    elevation: 5, // Độ cao của bóng đổ trên Android
+  dotContainer: {
+    position: 'absolute',
+    bottom: 100, // Khoảng cách của dot từ dưới cùng
+    left: 0,
+    right: 0,
     flexDirection: 'row',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff', // Màu xanh của chữ trong nút
-  },
-  textButton: {
-    marginTop: 10,
-  },
-  textButtonText: {
-    fontSize: 16,
-    color: 'white',
-  },
-  pagination: {
-    flexDirection: 'row',
-    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    marginHorizontal: 5,
+    width: 10,
+    height: 10,
+    borderRadius: 10,
+    backgroundColor: 'gray',
+    marginHorizontal: 4,
   },
   activeDot: {
-    backgroundColor: 'white',
+    width: 10,
+    height: 10,
+    borderRadius: 10,
+    marginHorizontal: 4,
+    backgroundColor: colors.primary,
+  },
+  imageInView: {
+    backgroundColor: colors.secondary, // Màu sắc khi ảnh đang hiển thị
   },
 });
 
