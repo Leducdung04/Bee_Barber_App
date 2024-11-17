@@ -13,6 +13,9 @@ import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
 import UserProfile from '../screens/UserProfile'
 import Cart from '../screens/Cart';
+import WelcomeScreen from '../screens/WelcomeScreen';
+import TestZaloPay from '../screens/TestZaloPay';
+import LoginScreen from '../screens/LoginScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,7 +28,10 @@ const AppNavigation = () => {
   return (
 
     <Provider>
-      <Stack.Navigator initialRouteName="TabNavigator">
+      <Stack.Navigator initialRouteName="WelcomeScreen">
+      <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{headerShown:false}} />
+      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{headerShown:false}} />
+      <Stack.Screen name="Login" component={LoginScreen} options={{headerShown:false}} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen
           name="TabNavigator"
