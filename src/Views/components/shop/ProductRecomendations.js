@@ -49,7 +49,7 @@ const MaterialTopApp = () => {
 
   const HeaderTabs = () => {
     return (
-      <ScrollView horizontal style={styles.tabContainer}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}  style={styles.tabContainer}>
         {categoryProductList.map((item, index) => (
           <TouchableOpacity
             key={`${item._id}-${index}`} 

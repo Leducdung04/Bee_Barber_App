@@ -18,7 +18,6 @@ const ShopScreen = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView contentContainerStyle={{flexGrow: 1,paddingBottom:100}}>
-        <CategoriesGridLayout />
         <View style={styles.imageContainer}>
           <ImageBackground
             source={require('../../Resources/assets/images/banner.png')}

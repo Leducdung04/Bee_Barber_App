@@ -1,34 +1,25 @@
-import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhostWithIP'
+import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhostWithIP';
+import { useNavigation } from '@react-navigation/native';
 
-const ProductLayout = ({item, onPress}) => {
-  console.log(item.image);
-  
-  const renderStars = rating => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Icon
-          key={i}
-          name={i <= rating ? 'star' : 'star-o'}
-          size={16}
-          color="#FFD700"
-        />,
-      );
-    }
-    return stars;
-  };
-
+const ProductLayout = ({ item }) => {
+  const nav = useNavigation();
   return (
-    <TouchableOpacity style={styles.touchableContainer} onPress={onPress}>
+    <TouchableOpacity style={styles.touchableContainer} onPress={() => nav.navigate("ProductScreen", item)}>
       <View style={styles.productContainer}>
-        <Image source={replaceLocalhostWithIP(item.image)} style={styles.productImage} />
+        <Image
+          source={{ uri: item.image ? replaceLocalhostWithIP(item.image) : replaceLocalhostWithIP('http://localhost:3000/uploads/image-1730628816225.jpg'), }}
+          style={styles.productImage}
+          defaultSource={require('../../../Resources/assets/images/anh2.png')}
+          onError={() => console.log("Image failed to load")}
+        />
         <View style={styles.productInfo}>
-          <Text style={styles.productName}>{item.name}</Text>
-          <Text style={styles.productPrice}>{item.price}</Text>
-          {/* <View style={styles.rating}>{renderStars(item.rating)}</View> */}
+          <Text style={styles.productName} numberOfLines={2} ellipsizeMode="tail">
+            {item.name}
+          </Text>
+          <Text style={styles.productPrice}>{item.price_selling.toLocaleString()} VNĐ</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -45,40 +36,35 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     padding: 17,
-    backgroundColor: '#fff',
+    backgroundColor: '#F9FAFB',
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.15,
-    shadowRadius: 1,
-    elevation: 4,
-    
-    borderRadius: 10,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 3,
+    width: 220,
+    borderRadius: 12,
   },
   productImage: {
-    width: 187,
-    height: 142,
+    width: 186,
+    height: 140,
     borderRadius: 8,
-    marginBottom: 10,
-    resizeMode: 'center',
+    marginBottom: 12,
+    resizeMode: 'cover',
   },
   productInfo: {
-    alignItems: 'baseline',
+    alignItems: 'center',
   },
   productName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1F2937',
     textAlign: 'center',
-    marginBottom: 5,
+    marginBottom: 4,
   },
   productPrice: {
     fontSize: 14,
-    color: 'black',
-    marginBottom: 8,
-    fontWeight: '600',
-  },
-  rating: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    color: '#10B981',
+    fontWeight: '700',
   },
 });

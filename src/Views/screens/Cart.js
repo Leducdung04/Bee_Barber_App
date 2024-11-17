@@ -3,6 +3,8 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Button, Aler
 import CheckBox from '@react-native-community/checkbox';
 
 const CartItem = ({ item, onAdd, onRemove, onDelete, onSelect }) => {
+
+  
   return (
     <View style={styles.cartItem}>
       <CheckBox value={item.selected} onValueChange={() => onSelect(item.id)} />
@@ -29,13 +31,7 @@ const CartItem = ({ item, onAdd, onRemove, onDelete, onSelect }) => {
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([
-    { id: '1', title: 'Tinh dầu dưỡng tóc ATS', price: 90000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '2', title: 'Tinh dầu dưỡng tóc ATS', price: 80000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '3', title: 'Tinh dầu dưỡng tóc ATS', price: 70000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '4', title: 'Tinh dầu dưỡng tóc ATS', price: 60000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '5', title: 'Tinh dầu dưỡng tóc ATS', price: 20000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '6', title: 'Tinh dầu dưỡng tóc ATS', price: 90000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '7', title: 'Tinh dầu dưỡng tóc ATS', price: 40000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
+   
   ]);
   const [selectAll, setSelectAll] = useState(false);
 

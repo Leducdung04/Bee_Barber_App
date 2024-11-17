@@ -110,15 +110,19 @@ android {
 }
 
 dependencies {
-    // The version of react-native is set by the React Native Gradle Plugin
-    implementation("com.facebook.react:react-android")
+     implementation("com.facebook.react:react-android")
     implementation project(':react-native-vector-icons')
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    
-    if (hermesEnabled.toBoolean()) {
-        implementation("com.facebook.react:hermes-android")
-    } else {
-        implementation jscFlavor
+    implementation ('com.google.firebase:firebase-messaging-directboot:20.2.0')
+    implementation("com.google.firebase:firebase-analytics:22.1.2")
+    implementation("com.google.firebase:firebase-messaging:24.1.0") {
+        exclude group: "com.android.support"
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'androidx.core:core:1.9.0'
+        force 'androidx.appcompat:appcompat:1.6.1'
     }
 }
