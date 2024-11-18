@@ -38,7 +38,7 @@ const ServiceByCategoryScreen = ({ route, navigation }) => {
       }
       }
       ListFooterComponent={()=>{
-        return <View style={styles.footer}><ButtonComponents onPress={()=>{navigation.navigate('AppointmentScreen')}}>Đặt lịch</ButtonComponents></View>
+        return <View style={styles.footer}><ButtonComponents onPress={()=>{navigation.navigate('AppointmentScreen')}}>Đặt lịch ngay</ButtonComponents></View>
       }}
         />
     </View>
