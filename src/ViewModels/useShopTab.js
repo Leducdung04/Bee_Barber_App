@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { get_List_Category_Product } from '../Services/utils/httpCategoryProduct';
-import { get_List_Product,get_List_Product_By_Category } from '../Services/utils/httpProduct';
+import { get_List_Product } from '../Services/utils/httpProduct';
 
 const useShopTab = () => {
     const [productList, setProductList] = useState([]);

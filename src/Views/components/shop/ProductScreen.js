@@ -14,7 +14,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhostWithIP';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { API_SEND_NOTIFICATION, API } from '@env'
-import { getToken, requestUserPermission,initializeFCM,sendLocalNotification,sendRemoteNotification } from '../../../Services/api/notificationhelper'
+import { add_cart_item } from '../../../Services/utils/httpCartItem';
+import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../../Services/api/notificationhelper'
+import eventEmitter from '../../../Services/utils/event';
+
 
 const ProductScreen = () => {
   const route = useRoute();
@@ -36,6 +39,26 @@ const ProductScreen = () => {
     setupNotifications();
   }, []);
 
+  const handleAddToCart = async () => {
+    try {
+      const cartItem = {
+        product_id: product._id,
+        quantity,
+        total: totalPrice,
+      };
+  
+      const addedItem = await add_cart_item(cartItem); 
+      console.log("Cart item added successfully:", addedItem);
+      eventEmitter.emit('cartUpdated');
+      await handleAddToCartNotification();
+  
+      nav.navigate("Cart"); 
+    } catch (error) {
+      console.error("Error adding product to cart:", error.message);
+    }
+  };
+
+  
   const handleAddToCartNotification = async () => {
     if (!token) {
       console.warn('FCM Token is not available. Notifications might not be sent.');
@@ -53,14 +76,11 @@ const ProductScreen = () => {
     try {
       console.log('Sending remote notification payload:', payload);
 
-      // Send remote notification
       const result = await sendRemoteNotification({
         url: `${API}${API_SEND_NOTIFICATION}`,
         payload,
       });
       console.log('Remote notification sent successfully:', result);
-
-      // Send local notification
       sendLocalNotification({
         channelId: 'default-channel',
         title: 'Sản phẩm đã được thêm vào giỏ hàng',
@@ -113,9 +133,7 @@ const ProductScreen = () => {
           style={styles.cartButton}
           onPress={() => {
             {
-              console.log('Current token before notification:', token);
-              handleAddToCartNotification(product);
-              nav.navigate('Cart');
+              handleAddToCart()
             }
           }}
         >
@@ -149,7 +167,7 @@ const ProductScreen = () => {
               <View style={styles.modalProductDetails}>
                 <Text style={styles.modalProductName}>{product.name}</Text>
                 <Text style={styles.modalProductPrice}>
-                  {product.price_selling.toLocaleString()} VNĐ
+                {product?.price_selling?.toLocaleString() ?? "N/A"} VNĐ VNĐ
                 </Text>
                 <View style={styles.quantityContainer}>
                   <TouchableOpacity style={styles.quantityButton} onPress={decreaseQuantity}>

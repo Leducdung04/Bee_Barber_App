@@ -172,17 +172,12 @@ const TabNavigator = () => {
               <CircleBorder start
                 name="search-outline"
                 size={24}
+                onPress = {() => nav.navigate("Search")}
               />
               <CircleBorder
                 name="cart-outline"
                 size={24}
-                badgeCount={2}
                 onPress = {() => nav.navigate("Cart")}
-              />
-              <CircleBorder
-                name="sort-variant"
-                size={24}
-                onPress={() => nav.navigate("CategoriesSortingProduct")}
               />
             </View>
           ),

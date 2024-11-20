@@ -8,8 +8,8 @@ import { useBookingViewModel } from '../../ViewModels/AppointmentModel';
 import { fomatsDate } from '../../Services/utils/fomatsDate';
 import SelectedServices from '../components/Appointment/SelectedServices';
 import ItemService from '../components/Item/ItemService';
-const AppointmentScreen = ({ route, navigation}) => {
-  
+const AppointmentScreen = ({ route, navigation }) => {
+
   const {
     setmodalIsloading,
     modalIsloading,
@@ -31,50 +31,50 @@ const AppointmentScreen = ({ route, navigation}) => {
   const [time_Selected, settime_Selected] = useState(null)
   const [pay_Method, setpay_Method] = useState(null)
   const [totalAmount, settotalAmount] = useState(0)
-  
+
   useEffect(() => {
     const totalPrice = selectedServices.reduce((total, service) => total + service.price, 0);
     settotalAmount(totalPrice);
   }, [selectedServices])
-  
+
   // xử lý chọn giờ 
   const handleTimeSelect = (time) => {
     settime_Selected(time);
   };
   useEffect(() => {
-    console.log('dữ liệu code zalopay',dataChechZaloPay)
+    console.log('dữ liệu code zalopay', dataChechZaloPay)
   }, [dataChechZaloPay])
-  
-  const  onHandel_Order = async() => {
+
+  const onHandel_Order = async () => {
     setmodalIsloading(true)
     const currentDate = new Date();
     const currentTime = currentDate.toLocaleTimeString('en-US', { hour12: false });
-       const appointment = {
-        appointment: {
-            barber_id: barber_Selected?._id,
-            user_id: "66fe1856faa0e86597afdbae",
-            service_id: selectedServices.map(item => item._id),
-            appointment_time: time_Selected,
-            appointment_date:day_Selected.date,
-            appointment_status: "pending",
-            price: totalAmount+'000',
-            },
+    const appointment = {
+      appointment: {
+        barber_id: barber_Selected?._id,
+        user_id: "66fe1856faa0e86597afdbae",
+        service_id: selectedServices.map(item => item._id),
+        appointment_time: time_Selected,
+        appointment_date: day_Selected.date,
+        appointment_status: "pending",
+        price: totalAmount + '000',
+      },
       payment: {
-            user_id: "66fe1856faa0e86597afdbae",
-            pay_type: "booking",
-            pay_method: pay_Method,
-            time: currentTime,
-            date: currentDate.toISOString().split("T")[0],
-            price: totalAmount
-            }
-       }
+        user_id: "66fe1856faa0e86597afdbae",
+        pay_type: "booking",
+        pay_method: pay_Method,
+        time: currentTime,
+        date: currentDate.toISOString().split("T")[0],
+        price: totalAmount
+      }
+    }
 
-       console.log('data thêm ',appointment)
-       handle_Order_Appointment(appointment)
+    console.log('data thêm ', appointment)
+    handle_Order_Appointment(appointment)
   }
-  const Item_Barber = ({ item}) => {
+  const Item_Barber = ({ item }) => {
     if (!item) {
-      return null; 
+      return null;
     }
     let checkSelected = 0;
     if (item._id === barber_Selected?._id) {
@@ -129,7 +129,7 @@ const AppointmentScreen = ({ route, navigation}) => {
 
         <View style={styles.contentContainer}>
           <View style={{ flexDirection: 'row' }}>
-            {checkSTatus(selectedServices.length ===0 ?false:true)}
+            {checkSTatus(selectedServices.length === 0 ? false : true)}
             <View style={{ flex: 1, marginStart: 12 }}>
               <Text style={styles.title}>1. Chọn dịch vụ</Text>
 
@@ -156,14 +156,14 @@ const AppointmentScreen = ({ route, navigation}) => {
               )} */}
 
               {selectedServices && selectedServices.length > 0 ?
-                
-               (
-                <SelectedServices list={selectedServices}/>
+
+                (
+                  <SelectedServices list={selectedServices} />
                 )
-               : (
-                <View style={{height:50,justifyContent:'center'}}>
-                <Text>Bạn chưa chọn dịch vụ nào</Text></View>
-              )}
+                : (
+                  <View style={{ height: 50, justifyContent: 'center' }}>
+                    <Text>Bạn chưa chọn dịch vụ nào</Text></View>
+                )}
             </View>
           </View>
 
@@ -185,7 +185,7 @@ const AppointmentScreen = ({ route, navigation}) => {
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
                   keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => <Item_Barber item={item}/>} // Truyền setSelectedStylist
+                  renderItem={({ item }) => <Item_Barber item={item} />} // Truyền setSelectedStylist
                 />
 
               </View>
@@ -227,7 +227,7 @@ const AppointmentScreen = ({ route, navigation}) => {
                   const formattedDate = `${day}/${month}`;
 
                   const colorItem = day_Selected?.date == item.date ? colors.primary : colors.background
-                  return <TouchableOpacity onPress={() => { setday_Selected(item)}}>
+                  return <TouchableOpacity onPress={() => { setday_Selected(item) }}>
                     <View style={{ height: 40, width: 90, backgroundColor: colorItem, borderRadius: 6, marginRight: 12, alignItems: 'center', justifyContent: 'center' }}>
                       <Text style={{ color: day_Selected?.date == item.date ? 'white' : 'black', fontSize: 14, fontWeight: 'bold' }}>{daylist[0].date == item.date ? 'Hôm nay' : fomatsDate(item.date)}</Text>
                     </View>
@@ -252,7 +252,7 @@ const AppointmentScreen = ({ route, navigation}) => {
           </View>
 
           {/* phương thức thanh toán  */}
-          <View style={{ flexDirection: 'row' ,marginTop:-4}}>
+          <View style={{ flexDirection: 'row', marginTop: -4 }}>
             {checkSTatus(pay_Method)}
             <View style={{ flex: 1, marginStart: 12 }}>
               <Text style={styles.title}>4. Phương thức thanh toán</Text>
@@ -287,7 +287,7 @@ const AppointmentScreen = ({ route, navigation}) => {
 
               {/* xử lý khi có dịch vụ được chọn */}
               <View style={{ height: 90 }}>
-                <Text style={{ marginTop:24 ,fontSize:18,fontWeight:'bold',color:colors.primary}}>Tổng tiền dịch vụ : {totalAmount} K</Text>
+                <Text style={{ marginTop: 24, fontSize: 18, fontWeight: 'bold', color: colors.primary }}>Tổng tiền dịch vụ : {totalAmount} K</Text>
               </View>
 
             </View>
@@ -298,97 +298,97 @@ const AppointmentScreen = ({ route, navigation}) => {
             <View style={{ height: 2, width: 20, backgroundColor: checkButtom() }}>
 
             </View>
-            {selectedServices && barber_Selected && time_Selected && day_Selected && pay_Method ? 
-              <TouchableOpacity onPress={()=>{onHandel_Order()}} style={{ flex: 1 }}>
-              <View style={{ flex: 1, height: 50, backgroundColor: colors.primary, borderRadius: 8, justifyContent: 'center' }}>
-                <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
+            {selectedServices && barber_Selected && time_Selected && day_Selected && pay_Method ?
+              <TouchableOpacity onPress={() => { onHandel_Order() }} style={{ flex: 1 }}>
+                <View style={{ flex: 1, height: 50, backgroundColor: colors.primary, borderRadius: 8, justifyContent: 'center' }}>
+                  <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
+                </View>
+              </TouchableOpacity>
+              :
+              <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, height: 50, backgroundColor: 'gray', borderRadius: 8, justifyContent: 'center' }}>
+                  <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
+                </View>
               </View>
-            </TouchableOpacity>
-            :
-            <View style={{ flex: 1 }}>
-              <View style={{ flex: 1, height: 50, backgroundColor: 'gray', borderRadius: 8, justifyContent: 'center' }}>
-                <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
-              </View>
-            </View>
             }
-            
+
           </View>
 
           <Modal visible={modalCheck} animationType='fade' transparent={true}>
-                 <View style={{flex:1,backgroundColor:colors.background}}>
-                       <Text style={{textAlign:'center',marginTop:32,fontSize:20,fontWeight:'bold',color:'green'}}>Bạn đang có giao dịch </Text>
-                       <View style={{backgroundColor:'white',marginHorizontal:24,borderRadius:24,marginTop:24}}>
-                         <Image source={require('../../Resources/assets/logo/Bee_Barber.png')} style={{width:120,height:22,margin:12}}/>
-                         <View style={{marginStart:12}}>
-                              <Text style={{fontWeight:'bold',color:colors.primary200}}>Đặt lịch cắt tóc</Text>
-                              <View>
-                                 <Text style={{marginVertical:4}}>Barber : {barber_Selected?.name}</Text>
-                                 <Text style={{marginVertical:4}}>Danh sách dịch vụ : {selectedServices.length}</Text>
-                                 <Text style={{marginVertical:4}}>Tổng tiền : <Text style={{color:colors.primary,fontWeight:'bold'}}>{totalAmount}.000</Text></Text>
-                                <FlatList style={{marginEnd:12,marginBottom:12}} data={selectedServices} 
-                                          horizontal={true}
-                                          keyExtractor={(item) => item.id}
-                                          showsHorizontalScrollIndicator={false}
-                                          renderItem={({item})=>{
-                                            const url = replaceLocalhostWithIP(item.images)
-                                            return (
-                                                  <View style={{width:120,backgroundColor:colors.background,margin:6,borderRadius:12,padding:4}}>
-                                                          <Text style={styles.textName}>{item.name}</Text>
-                                                          <Image source={{uri:url}} style={{width:100,height:80,borderRadius:8}}/>
-                                            
-                                                      <View style={{flexDirection:'row',marginTop:24,bottom:10,justifyContent:'space-around',alignItems:'center'}}>
-                                                              <Text style={{color:colors.primary200,textAlign:'center'}}>{item.duration}'</Text>
-                                                               <Text style={{color:colors.primary,fontWeight:'bold',textAlign:'center'}}>{item.price}k</Text>
-                                                       
-                                                      </View>
-                                                  </View>
-                                            )
-                                          }}
-                                />
-                              </View>
-                         </View>
-                       </View>
-                       <View style={{width:'100%',alignItems:'center',marginTop:40}}>
-                          <Image style={{width:80,height:80}} source={dataChechZaloPay?.return_code ===1 ? require('../../Resources/assets/icons/Success.png') :require('../../Resources/assets/icons/filled.png') }/>
-                       </View>
-                      
-                       <Text style={{textAlign:'center',marginTop:12,fontSize:16,color:dataChechZaloPay?.return_code ===1 ?'green':'red'}}>{dataChechZaloPay?.return_message}</Text>
-                       
-                       {dataChechZaloPay?.return_code ===1 ? <View style={{alignItems:'center'}}>
-                        <TouchableOpacity onPress={()=>{navigation.navigate('title3')}}>
-                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,backgroundColor:colors.primary}}>
-                             <Text style={{fontWeight:'bold',color:'white'}}>OK</Text>
-                           </View>
-                        </TouchableOpacity>
-                       </View> : 
-                       <View style={{flexDirection:'row'}}>
-                        
-                      </View>}
-                 </View>
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
+              <Text style={{ textAlign: 'center', marginTop: 32, fontSize: 20, fontWeight: 'bold', color: 'green' }}>Bạn đang có giao dịch </Text>
+              <View style={{ backgroundColor: 'white', marginHorizontal: 24, borderRadius: 24, marginTop: 24 }}>
+                <Image source={require('../../Resources/assets/logo/Bee_Barber.png')} style={{ width: 120, height: 22, margin: 12 }} />
+                <View style={{ marginStart: 12 }}>
+                  <Text style={{ fontWeight: 'bold', color: colors.primary200 }}>Đặt lịch cắt tóc</Text>
+                  <View>
+                    <Text style={{ marginVertical: 4 }}>Barber : {barber_Selected?.name}</Text>
+                    <Text style={{ marginVertical: 4 }}>Danh sách dịch vụ : {selectedServices.length}</Text>
+                    <Text style={{ marginVertical: 4 }}>Tổng tiền : <Text style={{ color: colors.primary, fontWeight: 'bold' }}>{totalAmount}.000</Text></Text>
+                    <FlatList style={{ marginEnd: 12, marginBottom: 12 }} data={selectedServices}
+                      horizontal={true}
+                      keyExtractor={(item) => item.id}
+                      showsHorizontalScrollIndicator={false}
+                      renderItem={({ item }) => {
+                        const url = replaceLocalhostWithIP(item.images)
+                        return (
+                          <View style={{ width: 120, backgroundColor: colors.background, margin: 6, borderRadius: 12, padding: 4 }}>
+                            <Text style={styles.textName}>{item.name}</Text>
+                            <Image source={{ uri: url }} style={{ width: 100, height: 80, borderRadius: 8 }} />
+
+                            <View style={{ flexDirection: 'row', marginTop: 24, bottom: 10, justifyContent: 'space-around', alignItems: 'center' }}>
+                              <Text style={{ color: colors.primary200, textAlign: 'center' }}>{item.duration}'</Text>
+                              <Text style={{ color: colors.primary, fontWeight: 'bold', textAlign: 'center' }}>{item.price}k</Text>
+
+                            </View>
+                          </View>
+                        )
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View style={{ width: '100%', alignItems: 'center', marginTop: 40 }}>
+                <Image style={{ width: 80, height: 80 }} source={dataChechZaloPay?.return_code === 1 ? require('../../Resources/assets/icons/Success.png') : require('../../Resources/assets/icons/filled.png')} />
+              </View>
+
+              <Text style={{ textAlign: 'center', marginTop: 12, fontSize: 16, color: dataChechZaloPay?.return_code === 1 ? 'green' : 'red' }}>{dataChechZaloPay?.return_message}</Text>
+
+              {dataChechZaloPay?.return_code === 1 ? <View style={{ alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => { navigation.navigate('title3') }}>
+                  <View style={{ width: 100, height: 45, borderWidth: 1, borderColor: colors.primary100, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40, backgroundColor: colors.primary }}>
+                    <Text style={{ fontWeight: 'bold', color: 'white' }}>OK</Text>
+                  </View>
+                </TouchableOpacity>
+              </View> :
+                <View style={{ flexDirection: 'row' }}>
+
+                </View>}
+            </View>
           </Modal>
 
           <Modal visible={modalSucces} animationType='fade'>
-                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{fontSize:20,marginBottom:60}}>Đặt lịch thành công</Text>
-                        <Image source={require('../../Resources/assets/icons/Success.png')} style={{width:80,height:80}} />
-                        <TouchableOpacity onPress={()=>{setmodalSucces(false);navigation.navigate('title3')}}>
-                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40}}>
-                             <Text style={{fontWeight:'bold',color:colors.primary}}>OK</Text>
-                           </View>
-                        </TouchableOpacity>
-                 </View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 20, marginBottom: 60 }}>Đặt lịch thành công</Text>
+              <Image source={require('../../Resources/assets/icons/Success.png')} style={{ width: 80, height: 80 }} />
+              <TouchableOpacity onPress={() => { setmodalSucces(false); navigation.navigate('title3') }}>
+                <View style={{ width: 100, height: 45, borderWidth: 1, borderColor: colors.primary100, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
+                  <Text style={{ fontWeight: 'bold', color: colors.primary }}>OK</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </Modal>
           <Modal visible={modalIsloading} animationType='fade' transparent={true}>
-                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <View style={{width:120,height:120,backgroundColor:'white',justifyContent:'center',alignItems:'center',borderRadius:12}}>
-                          <ActivityIndicator size={50} color={colors.primary} />
-                        </View>
-                 </View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ width: 120, height: 120, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', borderRadius: 12 }}>
+                <ActivityIndicator size={50} color={colors.primary} />
+              </View>
+            </View>
           </Modal>
         </View>
       </ScrollView>
     </SafeAreaView >
-  
+
   )
 }
 
@@ -409,8 +409,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     flex: 1,
-    marginStart:50
-    
+    marginStart: 50
+
   },
   contentContainer: {
     paddingHorizontal: 24,

@@ -13,11 +13,13 @@ import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
 import UserProfile from '../screens/UserProfile'
 import Cart from '../screens/Cart';
-import ProductScreen from '../components/shop/ProductScreen';import WelcomeScreen from '../screens/WelcomeScreen';
+import ProductScreen from '../components/shop/ProductScreen'; import WelcomeScreen from '../screens/WelcomeScreen';
 import TestZaloPay from '../screens/TestZaloPay';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import UpdateUserScreen from '../screens/UpdateUserScreen';
+import ServicesScreen from '../screens/ServicesScreen';
+import SearchProduct from '../components/shop/SearchProduct';
 
 
 const Stack = createNativeStackNavigator();
@@ -32,15 +34,15 @@ const AppNavigation = () => {
 
     <Provider>
       <Stack.Navigator initialRouteName="WelcomeScreen">
-      <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{headerShown:false}} />
-      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{headerShown:false}} />
-      <Stack.Screen name="Login" component={LoginScreen} options={{headerShown:false}} />
-      <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{headerShown:false}} />
+        <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{ headerShown: false }} />
+        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="CategoriesProductsScreen"
@@ -75,7 +77,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{zIndex: 1000,marginTop:32}}>
+                  style={{ zIndex: 1000, marginTop: 32 }}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Trang chủ');
@@ -115,7 +117,7 @@ const AppNavigation = () => {
           name="CategoriesSortingProduct"
           component={CategoriesSortingProduct}
           options={{
-            title:"Thêm",
+            title: "Thêm",
             headerShown: true,
             headerRight: () => (
               <View style={styles.headerRight}>
@@ -135,7 +137,7 @@ const AppNavigation = () => {
                 <Menu
                   visible={visible}
                   onDismiss={closeMenu}
-                  mode = 'elevated'
+                  mode='elevated'
                   theme={{ colors: { primary: 'green' } }}
                   anchor={
                     <CircleBorder
@@ -146,7 +148,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{zIndex: 1000,marginTop:32}}>
+                  style={{ zIndex: 1000, marginTop: 32 }}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Option 1 clicked');
@@ -213,7 +215,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{zIndex: 1000,marginTop:32}}>
+                  style={{ zIndex: 1000, marginTop: 32 }}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Trang chủ');
@@ -254,14 +256,49 @@ const AppNavigation = () => {
           options={{
             headerShown: true,
             title: 'Chăm sóc da',
+  
+          }}
+          headerBackButtonMenuEnabled
+        />
+        <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
+          options={{ title: 'Đặt lịch giữ chỗ ' }} />
+        <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
+          options={{ title: 'Dịch vụ theo danh mục' }}
+        />
+        <Stack.Screen name='ServicesScreen' component={ServicesScreen}
+          options={{ title: 'Chọn dịch vụ', headerShown: false }}
+        />
+        <Stack.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={{
+            title: 'Thông tin tài khoản',
+            headerTitleAlign: 'center'
+          }}
+        />
+        <Stack.Screen
+          name="UpdateUserScreen"
+          component={UpdateUserScreen}
+          options={{
+            title: 'Cập nhật thông tin',
+            headerTitleAlign: 'center'
+          }}
+        />
+        <Stack.Screen
+          name="Cart"
+          component={Cart}
+          options={{
+            title: 'Giỏ Hàng',
+            headerTitleAlign: 'center'
+          }}
+        />
+        <Stack.Screen name="Search"
+          component={SearchProduct} 
+          options={{
+            headerShown:true,
+            headerTitle:"",
             headerRight: () => (
               <View style={styles.headerRight}>
-                <CircleBorder
-                  name="search-outline"
-                  size={20}
-                  background="#f7f7f7"
-                  border="#e3e3e3"
-                />
                 <CircleBorder
                   name="cart-outline"
                   size={20}
@@ -313,52 +350,8 @@ const AppNavigation = () => {
                 </Menu>
               </View>
             ),
-          }}
-          headerBackButtonMenuEnabled
-        />
-        <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-          options={{ title: 'Đặt lịch giữ chỗ ' }} />
-        <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-          options={{ title: 'Dịch vụ theo danh mục' }}
-        />
-        <Stack.Screen name='ServicesScreen' component={ServicesScreen}
-          options={{ title: 'Chọn dịch vụ', headerShown: false }}
-        />
-        <Stack.Screen
-          name="UserProfile"
-          component={UserProfile}
-          options={{
-            title: 'Thông tin tài khoản',
-            headerTitleAlign: 'center'
-          }}
-         <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-        options={{ title: 'Đặt lịch giữ chỗ ' }}
-      />
-      <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-         options={{ title: 'Dịch vụ theo danh mục' }}
-      />
-      <Stack.Screen 
-          name="UserProfile" 
-          component={UserProfile} 
-          options={{ title: 'Thông tin tài khoản',
-            headerTitleAlign: 'center'  
-           }}
-        />
-        <Stack.Screen 
-          name="UpdateUserScreen" 
-          component={UpdateUserScreen} 
-          options={{ title: 'Cập nhật thông tin',
-            headerTitleAlign: 'center'  
-           }}
-        />
-      <Stack.Screen 
-          name="Cart" 
-          component={Cart} 
-          options={{ title: 'Giỏ Hàng' ,
-            headerTitleAlign: 'center'  
-          }}
-        />
-   </Stack.Navigator>
+          }}/>
+      </Stack.Navigator>
     </Provider>
   );
 };

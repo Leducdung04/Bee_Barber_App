@@ -3427,6 +3427,11 @@ etag@~1.8.1:
 event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   version "5.0.1"
 
+eventemitter3@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-5.0.1.tgz"
+  integrity sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==
+
 execa@^5.0.0, execa@^5.1.1:
   version "5.1.1"
   dependencies:

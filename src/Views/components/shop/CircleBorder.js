@@ -1,9 +1,11 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/Entypo';
-import {Badge} from 'react-native-paper';
+import { Badge } from 'react-native-paper';
+import { get_list_cart_item } from '../../../Services/utils/httpCartItem';
+import eventEmitter from '../../../Services/utils/event';
 
 export default function CircleBorder({
   border = 'white',
@@ -11,9 +13,9 @@ export default function CircleBorder({
   size,
   color = 'black',
   onPress,
-  badgeCount,
   circleSize = 31,
   background = 'white',
+  refreshTrigger
 }) {
   const renderIcon = () => {
     switch (name) {
@@ -32,6 +34,21 @@ export default function CircleBorder({
         return <Icon1 name={name} size={size} color={color} />;
     }
   };
+  const [badgeCount, setBadgeCount] = useState(0);
+  const fetchCartItems = async () => {
+    try {
+      const cartItems = await get_list_cart_item();
+      setBadgeCount(cartItems.length);
+    } catch (error) {
+      console.error('Lỗi lấy sản phẩm:', error.message);
+    }
+  };
+  useEffect(() => {
+    fetchCartItems();
+    const listener = eventEmitter.on('cartUpdated', fetchCartItems);
+
+    return () => listener.removeListener(); 
+  }, []);
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={[styles.container]}>
@@ -66,7 +83,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   mirrorIcon: {
-    transform: [{scaleX: -1}],
+    transform: [{ scaleX: -1 }],
   },
   badge: {
     position: 'absolute',
