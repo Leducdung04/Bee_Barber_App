@@ -117,6 +117,7 @@ export const useBookingViewModel = () => {
   }
 
   return {
+    setmodalCheck,
     setmodalIsloading,
     modalIsloading,
     setmodalSucces,

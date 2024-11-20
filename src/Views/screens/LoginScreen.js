@@ -2,49 +2,65 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { checkPhoneAndGetId, loginPhone } from '../../Services/utils/httpSingup'; // Đảm bảo đường dẫn đúng
+import { isValidPhoneNumber } from '../../Services/utils/ValidPhoneNumber';
+import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
+import colors from '../../Resources/styles/colors';
 
 const LoginScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true); // Để kiểm soát trạng thái hiển thị mật khẩu
+  const [validatePhoneNumber, setValidatePhoneNumber] = useState(false)
+  const [validatePassword, setvalidatePassword] = useState(false)
+  const [textPhone, settextPhone] = useState('Vui lòng nhập số điện thoại')
+  const [textPassword, settextPassword] = useState('Mật khẩu phải lớn hơn 6 ký tự')
+
 
   const handleLogin = async () => {
-    try {
-      // Kiểm tra số điện thoại đã đăng ký hay chưa
-      const { registered, userId } = await checkPhoneAndGetId(phoneNumber);
-
-      if (!registered) {
-        Alert.alert('Lỗi', 'Số điện thoại chưa được đăng ký');
-        return;
-      }
-
-      // Đăng nhập nếu số điện thoại đã được đăng ký
-      const loginResponse = await loginPhone(phoneNumber, password);
-
-      if (loginResponse && loginResponse.message === "Đăng nhập thành công") {
-        // Lưu userId vào AsyncStorage và chuyển trang
-        await AsyncStorage.setItem('userId', loginResponse.data._id);
-
-        navigation.navigate('TabNavigator');
-      } else {
-        Alert.alert('Lỗi', loginResponse?.message || 'Đăng nhập thất bại');
-      }
-    } catch (error) {
-      console.log('Login error:', error);
-      Alert.alert('Lỗi', 'Đăng nhập thất bại');
+    if(validateAccount()){
+      const responseUres= await loginPhone(phoneNumber,password)
+        if(responseUres?.code ===200){
+          await setUserlocal(responseUres.data)
+          navigation.navigate('TabNavigator')
+        }else if(responseUres?.code === 210){
+            settextPhone('Số điện thoại không tồn tại')
+            setValidatePhoneNumber(true)
+        }else if(responseUres?.code === 220){
+            settextPhone('Số điện thoại và mật khẩu không đúng')
+            setValidatePhoneNumber(true)
+            settextPassword('Số điện thoại và mật khẩu không đúng')
+            setvalidatePassword(true)
+        }
     }
   };
+
+  function validateAccount(){
+    if(!isValidPhoneNumber(phoneNumber)){
+      setValidatePhoneNumber(true)
+      settextPhone('Số điện thoại không đúng định dạng')
+    }
+    if(password.length<6){
+      setvalidatePassword(true)
+      settextPassword('Mật khẩu phải lớn hơn 6 ký tự')
+    }
+    if( !isValidPhoneNumber(phoneNumber) && password.length<6){
+      return 
+    }
+    return true
+  }
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.screenContainer}>
         {/* Banner Image */}
+        <Text style={styles.title}>Đăng nhập</Text>
+        <View style={{alignItems:'center',marginVertical:32}}>
         <Image
           source={require('../../Resources/assets/logo/Bee_Barber.png')} // Placeholder cho ảnh đại diện
           style={styles.bannerImage}
         />
-
-        <Text style={styles.title}>Đăng nhập</Text>
+        </View>
+        
         
         {/* Nhập số điện thoại */}
         <View style={styles.inputContainer}>
@@ -53,16 +69,15 @@ const LoginScreen = ({ navigation }) => {
             placeholder="Số điện thoại"
             keyboardType="phone-pad"
             value={phoneNumber}
-            onChangeText={text => setPhoneNumber(text)}
+            onChangeText={text =>{ setPhoneNumber(text);setValidatePhoneNumber(false)}}
           />
           <TouchableOpacity onPress={() => setPhoneNumber('')}>
             <Image
               source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
-              style={styles.clearIcon}
             />
           </TouchableOpacity>
         </View>
-        
+        {validatePhoneNumber && <Text style={{color:'red'}}>{textPhone}</Text>}
         {/* Nhập mật khẩu */}
         <View style={styles.inputContainer}>
           <TextInput
@@ -70,7 +85,7 @@ const LoginScreen = ({ navigation }) => {
             placeholder="Mật khẩu"
             secureTextEntry={secureTextEntry}
             value={password}
-            onChangeText={text => setPassword(text)}
+            onChangeText={text =>{ setPassword(text);setvalidatePassword(false)}}
           />
           <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
             <Image
@@ -81,6 +96,7 @@ const LoginScreen = ({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
+        {validatePassword && <Text style={{color:'red'}}>{textPassword}</Text>}
 
         {/* Nút Đăng nhập */}
         <TouchableOpacity style={styles.nextButton} onPress={handleLogin}>
@@ -95,7 +111,7 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity onPress={() => Alert.alert('Quên mật khẩu', 'Chức năng này chưa được triển khai.')}>
             <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('SigupScreen')}>
             <Text style={styles.signUpText}>Chưa có tài khoản?</Text>
           </TouchableOpacity>
         </View>
@@ -115,22 +131,16 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     paddingHorizontal: 20,
     backgroundColor: '#f5f5f5',
   },
   screenContainer: {
     flex: 1,
-    justifyContent: 'center',
+    marginHorizontal:24
   },
-  bannerImage: {
-    width: '100%',
-    height: 69, // Điều chỉnh kích thước theo nhu cầu
-    marginTop: -100,
-
-  },
+ 
   title: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#153A80',
     marginTop: 70,
@@ -140,16 +150,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: colors.primary300,
     marginBottom: 20,
-    paddingHorizontal: 20,
     width: '100%',
     marginTop: 20,
   },
   input: {
     flex: 1,
     fontSize: 18,
-    paddingVertical: 5,
+    paddingVertical: 12
   },
   clearIcon: {
     width: 20,
@@ -185,7 +194,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    marginTop: 32,
     paddingHorizontal: 20,
   },
   forgotPasswordText: {
@@ -199,7 +208,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     top: 20,
-    left: 0,
+    left: -20,
     width: 40,
     height: 40,
     justifyContent: 'center',

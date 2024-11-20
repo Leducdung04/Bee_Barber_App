@@ -1,27 +1,28 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
-import CategoriesProductsScreen from '../components/shop/CategoriesProductsScreen';
+import CategoriesProductsScreen from '../screens/CategoriesProductsScreen';
 import { Menu, Provider } from 'react-native-paper';
-import CircleBorder from '../components/shop/CircleBorder';
+import CircleBorder from '../components/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoriesSortingProduct from '../components/shop/CategoriesSortingProduct';
 import TopSearchScreen from '../components/shop/TopSearchScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 import AppointmentScreen from '../screens/AppointmentScreen';
-import UserProfile from '../screens/UserProfile'
-import Cart from '../screens/Cart';
-import ProductScreen from '../components/shop/ProductScreen'; import WelcomeScreen from '../screens/WelcomeScreen';
-import TestZaloPay from '../screens/TestZaloPay';
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
-import UpdateUserScreen from '../screens/UpdateUserScreen';
+import colors from '../../Resources/styles/colors';
 import ServicesScreen from '../screens/ServicesScreen';
-import SearchProduct from '../components/shop/SearchProduct';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+
+import UserProfile from '../screens/UserProfile';
+import Cart from '../screens/Cart';
+
+import DetailsHistoryScreen from '../screens/DetailsHistoryScreen';
+
+import WelcomeScreen from '../screens/WellcomeScreen';
+import LoginScreen from '../screens/LoginScreen';
+import SigupScreen from '../screens/SigupScreen';
+
 
 
 const Stack = createNativeStackNavigator();
@@ -33,7 +34,6 @@ const AppNavigation = () => {
   const closeMenu = () => setVisible(false);
 
   return (
-
     <Provider>
       <Stack.Navigator initialRouteName="WelcomeScreen">
         <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{ headerShown: false }} />
@@ -44,7 +44,7 @@ const AppNavigation = () => {
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="CategoriesProductsScreen"
@@ -79,7 +79,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  style={{zIndex: 1000, marginTop: 32}}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Trang chủ');
@@ -139,8 +139,8 @@ const AppNavigation = () => {
                 <Menu
                   visible={visible}
                   onDismiss={closeMenu}
-                  mode='elevated'
-                  theme={{ colors: { primary: 'green' } }}
+                  mode="elevated"
+                  theme={{colors: {primary: 'green'}}}
                   anchor={
                     <CircleBorder
                       name="dots-three-vertical"
@@ -150,7 +150,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  style={{zIndex: 1000, marginTop: 32}}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Option 1 clicked');
@@ -217,7 +217,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  style={{zIndex: 1000, marginTop: 32}}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Trang chủ');
@@ -275,15 +275,7 @@ const AppNavigation = () => {
           component={UserProfile}
           options={{
             title: 'Thông tin tài khoản',
-            headerTitleAlign: 'center'
-          }}
-        />
-        <Stack.Screen
-          name="UpdateUserScreen"
-          component={UpdateUserScreen}
-          options={{
-            title: 'Cập nhật thông tin',
-            headerTitleAlign: 'center'
+            headerTitleAlign: 'center',
           }}
         />
         <Stack.Screen
@@ -291,7 +283,68 @@ const AppNavigation = () => {
           component={Cart}
           options={{
             title: 'Giỏ Hàng',
-            headerTitleAlign: 'center'
+            headerTitleAlign: 'center',
+          }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={SearchProduct}
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <CircleBorder
+                  name="cart-outline"
+                  size={20}
+                  badgeCount={2}
+                  background="#f7f7f7"
+                  border="#e3e3e3"
+                />
+                <Menu
+                  visible={visible}
+                  onDismiss={closeMenu}
+                  anchor={
+                    <CircleBorder
+                      name="dots-three-vertical"
+                      size={20}
+                      background="#f7f7f7"
+                      border="#e3e3e3"
+                      onPress={openMenu}
+                    />
+                  }
+                  style={{ zIndex: 1000, marginTop: 32 }}>
+                  <Menu.Item
+                    onPress={() => {
+                      console.log('Trang chủ');
+                      closeMenu();
+                    }}
+                    title="Trang chủ"
+                    leadingIcon={() => (
+                      <MaterialCommunityIcons
+                        name="home-outline"
+                        size={23}
+                        color="black"
+                      />
+                    )}
+                  />
+                  <Menu.Item
+                    onPress={() => {
+                      console.log('Đơn hàng');
+                      closeMenu();
+                    }}
+                    title="Đơn hàng"
+                    leadingIcon={() => (
+                      <MaterialCommunityIcons
+                        name="clipboard-check-outline"
+                        size={23}
+                        color="black"
+                      />
+                    )}
+                  />
+                </Menu>
+              </View>
+            ),
           }}
         />
         <Stack.Screen
