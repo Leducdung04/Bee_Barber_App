@@ -1,4 +1,4 @@
-import { Alert, Dimensions, FlatList, Image, Modal, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Dimensions, FlatList, Image, Modal, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import colors from '../../Resources/styles/colors'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,10 +8,17 @@ import { useBookingViewModel } from '../../ViewModels/AppointmentModel';
 import { fomatsDate } from '../../Services/utils/fomatsDate';
 import SelectedServices from '../components/Appointment/SelectedServices';
 import ItemService from '../components/Item/ItemService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { deleteZaloPayload } from '../../Services/utils/ZaloPay_AsyncStorage';
 const AppointmentScreen = ({ route, navigation}) => {
   
   const {
+    setmodalCheck,
+    setmodalIsloading,
+    modalIsloading,
+    setmodalSucces,
     modalCheck,
+    modalSucces,
     daylist,
     stylists,
     listTimes,
@@ -42,6 +49,7 @@ const AppointmentScreen = ({ route, navigation}) => {
   }, [dataChechZaloPay])
   
   const  onHandel_Order = async() => {
+    setmodalIsloading(true)
     const currentDate = new Date();
     const currentTime = currentDate.toLocaleTimeString('en-US', { hour12: false });
        const appointment = {
@@ -49,10 +57,10 @@ const AppointmentScreen = ({ route, navigation}) => {
             barber_id: barber_Selected?._id,
             user_id: "66fe1856faa0e86597afdbae",
             service_id: selectedServices.map(item => item._id),
-            appointment_time: currentTime,
-            appointment_date: currentDate.toISOString().split("T")[0],
+            appointment_time: time_Selected,
+            appointment_date:day_Selected.date,
             appointment_status: "pending",
-            price: totalAmount+'000',
+            price:parseInt(totalAmount+'000', 10) ,
             },
       payment: {
             user_id: "66fe1856faa0e86597afdbae",
@@ -60,10 +68,11 @@ const AppointmentScreen = ({ route, navigation}) => {
             pay_method: pay_Method,
             time: currentTime,
             date: currentDate.toISOString().split("T")[0],
-            price: totalAmount
+            price: parseInt(totalAmount+'000', 10)
             }
        }
 
+       console.log('data thêm ',appointment)
        handle_Order_Appointment(appointment)
   }
   const Item_Barber = ({ item}) => {
@@ -85,7 +94,6 @@ const AppointmentScreen = ({ route, navigation}) => {
     </View></TouchableOpacity>
 
   }
- console.log('dịch vụ ',selectedServices)
   const checkSTatus = (check) => {
     const colorcheck = check ? colors.primary : 'gray'
     return <View style={{ alignItems: 'center', width: 26 }}>
@@ -300,11 +308,11 @@ const AppointmentScreen = ({ route, navigation}) => {
               </View>
             </TouchableOpacity>
             :
-            <TouchableOpacity onPress={()=>{Alert.alert('Vui lòng chọn đầu đủ thông tin')}} style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
               <View style={{ flex: 1, height: 50, backgroundColor: 'gray', borderRadius: 8, justifyContent: 'center' }}>
                 <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
               </View>
-            </TouchableOpacity>
+            </View>
             }
             
           </View>
@@ -322,7 +330,7 @@ const AppointmentScreen = ({ route, navigation}) => {
                                  <Text style={{marginVertical:4}}>Tổng tiền : <Text style={{color:colors.primary,fontWeight:'bold'}}>{totalAmount}.000</Text></Text>
                                 <FlatList style={{marginEnd:12,marginBottom:12}} data={selectedServices} 
                                           horizontal={true}
-                                          keyExtractor={(item) => item.id}
+                                          keyExtractor={(item) => item._id}
                                           showsHorizontalScrollIndicator={false}
                                           renderItem={({item})=>{
                                             const url = replaceLocalhostWithIP(item.images)
@@ -340,10 +348,53 @@ const AppointmentScreen = ({ route, navigation}) => {
                                             )
                                           }}
                                 />
-                                
                               </View>
                          </View>
                        </View>
+                       <View style={{width:'100%',alignItems:'center',marginTop:40}}>
+                          <Image style={{width:80,height:80}} source={dataChechZaloPay?.return_code ===1 ? require('../../Resources/assets/icons/Success.png') :require('../../Resources/assets/icons/filled.png') }/>
+                       </View>
+                      
+                       <Text style={{textAlign:'center',marginTop:12,fontSize:16,color:dataChechZaloPay?.return_code ===1 ?'green':'red'}}>{dataChechZaloPay?.return_message}</Text>
+                       
+                       {dataChechZaloPay?.return_code ===1 ? <View style={{alignItems:'center'}}>
+                        <TouchableOpacity onPress={()=>{navigation.navigate('title3')}}>
+                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,backgroundColor:colors.primary}}>
+                             <Text style={{fontWeight:'bold',color:'white'}}>OK</Text>
+                           </View>
+                        </TouchableOpacity>
+                       </View> : 
+                       <View style={{flexDirection:'row',justifyContent:'space-around'}}>
+                        <TouchableOpacity onPress={()=>{deleteZaloPayload();setmodalCheck(false)}}>
+                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,}}>
+                             <Text style={{fontWeight:'bold',color:'black'}}>Hủy</Text>
+                           </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{onHandel_Order()}}>
+                           <View style={{paddingHorizontal:12,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,backgroundColor:colors.primary}}>
+                             <Text style={{fontWeight:'bold',color:'white'}}>Thanh toán lại</Text>
+                           </View>
+                        </TouchableOpacity>
+                      </View>}
+                 </View>
+          </Modal>
+
+          <Modal visible={modalSucces} animationType='fade'>
+                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{fontSize:20,marginBottom:60}}>Đặt lịch thành công</Text>
+                        <Image source={require('../../Resources/assets/icons/Success.png')} style={{width:80,height:80}} />
+                        <TouchableOpacity onPress={()=>{setmodalSucces(false);navigation.navigate('title3')}}>
+                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40}}>
+                             <Text style={{fontWeight:'bold',color:colors.primary}}>OK</Text>
+                           </View>
+                        </TouchableOpacity>
+                 </View>
+          </Modal>
+          <Modal visible={modalIsloading} animationType='fade' transparent={true}>
+                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <View style={{width:120,height:120,backgroundColor:'white',justifyContent:'center',alignItems:'center',borderRadius:12}}>
+                          <ActivityIndicator size={50} color={colors.primary} />
+                        </View>
                  </View>
           </Modal>
         </View>

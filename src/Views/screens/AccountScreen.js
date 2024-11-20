@@ -1,24 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { deleteUserlocal, getUserlocal } from '../../Services/utils/user__AsyncStorage';
+import colors from '../../Resources/styles/colors';
 
-const AccountScreen = () => {
+const AccountScreen = ({navigation}) => {
+
+  const [UserProfile, setUserProfile] = useState(null)
+
+  useEffect(() => {
+     async function getUser(){
+      const user= await getUserlocal()
+      setUserProfile(user)
+    }
+    getUser()
+  }, [])
+  
   const handlePress = (item) => {
     Alert.alert('Thông báo', `Bạn đã nhấn vào: ${item}`);
   };
-  const navigation = useNavigation(); // Hook để điều hướng
+  
 
+  async function outAccount(){
+      await deleteUserlocal()
+      navigation.navigate('WelcomeScreen')
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
           <View style={styles.userInfo}>
-            <Image
-              source={require('../../Resources/assets/images/Avata.jpg')} // Placeholder cho ảnh đại diện
-              style={styles.profileImage}
-            />
+            <View style={{width:64,height:64,borderRadius:50,backgroundColor:colors.primary300,alignItems:'center',justifyContent:'center'}}>
+              <Image source={require('../../Resources/assets/images/men.png')} style={{width:52,height:52}}/>
+            </View>
+         
             <View style={styles.textContainer}>
-              <Text style={styles.guestText}>GUEST</Text>
-              <Text style={styles.memberText}>Chưa có hạng thành viên</Text>
+              <Text style={styles.guestText}>{UserProfile?.name}</Text>
+              <Text style={styles.memberText}>{UserProfile?.loyaltyPoints} point</Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => handlePress('Tùy chọn khác')}>
@@ -33,10 +50,12 @@ const AccountScreen = () => {
         
 
         {/* Thêm ảnh bìa lớn */}
+        <View style={{backgroundColor: colors.primary300,borderRadius:12,paddingVertical:12,marginHorizontal:12,marginVertical:12}}>
         <Image
-          source={require('../../Resources/assets/images/logo_30shine.png')} // Placeholder cho ảnh bìa lớn
-          style={styles.bannerImage}
+          source={require('../../Resources/assets/logo/Bee_Barber.png')} // Placeholder cho ảnh bìa lớn
+           style={styles.bannerImage}
         />
+        </View>
 
         {/* Nhóm chức năng sát nhau */}
         <View style={styles.group}>
@@ -113,50 +132,11 @@ const AccountScreen = () => {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.item} onPress={() => handlePress('Sở thích phục vụ')}>
-            <View style={styles.itemContainer}>
-              <Image
-                source={require('../../Resources/assets/images/interest.png')} // Placeholder cho icon
-                style={styles.icon}
-              />
-              <Text style={styles.itemText}>Sở thích phục vụ</Text>
-            </View>
-            <Image
-              source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
-              style={styles.chevronIcon}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.item} onPress={() => handlePress('Hiểu anh để phục vụ anh tốt hơn')}>
-            <View style={styles.itemContainer}>
-              <Image
-                source={require('../../Resources/assets/images/problem.png')} // Placeholder cho icon
-                style={styles.icon}
-              />
-              <Text style={styles.itemText}>Hiểu anh để phục vụ anh tốt hơn</Text>
-            </View>
-            <Image
-              source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
-              style={styles.chevronIcon}
-            />
-          </TouchableOpacity>
         </View>
 
         {/* Nhóm cuối với khoảng cách lớn hơn */}
         <View style={styles.groupWithMargin}>
-          <TouchableOpacity style={styles.item} onPress={() => handlePress('Lấy OTP xác thực giao dịch')}>
-            <View style={styles.itemContainer}>
-              <Image
-                source={require('../../Resources/assets/images/otp.png')} // Placeholder cho icon
-                style={styles.icon}
-              />
-              <Text style={styles.itemText}>Lấy OTP xác thực giao dịch</Text>
-            </View>
-            <Image
-              source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
-              style={styles.chevronIcon}
-            />
-          </TouchableOpacity>
+         
 
           <TouchableOpacity style={styles.item} onPress={() => handlePress('Thông tin hỗ trợ khách hàng')}>
             <View style={styles.itemContainer}>
@@ -171,17 +151,22 @@ const AccountScreen = () => {
               style={styles.chevronIcon}
             />
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.item} onPress={() => outAccount()}>
+            <View style={styles.itemContainer}>
+              <Image
+                source={require('../../Resources/assets/images/otp.png')} // Placeholder cho icon
+                style={styles.icon}
+              />
+              <Text style={styles.itemText}>Đăng xuất</Text>
+            </View>
+            <Image
+              source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
+              style={styles.chevronIcon}
+            />
+          </TouchableOpacity>
         </View>
       </ScrollView>
-
-      {/* Thanh điều hướng dưới */}
-      {/* <View style={styles.navBar}>
-        <Text style={styles.navText}>Home</Text>
-        <Text style={styles.navText}>Shop</Text>
-        <Text style={styles.navText}>Đặt lịch</Text>
-        <Text style={styles.navText}>Lịch sử cắt</Text>
-        <Text style={styles.navText}>Tài khoản</Text>
-      </View> */}
     </View>
   );
 };
@@ -220,7 +205,7 @@ const styles = StyleSheet.create({
   },
   memberText: {
     fontSize: 14,
-    color: '#666666',
+    color: colors.primary300,
   },
   chevronIcon: {
     width: 18,
@@ -228,18 +213,9 @@ const styles = StyleSheet.create({
     tintColor: '#153A80'
   },
   bannerImage: {
-    width: '95%', // Giảm bề ngang để có khoảng cách 2 bên
-    height: 200, // Chiều cao banner
-    backgroundColor: '#e0e0e0', // Placeholder cho màu nền
-    marginBottom: 10,
+    width: '90%', // Giảm bề ngang để có khoảng cách 2 bên
+    height: 60, // Chiều cao banner
     alignSelf: 'center', // Căn giữa banner
-    borderRadius: 15, // Bo góc
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5, // Hiệu ứng đổ bóng cho iOS
-    elevation: 5, // Hiệu ứng đổ bóng cho Android
-    overflow: 'hidden', // Đảm bảo phần bo góc được hiển thị
     marginTop:10,
   },
   

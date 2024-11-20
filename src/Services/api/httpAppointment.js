@@ -7,7 +7,7 @@ export const Add_Appointment_API = async (appointment) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({appointment}),
+      body: JSON.stringify(appointment),
     });
     const data = await response.json();
     if (!response.ok) {

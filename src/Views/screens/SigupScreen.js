@@ -1,196 +1,139 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Alert } from 'react-native';
-import { registerUser, checkPhoneNumberExists } from '../../Services/utils/httpSingup'; // Giữ nguyên các hàm kiểm tra và đăng ký của bạn
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Alert, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { checkPhoneAndGetId, loginPhone, registerUser } from '../../Services/utils/httpSingup'; // Đảm bảo đường dẫn đúng
+import { isValidPhoneNumber } from '../../Services/utils/ValidPhoneNumber';
+import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
+import colors from '../../Resources/styles/colors';
 
-const RegisterScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [name, setname] = useState('')
+  const [validatePhoneNumber, setValidatePhoneNumber] = useState(false)
+  const [textValidatePhone, settextValidatePhone] = useState('Số điện thoại không đúng định dạng !')
+  const [validatePassword, setvalidatePassword] = useState(false)
+  const [validateName, setvalidateName] = useState(false)
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // Mật khẩu xác nhận
-  const [currentScreen, setCurrentScreen] = useState('phoneNumber'); // Màn hình hiện tại
-  const [phoneExists, setPhoneExists] = useState(false); // Trạng thái kiểm tra số điện thoại đã tồn tại
+  const [secureTextEntry, setSecureTextEntry] = useState(true); // Để kiểm soát trạng thái hiển thị mật khẩu
 
-  const handlePhoneNumberChange = async (text) => {
-    let formattedPhoneNumber = text.trim();
-    if (formattedPhoneNumber.charAt(0) === '0') {
-      setPhoneNumber(formattedPhoneNumber);
-    }
-    setPhoneNumber(formattedPhoneNumber);
-
-    // Kiểm tra số điện thoại đã đăng ký
-    if (formattedPhoneNumber.match(/^\+84\d{9}$/) || formattedPhoneNumber.match(/^0\d{9}$/)) { // Kiểm tra định dạng số điện thoại
-      const exists = await checkPhoneNumberExists(formattedPhoneNumber);
-      setPhoneExists(exists); // Lưu kết quả kiểm tra
-    } else {
-      setPhoneExists(false); // Nếu số điện thoại không hợp lệ, đặt lại trạng thái
-    }
-  };
-
-  const handlePasswordChange = (text) => {
-    setPassword(text);
-  };
-
-  const handleConfirmPasswordChange = (text) => {
-    setConfirmPassword(text); // Lấy mật khẩu xác nhận
-  };
-
-  const clearInputFields = () => {
-    setPhoneNumber('');
-    setPassword('');
-    setConfirmPassword('');
-    setCurrentScreen('phoneNumber'); // Quay lại màn hình số điện thoại
-    setPhoneExists(false); // Đặt lại trạng thái kiểm tra số điện thoại
-  };
-
-  const handleNext = async () => {
-    if (currentScreen === 'phoneNumber') {
-      if (!(phoneNumber.match(/^\+84\d{9}$/) || phoneNumber.match(/^0\d{9}$/))) {
-        Alert.alert('Lỗi', 'Số điện thoại không hợp lệ.');
-        return;
-      }
-
-      // Kiểm tra nếu số điện thoại đã được đăng ký
-      if (phoneExists) {
-        Alert.alert('Thông báo', 'Số điện thoại đã được đăng ký.');
-        return; // Nếu số điện thoại đã tồn tại, dừng lại
-      }
-
-      // Nếu số điện thoại chưa được đăng ký, chuyển sang màn hình mật khẩu
-      setCurrentScreen('password');
-    } else if (currentScreen === 'password') {
-      if (password.length < 6) {
-        Alert.alert('Lỗi', 'Mật khẩu phải chứa ít nhất 6 ký tự.');
-        return;
-      }
-
-      // Chuyển sang màn hình nhập lại mật khẩu
-      setCurrentScreen('confirmPassword');
-    } else if (currentScreen === 'confirmPassword') {
-      if (password !== confirmPassword) {
-        Alert.alert('Lỗi', 'Mật khẩu và xác nhận mật khẩu không khớp.');
-        return;
-      }
-
-      try {
-        const apiResult = await registerUser(phoneNumber, password);
-        if (apiResult.message === "Đăng ký thành công") {
-          Alert.alert('Thành công', 'Đăng ký thành công!');
-          clearInputFields(); // Xóa hết thông tin đã nhập
-          navigation.navigate('Login'); // Chuyển hướng sau khi đăng ký thành công
-        } else {
-          Alert.alert('Lỗi', 'Đăng ký thất bại qua API.');
-          clearInputFields(); // Xóa hết thông tin đã nhập
-        }
-      } catch (error) {
-        Alert.alert('Lỗi', 'Đăng ký thất bại.');
-        console.error('Đăng ký thất bại:', error);
-        clearInputFields(); // Xóa hết thông tin đã nhập
+ 
+  async function handleSigup(){
+    if(validateAccount()){
+      const responseUres = await registerUser(phoneNumber,password,name)
+      console.log('data',responseUres)
+      if(responseUres.status === 200){
+        await setUserlocal(responseUres.data)
+        navigation.navigate('TabNavigator')
+      }else if(responseUres.status ===210){
+        setValidatePhoneNumber(true)
+        settextValidatePhone('Số điện thoại đã được đăng ký')
       }
     }
-  };
 
-  const handleBack = () => {
-    if (currentScreen === 'phoneNumber') {
-      navigation.navigate('WelcomeScreen');
-    } else if (currentScreen === 'password' || currentScreen === 'confirmPassword') {
-      setCurrentScreen('phoneNumber');
+  }
+
+  function validateAccount(){
+    if(name === ''){
+      setvalidateName(true)
     }
-  };
-
-  const renderPhoneNumberScreen = () => (
-    <View style={styles.screenContainer}>
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Image
-          source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-left.png' }}
-          style={styles.iconBack}
-        />
-      </TouchableOpacity>
-      <Text style={styles.title}>Mời anh nhập số điện thoại</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="0987654321"
-          keyboardType="phone-pad"
-          value={phoneNumber}
-          onChangeText={handlePhoneNumberChange}
-        />
-        <TouchableOpacity onPress={() => setPhoneNumber('')}>
-          <Image
-            source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
-            style={styles.clearIcon}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
-  const renderPasswordScreen = () => (
-    <View style={styles.screenContainer}>
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Image
-          source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-left.png' }}
-          style={styles.iconBack}
-        />
-      </TouchableOpacity>
-      <Text style={styles.title}>Nhập mật khẩu</Text>
-      <Text style={styles.subTitle}>Số điện thoại: {phoneNumber}</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Mật khẩu"
-          secureTextEntry
-          keyboardType="default"
-          value={password}
-          onChangeText={handlePasswordChange}
-        />
-        <TouchableOpacity onPress={() => setPassword('')}>
-          <Image
-            source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
-            style={styles.clearIcon}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
-  const renderConfirmPasswordScreen = () => ( <View style={styles.screenContainer}>
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-        <Image
-          source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-left.png' }}
-          style={styles.iconBack}
-        />
-      </TouchableOpacity>
-      <Text style={styles.title}>Nhập lại mật khẩu</Text>
-      <Text style={styles.subTitle}>Số điện thoại: {phoneNumber}</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Nhập lại mật khẩu"
-          secureTextEntry
-          keyboardType="default"
-          value={confirmPassword}
-          onChangeText={handleConfirmPasswordChange}
-        />
-        <TouchableOpacity onPress={() => setConfirmPassword('')}>
-          <Image
-            source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
-            style={styles.clearIcon}
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+    if(!isValidPhoneNumber(phoneNumber)){
+      settextValidatePhone('Số điện thoại không đúng định dạng !')
+      setValidatePhoneNumber(true)
+    }
+    if(password.length<=6){
+      setvalidatePassword(true)
+    }
+    if(name === '' && phoneNumber === ''&& password.length<=6){
+      return false
+    }
+    return true
+  }
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      {currentScreen === 'phoneNumber' && renderPhoneNumberScreen()}
-      {currentScreen === 'password' && renderPasswordScreen()}
-      {currentScreen === 'confirmPassword' && renderConfirmPasswordScreen()}
-      <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-        <Image
-          source={{ uri: 'https://img.icons8.com/ios-glyphs/30/ffffff/chevron-right.png' }}
-          style={styles.iconNext}
-        />
-      </TouchableOpacity>
+      <View style={styles.screenContainer}>
+       
+        <Text  style={styles.title}>Đăng ký tài khoản</Text>
+        <View style={{alignItems:'center',marginVertical:24}}>
+          <Image source={require('../../Resources/assets/logo/Bee_Barber.png')}/>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Họ tên"
+            value={name}
+            onChangeText={text => {setname(text);setvalidateName(false)}}
+          />
+          <TouchableOpacity onPress={() => setname('')}>
+            <Image
+              source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
+              style={styles.clearIcon}
+            />
+          </TouchableOpacity>
+        </View>
+        {validateName && <Text style={{color:'red'}}>Vui lòng nhập họ tên !</Text>}
+        {/* Nhập số điện thoại */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Số điện thoại"
+            keyboardType="phone-pad"
+            value={phoneNumber}
+            onChangeText={text =>{ setPhoneNumber(text);setValidatePhoneNumber(false)}}
+          />
+          <TouchableOpacity onPress={() => setPhoneNumber('')}>
+            <Image
+              source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
+              style={styles.clearIcon}
+            />
+          </TouchableOpacity>
+        </View>
+        {validatePhoneNumber && <Text style={{color:'red'}}>{textValidatePhone}</Text>}
+        {/* Nhập mật khẩu */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Mật khẩu"
+            secureTextEntry={secureTextEntry}
+            value={password}
+            onChangeText={text =>{ setPassword(text);setvalidatePassword(false)}}
+          />
+          <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
+            <Image
+              source={secureTextEntry
+                ? require('../../Resources/assets/images/eye-off.png') // Hình ảnh mắt đóng
+                : require('../../Resources/assets/images/eye-on.png')} // Hình ảnh mắt mở
+              style={styles.eyeIcon}
+            />
+          </TouchableOpacity>
+        </View>
+        {validatePassword && <Text style={{color:'red'}}>Mật khẩu chứa ít nhất 6 ký tự !</Text>}
+        {/* Nút Đăng nhập */}
+        <TouchableOpacity style={styles.nextButton} onPress={handleSigup}>
+          <Image
+            source={{ uri: 'https://img.icons8.com/ios-glyphs/30/ffffff/chevron-right.png' }}
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        
+        {/* Quên mật khẩu và Chưa có tài khoản */}
+        <View style={styles.footerContainer}>
+          <TouchableOpacity onPress={() => Alert.alert('Quên mật khẩu', 'Chức năng này chưa được triển khai.')}>
+            <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+            <Text style={styles.signUpText}>Bạn đã có tài khoản?</Text>
+          </TouchableOpacity>
+        </View>
+        
+        {/* Nút quay lại */}
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Image
+            source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-left.png' }}
+            style={styles.icon1}
+          />
+        </TouchableOpacity>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -198,75 +141,104 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     paddingHorizontal: 20,
     backgroundColor: '#f5f5f5',
   },
   screenContainer: {
-    alignItems: 'center',
-    paddingTop: 80, // Đẩy các phần tử lên gần phía trên màn hình
+    flex: 1,
+    marginHorizontal:12
+    //justifyContent: 'center',
   },
-  backButton: {
-    position: 'absolute',
-    top: 40,
-    left: 10,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+  bannerImage: {
+    width: '100%',
+    height: 69, // Điều chỉnh kích thước theo nhu cầu
+    marginTop: -100,
+
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#153A80',
-    marginBottom: 5,
-    marginTop: 20,
-  },
-  subTitle: {
-    fontSize: 15,
-    color: '#153A80',
+    marginTop: 100,
+    marginBottom:24,
     textAlign: 'center',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    width: '90%',
-    marginTop: 20
+    borderBottomColor:colors.primary300,
+    marginBottom: 12,
+    // paddingHorizontal: 6,
+    width: '100%',
+    marginVertical:32,
+
   },
   input: {
     flex: 1,
-    fontSize: 20,
-    paddingVertical: 15,
+    fontSize: 18,
+    paddingVertical: 5,
   },
   clearIcon: {
     width: 20,
     height: 20,
     tintColor: '#000',
   },
+  eyeIcon: {
+    width: 25,
+    height: 25,
+    marginLeft: 10,
+  },
   nextButton: {
     position: 'absolute',
     bottom: 30,
-    right: 30,
+    right: 10,
     backgroundColor: '#153A80',
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  iconNext: {
+  icon: {
     width: 25,
     height: 25,
     tintColor: '#fff',
   },
-  iconBack: {
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 32,
+    paddingHorizontal: 20,
+  },
+  forgotPasswordText: {
+    color: '#153A80',
+    fontWeight: 'bold',
+  },
+  signUpText: {
+    color: '#153A80',
+    fontWeight: 'bold',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 0,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon1: {
     width: 25,
     height: 25,
-    tintColor: '#000',
+    tintColor: '#000000',
   },
 });
 
-export default RegisterScreen;
+export default LoginScreen;

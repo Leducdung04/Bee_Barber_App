@@ -21,21 +21,18 @@ const WelcomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const checkUserStatus = async () => {
-      const userId = await AsyncStorage.getItem('userId');
+      const userId = await AsyncStorage.getItem('userLocal');
       if (userId) {
-        setIsUserLoggedIn(true);
+       // setIsUserLoggedIn(true);
         // Nếu có userId, sau 3 giây chuyển đến màn Home
         setTimeout(() => {
-          navigation.replace('Login');
+          navigation.replace('TabNavigator');
         }, 3000);
       } else {
         setTimeout(() => {
           setIsLoadingData(false);
         }, 3000);
       }
-        // setTimeout(() => {
-        //   setIsLoadingData(false);
-        // }, 3000);
     };
 
     checkUserStatus();
