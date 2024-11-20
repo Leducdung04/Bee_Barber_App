@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
@@ -20,13 +20,15 @@ import RegisterScreen from '../screens/RegisterScreen';
 import UpdateUserScreen from '../screens/UpdateUserScreen';
 import ServicesScreen from '../screens/ServicesScreen';
 import SearchProduct from '../components/shop/SearchProduct';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigation = () => {
   const [visible, setVisible] = useState(false);
-
+  const nav = useNavigation();
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
@@ -256,7 +258,7 @@ const AppNavigation = () => {
           options={{
             headerShown: true,
             title: 'Chăm sóc da',
-  
+
           }}
           headerBackButtonMenuEnabled
         />
@@ -292,11 +294,12 @@ const AppNavigation = () => {
             headerTitleAlign: 'center'
           }}
         />
-        <Stack.Screen name="Search"
-          component={SearchProduct} 
+        <Stack.Screen
+          name="Search"
+          component={SearchProduct}
           options={{
-            headerShown:true,
-            headerTitle:"",
+            headerShown: true,
+            headerTitle: "",
             headerRight: () => (
               <View style={styles.headerRight}>
                 <CircleBorder
@@ -350,7 +353,8 @@ const AppNavigation = () => {
                 </Menu>
               </View>
             ),
-          }}/>
+          }}
+        />
       </Stack.Navigator>
     </Provider>
   );
@@ -364,5 +368,27 @@ const styles = StyleSheet.create({
     gap: 8,
     alignSelf: 'flex-end',
     zIndex: 1000,
+  },
+  searchContainer: {
+    width: 313,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 17,
+    backgroundColor: '#f9f9f9',
+    paddingHorizontal: 3,
+    paddingVertical: 1,
+    marginVertical: 1,
+    height: 30,
+  },
+  input: {
+    flex: 1,
+    fontSize: 14,
+    color: '#333',
+    paddingVertical: 0,
+  },
+  iconContainer: {
+    marginRight: 1,
   },
 });

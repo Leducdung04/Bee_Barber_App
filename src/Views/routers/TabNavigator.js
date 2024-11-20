@@ -143,8 +143,10 @@ const TabNavigator = () => {
           ),
           headerRight: ({ tintColor }) => (
             <View style={{ flexDirection: 'row', marginHorizontal: 32 }}>
-              <Image source={require('../../Resources/assets/icons/cart.png')}
-                style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 24 }} />
+              <TouchableOpacity onPress={() => nav.navigate("Cart")}>
+                <Image source={require('../../Resources/assets/icons/cart.png')}
+                  style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 24 }} />
+              </TouchableOpacity>
               <Image source={require('../../Resources/assets/icons/notification.png')}
                 style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 12 }} />
             </View>
@@ -169,16 +171,11 @@ const TabNavigator = () => {
           ),
           headerRight: () => (
             <View style={styles.headerRight}>
-              <CircleBorder start
-                name="search-outline"
-                size={24}
-                onPress = {() => nav.navigate("Search")}
-              />
-              <CircleBorder
-                name="cart-outline"
-                size={24}
-                onPress = {() => nav.navigate("Cart")}
-              />
+              <TouchableOpacity onPress={() => nav.navigate("Cart")}>
+                <Image source={require('../../Resources/assets/icons/cart.png')}
+                  style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 24 }} />
+              </TouchableOpacity>
+
             </View>
           ),
         }}
