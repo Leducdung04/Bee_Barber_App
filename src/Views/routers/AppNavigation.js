@@ -16,7 +16,14 @@ import ServicesScreen from '../screens/ServicesScreen';
 
 import UserProfile from '../screens/UserProfile';
 import Cart from '../screens/Cart';
+
 import DetailsHistoryScreen from '../screens/DetailsHistoryScreen';
+
+import WelcomeScreen from '../screens/WellcomeScreen';
+import LoginScreen from '../screens/LoginScreen';
+import SigupScreen from '../screens/SigupScreen';
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -28,10 +35,10 @@ const AppNavigation = () => {
 
   return (
     <Provider>
-      <Stack.Navigator initialRouteName="TabNavigator">
-        {/* <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-        options={{ title: 'Đặt lịch giữ chỗ ' ,headerTintColor:colors.primary }} */}
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Navigator initialRouteName="WelcomeScreen">
+        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen}options={{ headerShown: false }} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen}options={{ headerShown: false }} />
+        <Stack.Screen name="SigupScreen" component={SigupScreen} options={{ headerShown: false }}/>
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
