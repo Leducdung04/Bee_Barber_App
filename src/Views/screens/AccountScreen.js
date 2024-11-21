@@ -118,7 +118,7 @@ const AccountScreen = ({navigation}) => {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.item} onPress={() => handlePress('Lịch sử cắt')}>
+          <TouchableOpacity style={styles.item} onPress={() =>{navigation.navigate('title3')}}>
             <View style={styles.itemContainer}>
               <Image
                 source={require('../../Resources/assets/images/history.png')} // Placeholder cho icon
