@@ -6,185 +6,230 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Modal,
+  Alert,
+  TextInput,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import colors from '../../Resources/styles/colors';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {get_Appointment_history, updateAppointmentStatusToCancelel_Case, updateAppointmentStatusToCancelel_ZaloPay} from '../../Services/api/httpAppointment';
+import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
+import { Add_Review_API } from '../../Services/api/httpReview';
 
-const AppointmentHistoryScreen = () => {
+const AppointmentHistoryScreen = ({navigation}) => {
   const nav = useNavigation();
   const [datahisStory, setdatahisStory] = useState([]);
-  const api_url = 'http://10.0.2.2:3000/api/getAppointmentsByIduser/66fe1856faa0e86597afdbae';
-  
-  const getApi = async () => {
-    try {
-      const response = await fetch(api_url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setdatahisStory(data);
-      console.log(data);
-    } catch (error) {
-      console.log('Error fetching data:', error);
-    }
-  };
-  
-  useEffect(() => {
-    getApi();
-  }, []);
-  // const haircutHistory = [
-  //   {
-  //     id: '1',
-  //     Phone: '*678',
-  //     appointment_time: '5 Giờ 20 phút',
-  //     appointment_date: 'Thứ 2, Ngày 18.11, 12h00',
-  //     stylist: 'Nguyễn Văn Hải',
-  //     address: '123 Đường ABC, Quận 1, TP.HCM',
-  //     status: false,
-  //     price: 500000,
-  //     action: () => nav.navigate('DetailsHistoryScreen'),
-  //   },
-  //   {
-  //     id: '3',
-  //     Phone: '*789',
-  //     appointment_time: '6 Giờ 40 phút',
-  //     appointment_date: 'Thứ 4, Ngày 19.11, 14h00',
-  //     stylist: 'Trần Văn Hào',
-  //     address: '456 Đường XYZ, Quận 2, TP.HCM',
-  //     status: true,
-  //     price: 500000,
-  //     action: () => nav.navigate('DetailsHistoryScreen'),
-  //   },
-  // ];
-
-  const finishhaircutHistory = [];
+  const [isRating, setisRating] = useState(false)
+  const [ItemRating, setItemRating] = useState(false)
   const [rating, setRating] = useState(0);
+  const [ItemCancedel, setItemCancedel] = useState(null)
+  const [isCancedal, setisCancedal] = useState(false)
+  const [bank_account, setbank_account] = useState('')
+  const getApi = async () => {
+    const data = await get_Appointment_history();
+    console.log('hihi', data);
+    setdatahisStory(data);
+  };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      onPress={() => nav.navigate('DetailsHistoryScreen', { appointment: item })} // Chuyển sang DetailsHistoryScreen
-      style={styles.itemContainer}
-    >
-      <View style={styles.card}>
-        <Text style={styles.appointmentText}>
-          {item.status? (
-            <>
-              Đã Thanh Toán Với Giá: <Text style={styles.highlight}>{item.price}đ</Text>
-            </>
-          ) : (
-            <>
-              Chỉ Còn <Text style={styles.highlight}>{item.appointment_time} h</Text> là đến lịch hẹn
-            </>
-          )}
+  useFocusEffect(
+    React.useCallback(() => {
+      // Hàm này sẽ được gọi mỗi khi màn hình/tab này được focus
+      getApi();
+  
+      return () => {
+        // Cleanup nếu cần khi màn hình/tab bị unfocus
+      };
+    }, [])
+  );
+
+  const HandalReview=async()=>{
+    const review = {
+        barber_id: ItemRating?.barber_id?._id, // Lấy ID của barber
+        services_id: ItemRating.service_id.map(service => service._id), // Lấy danh sách ID dịch vụ
+        rating: rating, // Đặt rating cố định
+        appointment_id: ItemRating._id // Lấy ID cuộc hẹn
+      };
+      const reponse= await Add_Review_API(review)
+      if(reponse){
+        getApi()
+        setisRating(false)
+        Alert.alert("Đánh giá thành công")
+      }else{
+        Alert.alert("Vui lòng thử lại sau")
+      }
+    }
+
+    const Handalcanceled=async(item)=>{
+       Alert.alert("Xác nhận hủy lịch", "Bạn có chắc muốn hủy lịch hẹn này?", [
+        {
+          text: "No",
+          onPress: () => console.log("Người dùng đã chọn No"),
+          style: "cancel",
+        },
+        {
+          text: "Yes",
+          onPress: async() => {
+            if(item.payment.pay_method === "ZaloPay"){
+              setItemCancedel(item._id)
+              setisCancedal(true)
+            }else{
+              await updateAppointmentStatusToCancelel_Case(item._id)
+              await getApi()
+            }
+          },
+        }] ,{ cancelable: true })
+      
+    }
+
+    async function capnhathuy(){
+      const response= await  updateAppointmentStatusToCancelel_ZaloPay(ItemCancedel,bank_account)
+      if(response){
+        await getApi()
+        setisCancedal(false)
+      }else{
+        Alert.alert("Vui lòng thử lại sau")
+      }
+    }
+    
+  const StarRating = () => {
+    return (
+      <View style={styles.Sumsao}>
+        <Text style={styles.textdanhgia}>
+          Mời Anh Giá Chất Lượng Dịch Vụ
         </Text>
-        {renderInfoRow(
-          require('../../Resources/assets/icons/calendarfill.jpg'),
-          item.appointment_date,
-        )}
-        {renderInfoRow(
-          require('../../Resources/assets/icons/accountFill.png'),
-          item.barber_id.name,
-        )}
-        {renderInfoRow(
-          require('../../Resources/assets/icons/accountFill.png'),
-          item.service_id.description, // Đảm bảo rằng bạn đã lấy description chính xác từ API
-        )}
-        {renderActionButtons()}
+        <View style={styles.ratingContainer}>
+          {[1, 2, 3, 4, 5].map(star => (
+            <TouchableOpacity key={star} onPress={() => setRating(star)}>
+              <Text
+                style={[
+                  styles.star,
+                  {color: star <= rating ? '#FFD700' : '#E0E0E0'},
+                ]}>
+                {star <= rating ? '★' : '☆'}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
-    </TouchableOpacity>
-  );
+    );
+  };
 
-  const renderInfoRow = (iconSource, text) => (
-    <View style={styles.infoRow}>
-      <Image style={styles.icon} source={iconSource} />
-      <Text style={styles.infoText}>{text}</Text>
-    </View>
-  );
-
-  const renderActionButtons = () => (
-    <View style={styles.actionsContainer}>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Hủy Lịch</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.button, styles.directionButton]}>
-        <Text style={styles.directionButtonText}>Chỉ đường tới Salon</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  const StarRating = () => (
-    <View style={styles.ratingContainer}>
-      <Text style={styles.textdanhgia}>Mời Anh Giá Chất Lượng Dịch Vụ</Text>
-      <View style={styles.ratingStars}>
-        {[1, 2, 3, 4, 5].map(star => (
-          <TouchableOpacity key={star} onPress={() => setRating(star)}>
-            <Text
-              style={[
-                styles.star,
-                {color: star <= rating ? '#FFD700' : '#E0E0E0'},
-              ]}>
-              {star <= rating ? '★' : '☆'}
-            </Text>
-          </TouchableOpacity>
-        ))}
+  const renderItem = ({item}) => {
+    console.log('item: ', item);
+    return (
+      <View
+        style={{
+          margin: 12,
+          borderWidth: 1,
+          borderColor: colors.primary,
+          height: 210,
+          borderRadius: 8,
+          backgroundColor: 'white',
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            margin: 12,
+          }}>
+          <Text
+            style={{fontSize: 16, fontWeight: 'bold', color: colors.primary}}>
+            Lịch hẹn
+          </Text>
+          <Image
+            source={require('../../Resources/assets/logo/Bee_Barber.png')}
+          />
+        </View>
+        <View style={{flexDirection:'row',justifyContent:'space-around',marginVertical:4}}>
+           <View style={{flexDirection:'row'}}>
+               <Image source={require('../../Resources/assets/icons/calendarfill.jpg')} style={{width:24,height:24}}/>
+               <Text style={{color:'gray'}}>   {item.appointment_date.split("T")[0]}</Text>
+           </View>
+           <View style={{flexDirection:'row'}}>
+               <Image source={require('../../Resources/assets/icons/clock.png')} style={{width:24,height:24}}/>
+               <Text style={{color:'gray'}}>  {item.appointment_time} </Text>
+           </View>
+        </View>
+        <View style={{marginStart: 12}}>
+          <View style={{flexDirection:'row',alignItems:'center'}}>
+            <Image source={require('../../Resources/assets/images/men.png')} style={{width:24,height:24,marginStart:-4}}/>
+          <Text style={{marginVertical: 2,color:colors.primary100}}>
+              {item.barber_id.name}
+          </Text>
+          </View>
+          <View style={{flexDirection:'row',}}>
+          <Text style={{color:colors.primary100}}>
+            Dịch vụ:    </Text>
+          <FlatList
+            style={{marginVertical:2}}
+            data={item.service_id}
+            horizontal={true}
+            keyExtractor={item => item._id}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item}) => {
+              const url = replaceLocalhostWithIP(item.images);
+              return ( <Text style={styles.textName}>{item.name}, </Text>);
+            }}
+          />
+         
+        </View>
+       <Text style={{color:colors.primary100,marginVertical:2}}>Thanh toán {item.payment.pay_method=='cash'? 'tại quầy' :'ZaloPay'} {item.price} VND</Text>
+       <View style={{flexDirection:'row',justifyContent:'space-evenly'}}>
+          {item.payment.pay_method_status === 'Unpaid'? <View><Text style={{color:'red'}}>Chưa thanh toán</Text></View>:
+          item.payment.pay_method_status === 'Success'? <View><Text style={{color:'green'}}>Đã thanh toán</Text></View>:
+          item.payment.pay_method_status === 'canceled'? <View><Text style={{color:'orange'}}>Đã hủy lịch hoàn tiền trong 24h tới</Text></View>:
+          item.payment.pay_method_status === 'Refunded'? <View><Text style={{color:'green'}}>Đã hoàn tiền</Text></View>:<View></View>}
+            {item.appointment_status === 'pending' ? <TouchableOpacity onPress={()=>{Handalcanceled(item)}}><View style={{width:100,height:40,borderWidth:1,borderColor:colors.primary300,borderRadius:24,justifyContent:'center',alignItems:'center'}}><Text style={{color:colors.primary200}}>Hủy lịch</Text></View></TouchableOpacity> :
+            item.appointment_status === 'completed' ? <View style={{flexDirection:'row'}}><Text style={{color:'green'}}>Đã cắt</Text>
+            <TouchableOpacity onPress={()=>{setisRating(true);setItemRating(item)}}><Text  style={{color:'blue'}}>     Đánh giá ngay</Text></TouchableOpacity></View> :
+            item.appointment_status === 'canceled' ? <View><Text style={{color:'red'}}>Đã hủy</Text></View> :
+            item.appointment_status === 'Evaluate' ? <View><Text style={{color:'blue'}}>Đã đánh giá</Text></View> :<View></View>}
+       </View>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginVertical: 10,
-          }}>
-          <Text style={styles.headerText}>Lịch hẹn</Text>
-          <Image
-            style={styles.customIcon}
-            source={require('../../Resources/assets/images/cross.png')}
-          />
+    <View style={styles.container}>
+      <FlatList
+        data={datahisStory}
+        renderItem={renderItem}
+        keyExtractor={item => item._id}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => {
+          return <Text style={styles.emptyText}>Không có lịch cắt nào.</Text>;
+        }}
+      />
+      <Modal visible={isRating} animationType='slide' transparent={true}>
+        <View style={{flex:1,justifyContent:'flex-end'}}>
+             <TouchableOpacity style={{flex:1}} onPress={()=>{setisRating(false)}}></TouchableOpacity>
+             <View style={{height:240,width:'100%',backgroundColor:'white',alignItems:'center'}}>
+               <StarRating/>
+                  <TouchableOpacity onPress={()=>{HandalReview()}}>
+                  <View style={{height: 45,width:120, backgroundColor: colors.primary, borderRadius: 8, justifyContent: 'center' }}>
+                    <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Gửi</Text>
+                  </View>
+                </TouchableOpacity>
+             </View>
         </View>
-
-        <FlatList
-          data={datahisStory}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContainer}
-          ListEmptyComponent={
-            <Text style={styles.emptyText}>Không có lịch cắt nào.</Text>
-          }
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            marginVertical: 10,
-          }}>
-          <Text style={styles.headerText}>Đã cắt xong</Text>
-          <Image
-            style={styles.customIcon}
-            source={require('../../Resources/assets/images/check-mark.png')}
-          />
+      </Modal>
+      <Modal  visible={isCancedal} animationType='slide' transparent={true}>
+        <View style={{flex:1,justifyContent:'flex-end'}}>
+             <TouchableOpacity style={{flex:1}} onPress={()=>{setisCancedal(false)}}></TouchableOpacity>
+             <View style={{height:240,width:'100%',backgroundColor:'white',alignItems:'center'}}>
+               <Text style={styles.textdanhgia}>Nhập thông tin tài khoản hoàn tiền</Text>
+                <TextInput numberOfLines={3} placeholder='Thông tin tài khoản' style={{borderWidth:1,width:300,marginVertical:24,borderRadius:12}}/>
+                  <TouchableOpacity onPress={()=>{capnhathuy()}}>
+                  <View style={{height: 45,width:120, backgroundColor: colors.primary, borderRadius: 8, justifyContent: 'center' }}>
+                    <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Xác nhận</Text>
+                  </View>
+                </TouchableOpacity>
+             </View>
         </View>
-        <FlatList
-          data={datahisStory} // Nếu bạn có danh sách khác, hãy thay đổi ở đây
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContainer}
-          ListEmptyComponent={
-            // <Text style={styles.emptyText}>Không có lịch cắt nào.</Text>
-            <View style={styles.centeredContainer}>
-              <Image
-                style={styles.emptyList}
-                source={require('../../Resources/assets/images/box.png')}
-              />
-            </View>
-          }
-        />
-        <StarRating />
-      </View>
-    </ScrollView>
+      </Modal>
+    </View>
   );
 };
 
@@ -195,7 +240,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 70,
     backgroundColor: colors.white,
-    paddingTop: 35,
+    paddingTop: 4,
     paddingHorizontal: 20,
   },
   centeredContainer: {
@@ -286,12 +331,14 @@ const styles = StyleSheet.create({
   },
   ratingContainer: {
     alignItems: 'center',
+    flexDirection:'row',
     marginVertical: 20,
   },
   textdanhgia: {
+    marginTop:24,
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#757575',
+    color:colors.primary,
     textTransform: 'uppercase',
   },
   ratingStars: {
@@ -308,4 +355,5 @@ const styles = StyleSheet.create({
     color: colors.darkGrey,
     marginVertical: 20,
   },
+  buttonrang:{width:100,height:40,borderWidth:1,borderColor:colors.primary300,borderRadius:24,justifyContent:'center',alignItems:'center'}
 });

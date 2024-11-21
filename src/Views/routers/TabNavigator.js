@@ -169,8 +169,8 @@ const TabNavigator = () => {
             headerShown:true,
             headerTitleAlign: 'center',
             headerBackground: () => (
-              <View  style={{backgroundColor:'white',height:85,justifyContent:'center'}}>
-                  <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
+              <View  style={{backgroundColor:'white',height:65,justifyContent:'center'}}>
+                  <Text style={globalStyles.titleStyle}>Lịch sử cắt ✂</Text>
               </View>
             ),
           }}

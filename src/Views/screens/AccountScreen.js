@@ -59,7 +59,7 @@ const AccountScreen = ({navigation}) => {
 
         {/* Nhóm chức năng sát nhau */}
         <View style={styles.group}>
-          <TouchableOpacity style={styles.itemNoGap} onPress={() => navigation.navigate('UserProfile')}>
+          {/* <TouchableOpacity style={styles.itemNoGap} onPress={() => navigation.navigate('UserProfile')}>
             <View style={styles.itemContainer}>
               <Image
                 source={require('../../Resources/assets/images/user.png')} // Placeholder cho icon
@@ -71,7 +71,7 @@ const AccountScreen = ({navigation}) => {
               source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
               style={styles.chevronIcon}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity style={styles.itemNoGap} onPress={() => handlePress('Địa chỉ của anh')}>
             <View style={styles.itemContainer}>

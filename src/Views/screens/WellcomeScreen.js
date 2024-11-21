@@ -23,8 +23,6 @@ const WelcomeScreen = ({ navigation }) => {
     const checkUserStatus = async () => {
       const userId = await AsyncStorage.getItem('userLocal');
       if (userId) {
-       // setIsUserLoggedIn(true);
-        // Nếu có userId, sau 3 giây chuyển đến màn Home
         setTimeout(() => {
           navigation.replace('TabNavigator');
         }, 3000);
