@@ -3,13 +3,14 @@ import React, { useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
-import CategoriesProductsScreen from '../screens/CategoriesProductsScreen';
+
 import { Menu, Provider } from 'react-native-paper';
-import CircleBorder from '../components/CircleBorder';
+import CircleBorder from '../components/shop/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoriesSortingProduct from '../components/shop/CategoriesSortingProduct';
-import TopSearchScreen from '../components/shop/TopSearchScreen';
+import CategoryScreen from '../components/shop/CategoryScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
+
 import AppointmentScreen from '../screens/AppointmentScreen';
 import colors from '../../Resources/styles/colors';
 import ServicesScreen from '../screens/ServicesScreen';
@@ -22,6 +23,11 @@ import DetailsHistoryScreen from '../screens/DetailsHistoryScreen';
 import WelcomeScreen from '../screens/WellcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SigupScreen from '../screens/SigupScreen';
+import { useNavigation } from '@react-navigation/native';
+import TestZaloPay from '../screens/TestZaloPay';
+import RegisterScreen from '../screens/RegisterScreen';
+import ProductScreen from '../components/shop/ProductScreen';
+import SearchProduct from '../components/shop/SearchProduct';
 
 
 
@@ -38,81 +44,13 @@ const AppNavigation = () => {
       <Stack.Navigator initialRouteName="WelcomeScreen">
         <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{ headerShown: false }} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
           options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="CategoriesProductsScreen"
-          component={CategoriesProductsScreen}
-          options={{
-            headerShown: true,
-            title: 'Sản phẩm mới',
-            headerRight: () => (
-              <View style={styles.headerRight}>
-                <CircleBorder
-                  name="search-outline"
-                  size={20}
-                  background="#f7f7f7"
-                  border="#e3e3e3"
-                />
-                <CircleBorder
-                  name="cart-outline"
-                  size={20}
-                  badgeCount={2}
-                  background="#f7f7f7"
-                  border="#e3e3e3"
-                />
-                <Menu
-                  visible={visible}
-                  onDismiss={closeMenu}
-                  anchor={
-                    <CircleBorder
-                      name="dots-three-vertical"
-                      size={20}
-                      background="#f7f7f7"
-                      border="#e3e3e3"
-                      onPress={openMenu}
-                    />
-                  }
-                  style={{zIndex: 1000, marginTop: 32}}>
-                  <Menu.Item
-                    onPress={() => {
-                      console.log('Trang chủ');
-                      closeMenu();
-                    }}
-                    title="Trang chủ"
-                    leadingIcon={() => (
-                      <MaterialCommunityIcons
-                        name="home-outline"
-                        size={23}
-                        color="black"
-                      />
-                    )}
-                  />
-                  <Menu.Item
-                    onPress={() => {
-                      console.log('Đơn hàng');
-                      closeMenu();
-                    }}
-                    title="Đơn hàng"
-                    leadingIcon={() => (
-                      <MaterialCommunityIcons
-                        name="clipboard-check-outline"
-                        size={23}
-                        color="black"
-                      />
-                    )}
-                  />
-                </Menu>
-              </View>
-            ),
-          }}
-          headerBackButtonMenuEnabled
         />
         <Stack.Screen
           headerBackButtonMenuEnabled
@@ -185,8 +123,8 @@ const AppNavigation = () => {
           }}
         />
         <Stack.Screen
-          name="TopSearchScreen"
-          component={TopSearchScreen}
+          name="CategoryScreen"
+          component={CategoryScreen}
           options={{
             headerShown: true,
             title: 'Chăm sóc da',
@@ -197,6 +135,7 @@ const AppNavigation = () => {
                   size={20}
                   background="#f7f7f7"
                   border="#e3e3e3"
+                  onPress={() => nav.navigate("Search")}
                 />
                 <CircleBorder
                   name="cart-outline"
@@ -204,6 +143,7 @@ const AppNavigation = () => {
                   badgeCount={2}
                   background="#f7f7f7"
                   border="#e3e3e3"
+                  onPress={() => nav.navigate("Cart")}
                 />
                 <Menu
                   visible={visible}
@@ -258,7 +198,7 @@ const AppNavigation = () => {
           options={{
             headerShown: true,
             title: 'Chăm sóc da',
-
+            
           }}
           headerBackButtonMenuEnabled
         />
@@ -284,67 +224,6 @@ const AppNavigation = () => {
           options={{
             title: 'Giỏ Hàng',
             headerTitleAlign: 'center',
-          }}
-        />
-        <Stack.Screen
-          name="Search"
-          component={SearchProduct}
-          options={{
-            headerShown: true,
-            headerTitle: "",
-            headerRight: () => (
-              <View style={styles.headerRight}>
-                <CircleBorder
-                  name="cart-outline"
-                  size={20}
-                  badgeCount={2}
-                  background="#f7f7f7"
-                  border="#e3e3e3"
-                />
-                <Menu
-                  visible={visible}
-                  onDismiss={closeMenu}
-                  anchor={
-                    <CircleBorder
-                      name="dots-three-vertical"
-                      size={20}
-                      background="#f7f7f7"
-                      border="#e3e3e3"
-                      onPress={openMenu}
-                    />
-                  }
-                  style={{ zIndex: 1000, marginTop: 32 }}>
-                  <Menu.Item
-                    onPress={() => {
-                      console.log('Trang chủ');
-                      closeMenu();
-                    }}
-                    title="Trang chủ"
-                    leadingIcon={() => (
-                      <MaterialCommunityIcons
-                        name="home-outline"
-                        size={23}
-                        color="black"
-                      />
-                    )}
-                  />
-                  <Menu.Item
-                    onPress={() => {
-                      console.log('Đơn hàng');
-                      closeMenu();
-                    }}
-                    title="Đơn hàng"
-                    leadingIcon={() => (
-                      <MaterialCommunityIcons
-                        name="clipboard-check-outline"
-                        size={23}
-                        color="black"
-                      />
-                    )}
-                  />
-                </Menu>
-              </View>
-            ),
           }}
         />
         <Stack.Screen

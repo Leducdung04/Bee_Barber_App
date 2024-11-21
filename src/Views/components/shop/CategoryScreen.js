@@ -17,7 +17,7 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import {Divider, Searchbar, Checkbox} from 'react-native-paper';
 import useShopTab from '../../../ViewModels/useShopTab'
 import { Product } from '../../../Models/Product';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { get_List_Product_By_Category } from '../../../Services/utils/httpProduct';
 
 const TopSearchScreen = () => {
@@ -27,9 +27,9 @@ const TopSearchScreen = () => {
   const [priceRange, setPriceRange] = useState({from: '', to: ''});
   const {productList,categoryProductList}  = useShopTab()
   const route = useRoute();
-  const { categoryId } = route.params;
+  const { category } = route.params;
   const [filteredProducts, setFilteredProducts] = useState([]);
-
+  const nav = useNavigation()
   useEffect(() => {
     if (showFilterModal) {
       Animated.timing(slideAnim, {
@@ -46,25 +46,57 @@ const TopSearchScreen = () => {
     }
   }, [showFilterModal, slideAnim]);
 
+  useEffect(() => {
+    if (category.name) {
+      nav.setOptions({
+        title: category.name, 
+      });
+    } 
+  }, [category.name, nav]);
+
   const data = [
     {label: 'Mặc định', value: '1'},
-    {label: 'Đánh giá cao', value: '2'},
-    {label: 'Giá thấp đến cao', value: '3'},
-    {label: 'Giá cao đến thấp', value: '4'},
-    {label: 'Tên: từ A-Z', value: '5'},
-    {label: 'Tên: từ Z-A', value: '6'},
+    {label: 'Giá thấp đến cao', value: '2'},
+    {label: 'Giá cao đến thấp', value: '3'},
+    {label: 'Tên: từ A-Z', value: '4'},
+    {label: 'Tên: từ Z-A', value: '5'},
   ];
 
   useEffect(() => {
     const fetchProductsByCategory = async () => {
-      if (categoryId) {
-        const products = await get_List_Product_By_Category(categoryId);
+      if (category._id) {
+        const products = await get_List_Product_By_Category(category._id);
         setFilteredProducts(products);
       }
     };
 
     fetchProductsByCategory();
-  }, [categoryId]);
+  }, [category._id]);
+
+   const sortProducts = (products) => {
+    if (!value) return products; 
+    let sortedProducts = [...products];
+    switch (value) {
+      case '2': 
+        sortedProducts.sort((a, b) => a.price_selling - b.price_selling);
+        break;
+      case '3': 
+        sortedProducts.sort((a, b) => b.price_selling - a.price_selling);
+        break;
+      case '4': 
+        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case '5': 
+        sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      default:
+        break;
+    }
+    return sortedProducts;
+  };
+
+  const sortedProducts = sortProducts(category._id ? filteredProducts : productList);
+
 
   const ProductTopRecomendations = ({products}) => (
     <FlatList
@@ -95,18 +127,8 @@ const TopSearchScreen = () => {
             setValue(item.value);
           }}
         />
-        <TouchableOpacity
-          style={styles.filterButton}
-          onPress={() => setShowFilterModal(true)}>
-          <Text style={styles.filterText}>Lọc</Text>
-          <MaterialCommunityIcons
-            name="filter-outline"
-            size={24}
-            color="darkslategrey"
-          />
-        </TouchableOpacity>
       </View>
-      <ProductTopRecomendations products={categoryId ? filteredProducts : productList} />
+      <ProductTopRecomendations products={sortedProducts} />
       
     </View>
   );

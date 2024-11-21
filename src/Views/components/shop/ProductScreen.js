@@ -39,6 +39,15 @@ const ProductScreen = () => {
     setupNotifications();
   }, []);
 
+  useEffect(() => {
+    if (product.category_id.name) {
+      nav.setOptions({
+        title: product.category_id.name, 
+      });
+    }
+  }, [product.category_id.name, nav]);
+
+
   const handleAddToCart = async () => {
     try {
       const cartItem = {
@@ -46,19 +55,19 @@ const ProductScreen = () => {
         quantity,
         total: totalPrice,
       };
-  
-      const addedItem = await add_cart_item(cartItem); 
+
+      const addedItem = await add_cart_item(cartItem);
       console.log("Cart item added successfully:", addedItem);
       eventEmitter.emit('cartUpdated');
       await handleAddToCartNotification();
-  
-      nav.navigate("Cart"); 
+
+      nav.navigate("Cart");
     } catch (error) {
       console.error("Error adding product to cart:", error.message);
     }
   };
 
-  
+
   const handleAddToCartNotification = async () => {
     if (!token) {
       console.warn('FCM Token is not available. Notifications might not be sent.');
@@ -108,8 +117,12 @@ const ProductScreen = () => {
       duration: 500,
       easing: Easing.ease,
       useNativeDriver: true,
-    }).start(() => setShowModal(false));
+    }).start(() => {
+      setShowModal(false);
+      setQuantity(1);
+    });
   };
+  
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
@@ -145,7 +158,7 @@ const ProductScreen = () => {
           <Text style={styles.subText}>Không ưng đổi ngay</Text>
         </TouchableOpacity>
       </View>
-      <Modal visible={showModal} transparent animationType="slide">
+      <Modal visible={showModal} transparent animationType="fade">
         <Animated.View
           style={[
             styles.modalOverlay,
@@ -162,12 +175,15 @@ const ProductScreen = () => {
           ]}
         >
           <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <MaterialIcons name="close" style={styles.closeIcon} />
+            </TouchableOpacity>
             <View style={styles.modalItemContainer}>
               <Image source={{ uri: url }} style={styles.modalProductImage} />
               <View style={styles.modalProductDetails}>
                 <Text style={styles.modalProductName}>{product.name}</Text>
                 <Text style={styles.modalProductPrice}>
-                {product?.price_selling?.toLocaleString() ?? "N/A"} VNĐ VNĐ
+                  {product?.price_selling?.toLocaleString() ?? "N/A"} VNĐ
                 </Text>
                 <View style={styles.quantityContainer}>
                   <TouchableOpacity style={styles.quantityButton} onPress={decreaseQuantity}>
@@ -183,12 +199,13 @@ const ProductScreen = () => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.modalButton} onPress={closeModal}>
-              <Text style={styles.modalButtonText}>Close</Text>
+            <TouchableOpacity style={styles.modalButton} onPress={handleAddToCart}>
+              <Text style={styles.modalButtonText}>Add to Cart</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>
       </Modal>
+
     </View>
   );
 };
@@ -294,70 +311,89 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '100%',
-    backgroundColor: 'papayawhip',
-    padding: 20,
+    backgroundColor: '#ffffff',
+    padding: 25,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     alignItems: 'center',
+    elevation: 10, // Add a shadow for modern look
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   modalItemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 25,
   },
   modalProductImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    marginRight: 15,
+    width: 100,
+    height: 100,
+    borderRadius: 12,
+    marginRight: 20,
     resizeMode: 'cover',
+    borderColor: '#e5e7eb',
+    borderWidth: 1,
   },
   modalProductDetails: {
     flex: 1,
   },
   modalProductName: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
+    color: '#1F2937',
+    marginBottom: 5,
   },
   modalProductPrice: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#10B981',
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontWeight: '600',
+    marginBottom: 15,
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   quantityButton: {
-    backgroundColor: '#10B981',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginHorizontal: 10,
+    backgroundColor: '#1E40AF',
+    padding: 10,
+    borderRadius: 8,
+    marginHorizontal: 8,
   },
   quantityText: {
     fontSize: 18,
-    color: 'white',
+    fontWeight: '600',
+    color: '#1F2937',
   },
   modalTotalPrice: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
-    color: '#333',
-    marginBottom: 15,
+    color: '#1F2937',
   },
   modalButton: {
-    backgroundColor: '#10B981',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+    backgroundColor: '#1E40AF',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 12,
+    marginTop: 15,
   },
   modalButtonText: {
     fontSize: 18,
-    color: 'white',
-    fontWeight: '700',
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 50,
+    padding: 8,
+  },
+  closeIcon: {
+    fontSize: 20,
+    color: '#4B5563',
   },
 });
