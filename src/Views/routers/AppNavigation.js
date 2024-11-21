@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
 
-import { Menu, Provider } from 'react-native-paper';
+import { Menu, Provider, TextInput } from 'react-native-paper';
 import CircleBorder from '../components/shop/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoriesSortingProduct from '../components/shop/CategoriesSortingProduct';
@@ -35,10 +35,12 @@ const Stack = createNativeStackNavigator();
 
 const AppNavigation = () => {
   const [visible, setVisible] = useState(false);
+  const [visible1, setVisible1] = useState(false);
   const nav = useNavigation();
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-
+  const openMenu1 = () => setVisible1(true);
+  const closeMenu1 = () => setVisible1(false);
   return (
     <Provider>
       <Stack.Navigator initialRouteName="WelcomeScreen">
@@ -50,7 +52,7 @@ const AppNavigation = () => {
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           headerBackButtonMenuEnabled
@@ -78,7 +80,7 @@ const AppNavigation = () => {
                   visible={visible}
                   onDismiss={closeMenu}
                   mode="elevated"
-                  theme={{colors: {primary: 'green'}}}
+                  theme={{ colors: { primary: 'green' } }}
                   anchor={
                     <CircleBorder
                       name="dots-three-vertical"
@@ -88,7 +90,7 @@ const AppNavigation = () => {
                       onPress={openMenu}
                     />
                   }
-                  style={{zIndex: 1000, marginTop: 32}}>
+                  style={{ zIndex: 1000, marginTop: 32 }}>
                   <Menu.Item
                     onPress={() => {
                       console.log('Option 1 clicked');
@@ -131,115 +133,12 @@ const AppNavigation = () => {
             headerRight: () => (
               <View style={styles.headerRight}>
                 <CircleBorder
-                  name="search-outline"
-                  size={20}
-                  background="#f7f7f7"
-                  border="#e3e3e3"
-                  onPress={() => nav.navigate("Search")}
-                />
-                <CircleBorder
                   name="cart-outline"
                   size={20}
                   badgeCount={2}
                   background="#f7f7f7"
                   border="#e3e3e3"
                   onPress={() => nav.navigate("Cart")}
-                />
-                <Menu
-                  visible={visible}
-                  onDismiss={closeMenu}
-                  anchor={
-                    <CircleBorder
-                      name="dots-three-vertical"
-                      size={20}
-                      background="#f7f7f7"
-                      border="#e3e3e3"
-                      onPress={openMenu}
-                    />
-                  }
-                  style={{zIndex: 1000, marginTop: 32}}>
-                  <Menu.Item
-                    onPress={() => {
-                      console.log('Trang chủ');
-                      closeMenu();
-                    }}
-                    title="Trang chủ"
-                    leadingIcon={() => (
-                      <MaterialCommunityIcons
-                        name="home-outline"
-                        size={23}
-                        color="black"
-                      />
-                    )}
-                  />
-                  <Menu.Item
-                    onPress={() => {
-                      console.log('Đơn hàng');
-                      closeMenu();
-                    }}
-                    title="Đơn hàng"
-                    leadingIcon={() => (
-                      <MaterialCommunityIcons
-                        name="clipboard-check-outline"
-                        size={23}
-                        color="black"
-                      />
-                    )}
-                  />
-                </Menu>
-              </View>
-            ),
-          }}
-          headerBackButtonMenuEnabled
-        />
-        <Stack.Screen
-          name="ProductScreen"
-          component={ProductScreen}
-          options={{
-            headerShown: true,
-            title: 'Chăm sóc da',
-            
-          }}
-          headerBackButtonMenuEnabled
-        />
-        <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-          options={{ title: 'Đặt lịch giữ chỗ ' }} />
-        <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
-          options={{ title: 'Dịch vụ theo danh mục' }}
-        />
-        <Stack.Screen name='ServicesScreen' component={ServicesScreen}
-          options={{ title: 'Chọn dịch vụ', headerShown: false }}
-        />
-        <Stack.Screen
-          name="UserProfile"
-          component={UserProfile}
-          options={{
-            title: 'Thông tin tài khoản',
-            headerTitleAlign: 'center',
-          }}
-        />
-        <Stack.Screen
-          name="Cart"
-          component={Cart}
-          options={{
-            title: 'Giỏ Hàng',
-            headerTitleAlign: 'center',
-          }}
-        />
-        <Stack.Screen
-          name="Search"
-          component={SearchProduct}
-          options={{
-            headerShown: true,
-            headerTitle: "",
-            headerRight: () => (
-              <View style={styles.headerRight}>
-                <CircleBorder
-                  name="cart-outline"
-                  size={20}
-                  badgeCount={2}
-                  background="#f7f7f7"
-                  border="#e3e3e3"
                 />
                 <Menu
                   visible={visible}
@@ -286,7 +185,109 @@ const AppNavigation = () => {
               </View>
             ),
           }}
+          headerBackButtonMenuEnabled
         />
+        <Stack.Screen
+          name="ProductScreen"
+          component={ProductScreen}
+          options={{
+            headerShown: true,
+            title: 'Chăm sóc da',
+
+          }}
+          headerBackButtonMenuEnabled
+        />
+        <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
+          options={{ title: 'Đặt lịch giữ chỗ ' }} />
+        <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
+          options={{ title: 'Dịch vụ theo danh mục' }}
+        />
+        <Stack.Screen name='ServicesScreen' component={ServicesScreen}
+          options={{ title: 'Chọn dịch vụ', headerShown: false }}
+        />
+        <Stack.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={{
+            title: 'Thông tin tài khoản',
+            headerTitleAlign: 'center',
+          }}
+        />
+        <Stack.Screen
+          name="Cart"
+          component={Cart}
+          options={{
+            title: 'Giỏ Hàng',
+            headerTitleAlign: 'center',
+          }}
+        />
+        {/* <Stack.Screen
+          name="Search"
+          component={SearchProduct}
+          options={{
+            headerShown: true,
+            headerTitle: "",
+            headerRight: ({ navigation, route }) => {
+              const [searchTerm, setSearchTerm] = useState(route.params?.searchTerm || '');
+
+              return (
+                <View style={styles.headerRight}>
+                  <TextInput
+                    style={styles.searchContainer}
+                    placeholder="Tìm sản phẩm..."
+                    value={searchTerm}
+                    onChangeText={(text) => {
+                      setSearchTerm(text); // Update the local state
+                      navigation.setParams({ searchTerm: text }); // Update the route params
+                    }}
+                  />
+                  <CircleBorder
+                    name="cart-outline"
+                    size={20}
+                    badgeCount={2}
+                    background="#f7f7f7"
+                    border="#e3e3e3"
+                  />
+                  <Menu
+                    visible={visible1}
+                    onDismiss={closeMenu1}
+                    anchor={
+                      <CircleBorder
+                        name="dots-three-vertical"
+                        size={20}
+                        background="#f7f7f7"
+                        border="#e3e3e3"
+                        onPress={openMenu1}
+                      />
+                    }
+                    style={{ zIndex: 1000, marginTop: 32 }}
+                  >
+                    <Menu.Item
+                      onPress={() => {
+                        console.log('Trang chủ');
+                        closeMenu1();
+                      }}
+                      title="Trang chủ"
+                      leadingIcon={() => (
+                        <MaterialCommunityIcons name="home-outline" size={23} color="black" />
+                      )}
+                    />
+                    <Menu.Item
+                      onPress={() => {
+                        navigation.navigate("Cart");
+                      }}
+                      title="Đơn hàng"
+                      leadingIcon={() => (
+                        <MaterialCommunityIcons name="clipboard-check-outline" size={23} color="black" />
+                      )}
+                    />
+                  </Menu>
+                </View>
+              );
+            },
+          }}
+        /> */}
+
       </Stack.Navigator>
     </Provider>
   );

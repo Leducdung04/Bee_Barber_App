@@ -2,9 +2,12 @@ import { StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'r
 import React, { useState, useEffect } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { search_product_by_name } from '../../../Services/utils/httpProduct';
+import ProductLayout from './ProductLayout';
+import { useRoute } from '@react-navigation/native';
 
 const SearchProduct = ({ navigation }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const route = useRoute();
+  const [searchTerm, setSearchTerm] = useState(route.params?.searchTerm || ''); 
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -15,21 +18,21 @@ const SearchProduct = ({ navigation }) => {
       };
       fetchProducts();
     } else {
-      setProducts([]); 
+      setProducts([]);
     }
   }, [searchTerm]);
+
+  useEffect(() => {
+    navigation.setParams({ searchTerm });
+  }, [searchTerm, navigation]);
 
   return (
     <View style={{ flex: 1 }}>
       <FlatList
         data={products}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={{ padding: 10 }}>
-            <Text>{item.name}</Text>
-          </View>
-        )}
-        ListEmptyComponent={<Text>No results found.</Text>}
+        renderItem={({ item }) => <ProductLayout item={item} />}
+        ListEmptyComponent={<Text>Không có kết quả.</Text>}
       />
     </View>
   );
