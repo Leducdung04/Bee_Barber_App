@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import HomeScreen from '../screens/HomeScreen';
 import ShopScreen from '../screens/ShopScreen';
 import AccountScreen from '../screens/AccountScreen';
-
-import CircleBorder from '../components/CircleBorder';
-import {CurvedBottomBar} from 'react-native-curved-bottom-bar';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Menu, Provider } from 'react-native-paper';
+import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
 import AppointmentHistoryScreen from '../screens/AppointmentHistoryScreen';
 import colors from '../../Resources/styles/colors';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,6 +21,7 @@ import globalStyles from '../../Resources/styles/globalStyles';
 import { useNavigation } from '@react-navigation/native';
 import UserProfile from '../screens/UserProfile';
 import TestZaloPay from '../screens/TestZaloPay';
+import CircleBorder from '../components/shop/CircleBorder';
 
 const TabNavigator = () => {
   const _renderIcon = (routeName, selectedTab) => {
@@ -46,21 +47,21 @@ const TabNavigator = () => {
         name = 'Shop';
         break;
       case 'title3':
-
-          iconSource = selectedTab === 'title3'
-          ? require('../../Resources/assets/icons/historyFill.png')
-          : require('../../Resources/assets/icons/history.png');
-          size = 30
-          name='History'
-          break;
+        iconSource =
+          selectedTab === 'title3'
+            ? require('../../Resources/assets/icons/historyFill.png')
+            : require('../../Resources/assets/icons/history.png');
+        size = 30;
+        name = 'History';
+        break;
       case 'title4':
-          iconSource = selectedTab === 'title4'
-          ? require('../../Resources/assets/icons/userFill.png')
-          : require('../../Resources/assets/icons/user.png');
-          size = 25
-          name='Account'
-          break;
-        
+        iconSource =
+          selectedTab === 'title4'
+            ? require('../../Resources/assets/icons/userFill.png')
+            : require('../../Resources/assets/icons/user.png');
+        size = 25;
+        name = 'Account';
+        break;
 
         iconSource =
           selectedTab === 'title3'
@@ -77,17 +78,16 @@ const TabNavigator = () => {
         size = 25;
         name = 'Tài khoản';
         break;
-
     }
 
     return (
-      <View style={{alignItems: 'center'}}>
-        <Image source={iconSource} style={{width: size, height: size}} />
-        <Text style={{color: textColor}}>{name}</Text>
+      <View style={{ alignItems: 'center' }}>
+        <Image source={iconSource} style={{ width: size, height: size }} />
+        <Text style={{ color: textColor }}>{name}</Text>
       </View>
     );
   };
-  const renderTabBar = ({routeName, selectedTab, navigate}) => {
+  const renderTabBar = ({ routeName, selectedTab, navigate }) => {
     return (
       <TouchableOpacity
         onPress={() => navigate(routeName)}
@@ -98,68 +98,84 @@ const TabNavigator = () => {
   };
 
   const nav = useNavigation()
-  
   return (
     <CurvedBottomBar.Navigator
-        type="DOWN"
-        style={styles.bottomBar}
-        shadowStyle={styles.shawdow}
-        height={65}
-        circleWidth={50}
-        bgColor="white"
-        initialRouteName="title1"
-        borderTopLeftRight
-        screenOptions={{
-          headerShown:false
-        }}
-        renderCircle={({ selectedTab, navigate }) => (
-          <Animated.View style={styles.btnCircleUp}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {navigate('AppointmentScreen')}}
-            >
-              <Image source={require('../../Resources/assets/icons/appointment.png')} style={{width:32,height:32}}/>
-            </TouchableOpacity>
-            <Text style={{position:'absolute',bottom:-24}}>Đặt lịch</Text>
-          </Animated.View>
-        )}
-        tabBar={renderTabBar}
-      >
-        <CurvedBottomBar.Screen
-          name="title1"
-          position="LEFT"
-          component={HomeScreen}
-          options={{
-            title:"",
-            headerShown:true,
-            // headerBackground: () => (
-            //   <View  style={{backgroundColor:'white',height:85,justifyContent:'center'}}>
-            //       <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
-            //   </View>
-            // ),
-            headerLeft: ({tintColor})=>(
-               <Image source={require('../../Resources/assets/logo/Bee_Barber.png')}
-                      style={{marginStart:16,height: 30, width: 170}}
-               />
-            ),
-            headerRight: ({ tintColor }) => (
-               <View style={{flexDirection:'row',marginHorizontal:32}}>
-                  <Image source={require('../../Resources/assets/icons/cart.png')}
-                      style={{marginStart:4,height: 26, width:26,marginHorizontal:24}}/>
-               <Image source={require('../../Resources/assets/icons/notification.png')}
-                      style={{marginStart:4,height: 26, width: 26,marginHorizontal:12}}/>
-               </View>
-            ),
-            
-          }}
+      type="DOWN"
+      style={styles.bottomBar}
+      shadowStyle={styles.shawdow}
+      height={65}
+      circleWidth={50}
+      bgColor="white"
+      initialRouteName="title1"
+      borderTopLeftRight
+      screenOptions={{
+        headerShown: false
+      }}
+      renderCircle={({ selectedTab, navigate }) => (
+        <Animated.View style={styles.btnCircleUp}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => { navigate('AppointmentScreen') }}
+          >
+            <Image source={require('../../Resources/assets/icons/appointment.png')} style={{ width: 32, height: 32 }} />
+          </TouchableOpacity>
+          <Text style={{ position: 'absolute', bottom: -24 }}>Đặt lịch</Text>
+        </Animated.View>
+      )}
+      tabBar={renderTabBar}
+    >
+      <CurvedBottomBar.Screen
+        name="title1"
+        position="LEFT"
+        component={HomeScreen}
+        options={{
+          title: "",
+          headerShown: true,
+          // headerBackground: () => (
+          //   <View  style={{backgroundColor:'white',height:85,justifyContent:'center'}}>
+          //       <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
+          //   </View>
+          // ),
+          headerLeft: ({ tintColor }) => (
+            <Image source={require('../../Resources/assets/logo/Bee_Barber.png')}
+              style={{ marginStart: 16, height: 30, width: 170 }}
+            />
+          ),
+          headerRight: ({ tintColor }) => (
+            <View style={{ flexDirection: 'row', marginHorizontal: 32 }}>
+              <TouchableOpacity onPress={() => nav.navigate("Cart")}>
 
-          
-        />
-        <CurvedBottomBar.Screen
-          name="title2"
-          component={ShopScreen}
-          position="LEFT"
-        />
+              </TouchableOpacity>
+              <Image source={require('../../Resources/assets/icons/notification.png')}
+                style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 12 }} />
+            </View>
+          ),
+
+        }}
+
+
+
+      />
+      <CurvedBottomBar.Screen
+        name="title2"
+        component={ShopScreen}
+        position="LEFT"
+        options={{
+          title: "",
+          headerShown: true,
+          headerLeft: ({ tintColor }) => (
+            <Image
+              source={require('../../Resources/assets/logo/Bee_Barber.png')}
+              style={{ marginStart: 16, height: 30, width: 170 }}
+            />
+          ),
+          headerRight: () => (
+            <View style={styles.headerRight}>
+              <CircleBorder onPress={() => nav.navigate("Cart")} />
+            </View>
+          ),
+        }}
+      />
         <CurvedBottomBar.Screen
           name="title3"
           component={AppointmentHistoryScreen}
@@ -204,7 +220,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  bottomBar: {},
   btnCircleUp: {
     width: 60,
     height: 60,
@@ -245,4 +260,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFEBCD',
   },
+  headerRight: {
+    flexDirection: 'row',
+    gap: 8,
+    alignSelf: 'flex-end',
+    zIndex: 1000,
+    marginEnd: 8
+  }
 });

@@ -1782,6 +1782,14 @@
   dependencies:
     invariant "^2.2.4"
 
+"@react-native-community/push-notification-ios@^1.10.1":
+  version "1.11.0"
+  resolved "https://registry.npmjs.org/@react-native-community/push-notification-ios/-/push-notification-ios-1.11.0.tgz"
+  integrity sha512-nfkUs8P2FeydOCR4r7BNmtGxAxI22YuGP6RmqWt6c8EEMUpqvIhNKWkRSFF3pHjkgJk2tpRb9wQhbezsqTyBvA==
+  dependencies:
+    invariant "^2.2.4"
+
+
 "@react-native-firebase/app@^20.5.0", "@react-native-firebase/app@20.5.0":
   version "20.5.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-20.5.0.tgz"
@@ -1789,6 +1797,13 @@
   dependencies:
     firebase "10.12.2"
     superstruct "^0.6.2"
+
+"@react-native-firebase/auth@^20.5.0":
+  version "20.5.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-20.5.0.tgz"
+  integrity sha512-sKiifeVqsKWVAZXfYQJ6JjV8C+kuKJ0Jo82Cfj1L667l0OcwOchX9jTOP9dyt9NUEHOEIJMEzexWdFzL7nxT3g==
+  dependencies:
+    plist "^3.1.0"
 
 "@react-native-firebase/messaging@^20.5.0":
   version "20.5.0"
@@ -2537,6 +2552,7 @@ base64-js@^1.3.1, base64-js@^1.5.1:
     "@react-native-community/checkbox" "^0.5.17"
     "@react-native-community/datetimepicker" "^8.2.0"
     "@react-native-firebase/app" "^20.5.0"
+    "@react-native-firebase/auth" "^20.5.0"
     "@react-native-firebase/messaging" "^20.5.0"
     "@react-native-picker/picker" "^2.9.0"
     "@react-native-vector-icons/fontawesome5" "^5.15.4-alpha.28"
@@ -2545,6 +2561,7 @@ base64-js@^1.3.1, base64-js@^1.5.1:
     "@react-navigation/native" "^6.1.18"
     "@react-navigation/native-stack" "^6.11.0"
     BeeBarber "file:"
+    eventemitter3 "^5.0.1"
     iconsax-react-native "^0.0.8"
     pinar "^0.12.2"
     react "18.3.1"
@@ -2557,6 +2574,7 @@ base64-js@^1.3.1, base64-js@^1.5.1:
     react-native-linear-gradient "^2.8.3"
     react-native-pager-view "^6.4.1"
     react-native-paper "^5.12.5"
+    react-native-push-notification "^8.1.1"
     react-native-reanimated "^3.15.5"
     react-native-safe-area-context "^4.11.0"
     react-native-screens "^3.34.0"
@@ -3410,6 +3428,11 @@ etag@~1.8.1:
 
 event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   version "5.0.1"
+
+eventemitter3@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-5.0.1.tgz"
+  integrity sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==
 
 execa@^5.0.0, execa@^5.1.1:
   version "5.1.1"
@@ -5416,6 +5439,11 @@ react-native-paper@^5.12.5:
     color "^3.1.2"
     use-latest-callback "^0.1.5"
 
+react-native-push-notification@^8.1.1:
+  version "8.1.1"
+  resolved "https://registry.npmjs.org/react-native-push-notification/-/react-native-push-notification-8.1.1.tgz"
+  integrity sha512-XpBtG/w+a6WXTxu6l1dNYyTiHnbgnvjoc3KxPTxYkaIABRmvuJZkFxqruyGvfCw7ELAlZEAJO+dthdTabCe1XA==
+
 react-native-reanimated@^3.15.5:
   version "3.15.5"
   resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.15.5.tgz"
@@ -5475,7 +5503,7 @@ react-native-vector-icons@*, react-native-vector-icons@^10.2.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", "react-native@>= 0.62", react-native@>=0.46, react-native@>=0.49.0, react-native@>=0.60.0, react-native@0.75.3:
+react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", "react-native@>= 0.62", react-native@>=0.33, react-native@>=0.46, react-native@>=0.49.0, react-native@>=0.58.4, react-native@>=0.60.0, react-native@0.75.3:
   version "0.75.3"
   dependencies:
     "@jest/create-cache-key-function" "^29.6.3"
@@ -5534,7 +5562,7 @@ react-test-renderer@18.3.1:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.2"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^17 || ^18", react@^18.2.0, react@^18.3.1, "react@>= 16.3.0", react@>=16.0.0, react@>=16.3.0, react@>=16.8, react@>=17.0.0, react@18.3.1:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^17 || ^18", react@^18.2.0, react@^18.3.1, "react@>= 16.3.0", react@>=16.0.0, react@>=16.3.0, react@>=16.6.3, react@>=16.8, react@>=17.0.0, react@18.3.1:
   version "18.3.1"
   dependencies:
     loose-envify "^1.1.0"

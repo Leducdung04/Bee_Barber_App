@@ -1,5 +1,5 @@
-import {Dimensions, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { Dimensions, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import ListBanner from '../components/home/ListBanner';
 import useHomeTab from '../../ViewModels/useHomeTab';
 import ServiceCategoryList from '../components/home/ServiceCategoryList';
@@ -9,7 +9,7 @@ import BarberList from '../components/home/BarberList';
 import colors from '../../Resources/styles/colors';
 
 const HomeScreen = () => {
-  const {listBanner,categoryList,categoryProductList,barberList} = useHomeTab();
+  const { listBanner, categoryList, categoryProductList, barberList } = useHomeTab();
   const data = [
     { key: 'banner', component: <ListBanner listBanner={listBanner} /> },
     { key: 'categoryProduct', component: <CategoryProductList categoryProductList={categoryProductList} /> },
@@ -25,11 +25,11 @@ const HomeScreen = () => {
   );
   return (
     <FlatList
-    data={data}
-    renderItem={renderItem}
-    keyExtractor={(item) => item.key}
-    showsVerticalScrollIndicator={false}
-  />
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.key}
+      showsVerticalScrollIndicator={false}
+    />
     // <ScrollView 
     //   style={styles.container} 
     //   scrollEnabled={scrollEnabled}
@@ -57,7 +57,7 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
+  container: {
+    flex: 1,
   }
 });
