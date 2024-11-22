@@ -47,7 +47,7 @@ const AccountScreen = ({navigation}) => {
         </View>
       <ScrollView>
         {/* Phần thông tin người dùng */}
-        
+
 
         {/* Thêm ảnh bìa lớn */}
         <View style={{backgroundColor: colors.primary300,borderRadius:12,paddingVertical:12,marginHorizontal:12,marginVertical:12}}>
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-  userInfo: {
+  userInfo1: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -210,7 +210,12 @@ const styles = StyleSheet.create({
   chevronIcon: {
     width: 18,
     height: 18,
-    tintColor: '#153A80'
+    tintColor: '#696969'
+  },
+  chevronIcon1: {
+    width: 25,
+    height: 25,
+    tintColor: '#000000'
   },
   bannerImage: {
     width: '90%', // Giảm bề ngang để có khoảng cách 2 bên
@@ -218,7 +223,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center', // Căn giữa banner
     marginTop:10,
   },
-  
+
   group: {
     backgroundColor: '#ffffff',
     paddingBottom: 0,
@@ -254,6 +259,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 5,
   },
   icon: {
     width: 23,
@@ -263,7 +269,7 @@ const styles = StyleSheet.create({
   itemText: {
     marginLeft: 10,
     fontSize: 16,
-    color: '#000000',
+    color: '#4F4F4F',
     fontWeight: '500',
   },
   navBar: {

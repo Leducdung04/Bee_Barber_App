@@ -1,86 +1,167 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Button, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
+import { get_list_cart_item, add_cart_item, delete_cart_item } from '../../Services/utils/httpCartItem';
+import { get_product_detail } from '../../Services/utils/httpProduct';
+import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
+import eventEmitter from '../../Services/utils/event';
+import { useNavigation } from '@react-navigation/native';
 
-const CartItem = ({ item, onAdd, onRemove, onDelete, onSelect }) => {
-  return (
-    <View style={styles.cartItem}>
-      <CheckBox value={item.selected} onValueChange={() => onSelect(item.id)} />
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <View style={styles.details}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.price}>{item.price.toLocaleString('vi-VN')} đ</Text>
-        <View style={styles.quantityContainer}>
-          <TouchableOpacity onPress={() => onRemove(item.id)} style={styles.quantityButton}>
-            <Text style={styles.quantityText}> - </Text>
-          </TouchableOpacity>
-          <Text style={styles.quantity}>{item.quantity}</Text>
-          <TouchableOpacity onPress={() => onAdd(item.id)} style={styles.quantityButton}>
-            <Text style={styles.quantityText}> + </Text>
-          </TouchableOpacity>
-        </View>
+
+const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
+  <View style={styles.cartItem}>
+    <CheckBox value={item.selected} onValueChange={() => onSelect(item._id)} />
+    <Image source={{ uri: item.image }} style={styles.image} />
+    <View style={styles.details}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.price}>{item.price_selling.toLocaleString('vi-VN')} đ</Text>
+      <View style={styles.quantityContainer}>
+        <TouchableOpacity onPress={() => onRemove(item._id)} style={styles.quantityButton}>
+          <Text style={styles.quantityText}> - </Text>
+        </TouchableOpacity>
+        <Text style={styles.quantity}>{item.quantity}</Text>
+        <TouchableOpacity onPress={() => onAdd(item._id)} style={styles.quantityButton}>
+          <Text style={styles.quantityText}> + </Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={() => onDelete(item.id)} style={styles.deleteButton}>
-        <Text style={styles.deleteButtonText}>🗑️</Text>
-      </TouchableOpacity>
     </View>
-  );
-};
+    <TouchableOpacity onPress={() => onDelete(item._id)} style={styles.deleteButton}>
+      <Text style={styles.deleteButtonText}>🗑️</Text>
+    </TouchableOpacity>
+  </View>
+);
+
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    { id: '1', title: 'Tinh dầu dưỡng tóc ATS', price: 90000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '2', title: 'Tinh dầu dưỡng tóc ATS', price: 80000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '3', title: 'Tinh dầu dưỡng tóc ATS', price: 70000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '4', title: 'Tinh dầu dưỡng tóc ATS', price: 60000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '5', title: 'Tinh dầu dưỡng tóc ATS', price: 20000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '6', title: 'Tinh dầu dưỡng tóc ATS', price: 90000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-    { id: '7', title: 'Tinh dầu dưỡng tóc ATS', price: 40000, quantity: 1, selected: false, image: 'https://via.placeholder.com/50' },
-  ]);
+  const [cartItems, setCartItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const nav = useNavigation()
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const items = await get_list_cart_item();
+        const productIds = items.map(item => item.product_id);
+        const productDetails = await Promise.all(
+          productIds.map(id => get_product_detail(id))
+        );
+        const updatedItems = items.map(item => {
+          const productResponse = productDetails.find(product => product.data._id === item.product_id);
+          if (!productResponse || !productResponse.data) {
+            return { ...item };
+          }
+          const product = productResponse.data;
+          return {
+            ...item,
+            image: replaceLocalhostWithIP(product.image),
+            title: product.name,
+            price_selling: product.price_selling,
+          };
+        });
+        setCartItems(updatedItems);
 
-  const handleAdd = (id) => {
-    setCartItems(cartItems.map(item => item.id === id ? { ...item, quantity: item.quantity + 1 } : item));
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    fetchCartItems();
+  }, []);
+
+  const handleAdd = async (id) => {
+    const item = cartItems.find((i) => i._id === id);
+    if (!item) {
+      console.error(`Item with id ${id} not found in cart.`);
+      return;
+    }
+
+    try {
+      await add_cart_item({
+        product_id: item.product_id,
+        quantity: item.quantity + 1,
+        total: item.price_selling * (item.quantity + 1),
+      });
+
+      setCartItems(
+        cartItems.map((i) =>
+          i._id === id
+            ? { ...i, quantity: i.quantity + 1 }
+            : i
+        )
+      );
+    } catch (error) {
+      console.error(`Error adding item with id ${id}:`, error.message);
+    }
   };
 
-  const handleRemove = (id) => {
-    setCartItems(cartItems.map(item => item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item));
+
+  const handleRemove = async (id) => {
+    const item = cartItems.find((i) => i._id === id);
+
+    if (!item) {
+      console.error(`Item with id ${id} not found in cart.`);
+      return;
+    }
+
+    if (item.quantity > 1) {
+      try {
+
+        setCartItems(cartItems.map((i) =>
+          i._id === id ? { ...i, quantity: i.quantity - 1 } : i
+        ));
+      } catch (error) {
+        console.error(`Error removing item with id ${id}:`, error.message);
+      }
+    } else {
+      try {
+        await delete_cart_item(id);
+        setCartItems(cartItems.filter((i) => i._id !== id));
+        eventEmitter.emit('cartUpdated');
+      } catch (error) {
+        console.error(`Error deleting item with id ${id}:`, error.message);
+      }
+    }
   };
 
-  const handleDelete = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+
+  const handleDelete = async (id) => {
+    try {
+      await delete_cart_item(id);
+      setCartItems(cartItems.filter((i) => i._id !== id));
+      eventEmitter.emit('cartUpdated');
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   const handleSelect = (id) => {
-    setCartItems(cartItems.map(item => item.id === id ? { ...item, selected: !item.selected } : item));
+    setCartItems(cartItems.map((i) => (i._id === id ? { ...i, selected: !i.selected } : i)));
   };
 
   const handleSelectAll = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
-    setCartItems(cartItems.map(item => ({ ...item, selected: newSelectAll })));
+    setCartItems(cartItems.map((i) => ({ ...i, selected: newSelectAll })));
   };
 
   const handlePlaceOrder = () => {
-    const selectedItems = cartItems.filter(item => item.selected);
+    const selectedItems = cartItems.filter((i) => i.selected);
     if (selectedItems.length > 0) {
-      Alert.alert('Đặt hàng thành công!', 'Bạn đã đặt hàng thành công.');
+      nav.navigate("OrderConfirmationScreen",{selectedItems})
     } else {
       Alert.alert('Thông báo', 'Vui lòng chọn ít nhất một sản phẩm để đặt hàng.');
     }
   };
 
-  const selectedItemCount = cartItems.filter(item => item.selected).length;
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.selected ? item.price * item.quantity : 0), 0);
+  const selectedItemCount = cartItems.filter((i) => i.selected).length;
+  const subtotal = cartItems.reduce((sum, i) => sum + (i.selected ? i.price_selling * i.quantity : 0), 0);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={cartItems}
         renderItem={({ item }) => (
-          <CartItem item={item} onAdd={handleAdd} onRemove={handleRemove} onDelete={handleDelete} onSelect={handleSelect} />
+          <Product item={item} onAdd={handleAdd} onRemove={handleRemove} onDelete={handleDelete} onSelect={handleSelect} />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item._id}
       />
       <View style={styles.footer}>
         <View style={styles.footerContent}>
@@ -95,14 +176,10 @@ const Cart = () => {
             </View>
             <Text style={styles.subtotal1}>({selectedItemCount} sản phẩm)</Text>
           </View>
-          <TouchableOpacity
-            style={[
-              styles.placeOrderButton,
-              selectedItemCount > 0 ? styles.activeButton : styles.inactiveButton,
-            ]}
-            onPress={handlePlaceOrder}
-            disabled={selectedItemCount === 0} // Vô hiệu hóa nút nếu không có sản phẩm nào được chọn
-          >
+          <TouchableOpacity style={[
+            styles.placeOrderButton,
+            selectedItemCount > 0 ? styles.activeButton : styles.inactiveButton,
+          ]} onPress={handlePlaceOrder}>
             <Text style={styles.buttonText}>ĐẶT HÀNG</Text>
           </TouchableOpacity>
         </View>
@@ -204,7 +281,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
     margin:
-    10,
+      10,
   },
   subtotalContainer1: {
     flexDirection: 'row', // Hiển thị theo hàng ngang

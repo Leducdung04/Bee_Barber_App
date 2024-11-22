@@ -42,18 +42,17 @@ const AppointmentScreen = ({ route, navigation}) => {
     }
     getUser()
   }, [])
-  
   useEffect(() => {
     const totalPrice = selectedServices.reduce((total, service) => total + service.price, 0);
     settotalAmount(totalPrice);
   }, [selectedServices])
-  
+
   // xử lý chọn giờ 
   const handleTimeSelect = (time) => {
     settime_Selected(time);
   };
   useEffect(() => {
-    console.log('dữ liệu code zalopay',dataChechZaloPay)
+    console.log('dữ liệu code zalopay', dataChechZaloPay)
   }, [dataChechZaloPay])
   
   const  onHandel_Order = async() => {
@@ -84,9 +83,9 @@ const AppointmentScreen = ({ route, navigation}) => {
        console.log('data thêm ',appointment)
        handle_Order_Appointment(appointment)
   }
-  const Item_Barber = ({ item}) => {
+  const Item_Barber = ({ item }) => {
     if (!item) {
-      return null; 
+      return null;
     }
     let checkSelected = 0;
     if (item._id === barber_Selected?._id) {
@@ -141,7 +140,7 @@ const AppointmentScreen = ({ route, navigation}) => {
 
         <View style={styles.contentContainer}>
           <View style={{ flexDirection: 'row' }}>
-            {checkSTatus(selectedServices.length ===0 ?false:true)}
+            {checkSTatus(selectedServices.length === 0 ? false : true)}
             <View style={{ flex: 1, marginStart: 12 }}>
               <Text style={styles.title}>1. Chọn dịch vụ</Text>
 
@@ -168,14 +167,14 @@ const AppointmentScreen = ({ route, navigation}) => {
               )} */}
 
               {selectedServices && selectedServices.length > 0 ?
-                
-               (
-                <SelectedServices list={selectedServices}/>
+
+                (
+                  <SelectedServices list={selectedServices} />
                 )
-               : (
-                <View style={{height:50,justifyContent:'center'}}>
-                <Text>Bạn chưa chọn dịch vụ nào</Text></View>
-              )}
+                : (
+                  <View style={{ height: 50, justifyContent: 'center' }}>
+                    <Text>Bạn chưa chọn dịch vụ nào</Text></View>
+                )}
             </View>
           </View>
 
@@ -197,7 +196,7 @@ const AppointmentScreen = ({ route, navigation}) => {
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
                   keyExtractor={(item) => item._id}
-                  renderItem={({ item }) => <Item_Barber item={item}/>} // Truyền setSelectedStylist
+                  renderItem={({ item }) => <Item_Barber item={item} />} // Truyền setSelectedStylist
                 />
 
               </View>
@@ -239,7 +238,7 @@ const AppointmentScreen = ({ route, navigation}) => {
                   const formattedDate = `${day}/${month}`;
 
                   const colorItem = day_Selected?.date == item.date ? colors.primary : colors.background
-                  return <TouchableOpacity onPress={() => { setday_Selected(item)}}>
+                  return <TouchableOpacity onPress={() => { setday_Selected(item) }}>
                     <View style={{ height: 40, width: 90, backgroundColor: colorItem, borderRadius: 6, marginRight: 12, alignItems: 'center', justifyContent: 'center' }}>
                       <Text style={{ color: day_Selected?.date == item.date ? 'white' : 'black', fontSize: 14, fontWeight: 'bold' }}>{daylist[0].date == item.date ? 'Hôm nay' : fomatsDate(item.date)}</Text>
                     </View>
@@ -264,7 +263,7 @@ const AppointmentScreen = ({ route, navigation}) => {
           </View>
 
           {/* phương thức thanh toán  */}
-          <View style={{ flexDirection: 'row' ,marginTop:-4}}>
+          <View style={{ flexDirection: 'row', marginTop: -4 }}>
             {checkSTatus(pay_Method)}
             <View style={{ flex: 1, marginStart: 12 }}>
               <Text style={styles.title}>4. Phương thức thanh toán</Text>
@@ -299,7 +298,9 @@ const AppointmentScreen = ({ route, navigation}) => {
 
               {/* xử lý khi có dịch vụ được chọn */}
               <View style={{ height: 90 }}>
+
                 <Text style={{ marginTop:24 ,fontSize:18,fontWeight:'bold',color:colors.primary}}>Tổng tiền dịch vụ : {totalAmount} VND</Text>
+
               </View>
 
             </View>
@@ -323,7 +324,7 @@ const AppointmentScreen = ({ route, navigation}) => {
               </View>
             </View>
             }
-            
+
           </View>
 
           <Modal visible={modalCheck} animationType='fade' transparent={true}>
@@ -409,7 +410,7 @@ const AppointmentScreen = ({ route, navigation}) => {
         </View>
       </ScrollView>
     </SafeAreaView >
-  
+
   )
 }
 
@@ -430,8 +431,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     flex: 1,
-    marginStart:50
-    
+    marginStart: 50
+
   },
   contentContainer: {
     paddingHorizontal: 24,

@@ -7,23 +7,12 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import CustomButton from '../components/CustomButton';
-import GridDesign from '../components/GridLayout';
-import CategoriesGridLayout from '../components/CategoriesGridLayout';
-import TopSearch from '../components/TopSearch';
-import PartnershipBranding from '../components/PartnershipBranding';
-import MaterialTopTab from '../components/ProductRecomendations';
+import MaterialTopTab from '../components/shop/ProductRecomendations';
 
 const ShopScreen = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView contentContainerStyle={{flexGrow: 1,paddingBottom:100}}>
-        <View style={{flexDirection: 'row', margin: 10, gap: 9}}>
-          <CustomButton title="Sổ địa chỉ" />
-          <CustomButton title="Đơn hàng" />
-        </View>
-        <GridDesign />
-        <CategoriesGridLayout />
         <View style={styles.imageContainer}>
           <ImageBackground
             source={require('../../Resources/assets/images/banner.png')}
@@ -35,8 +24,6 @@ const ShopScreen = () => {
           </ImageBackground>
         </View>
         <MaterialTopTab/>
-        <TopSearch/>
-        <PartnershipBranding/>
       </ScrollView>
     </SafeAreaView>
   );

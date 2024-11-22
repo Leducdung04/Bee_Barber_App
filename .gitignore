@@ -1,6 +1,7 @@
 # OSX
 #
 .DS_Store
+.env
 
 # Xcode
 #
@@ -65,6 +66,8 @@ yarn-error.log
 # testing
 /coverage
 
+# env
+.env
 # Yarn
 .yarn/*
 !.yarn/patches
