@@ -2,7 +2,7 @@
 import {useEffect, useState} from 'react';
 import {checkZaloPay, OrderZaloPay} from '../Services/api/httpZalopay';
 import {Alert, AppState, Linking} from 'react-native';
-import {get_list_barber} from '../Services/utils/httpbarber';
+import {get_list_barber} from '../Services/utils/httpBarber';
 import { getNext7DaysWithWeekdays } from '../Services/utils/getNext7DaysWithWeekdays';
 import { Add_Appointment_API } from '../Services/api/httpAppointment';
 import { deleteZaloPayload, getZaloPay, setZaloPayload } from '../Services/utils/ZaloPay_AsyncStorage';

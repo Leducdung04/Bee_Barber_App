@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { get_list_barber } from '../../Services/utils/httpbarber';
+import { get_list_barber } from '../../Services/utils/httpBarber';
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP'; // Nhập hàm thay thế
 
 const StylistSelectionComponent = ({ onSelect }) => {
