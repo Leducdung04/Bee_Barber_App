@@ -67,7 +67,24 @@ const ProductScreen = () => {
     }
   };
 
+  const handleBuyNow = async () => {
+    try {
+      const cartItem = {
+        product_id: product._id,
+        quantity,
+        total: totalPrice,
+      };
 
+      const addedItem = await add_cart_item(cartItem);
+      console.log("Cart item added successfully:", addedItem);
+      eventEmitter.emit('cartUpdated');
+      await handleAddToCartNotification();
+
+      nav.navigate("OrderConfirmationScreen",{selectedItem: cartItem});
+    } catch (error) {
+      console.error("Error adding product to cart:", error.message);
+    }
+  }
   const handleAddToCartNotification = async () => {
     if (!token) {
       console.warn('FCM Token is not available. Notifications might not be sent.');
@@ -150,7 +167,7 @@ const ProductScreen = () => {
             }
           }}
         >
-          <MaterialIcons name="add-shopping-cart" size={23} color="black" />
+        <MaterialIcons name="add-shopping-cart" size={23} color="black" />
           <Text style={styles.buttonText}>THÊM GIỎ HÀNG</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buyButton} onPress={openModal}>
@@ -199,7 +216,7 @@ const ProductScreen = () => {
                 </Text>
               </View>
             </View>
-            <TouchableOpacity style={styles.modalButton} onPress={handleAddToCart}>
+            <TouchableOpacity style={styles.modalButton} onPress={handleBuyNow}>
               <Text style={styles.modalButtonText}>Add to Cart</Text>
             </TouchableOpacity>
           </View>

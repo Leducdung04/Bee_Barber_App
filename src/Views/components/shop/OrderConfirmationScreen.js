@@ -51,10 +51,6 @@ const OrderConfirmationScreen = () => {
             component: <LocationPicker userLocation={userDetails} />
         },
         {
-            title: 'Ghi Chú Đơn Hàng',
-            component: <MessageInput />
-        },
-        {
             title: 'Sản Phẩm',
             component: <View style={styles.productContainer}>
                 {products.map((product) => (
