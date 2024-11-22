@@ -1789,6 +1789,7 @@
   dependencies:
     invariant "^2.2.4"
 
+
 "@react-native-firebase/app@^20.5.0", "@react-native-firebase/app@20.5.0":
   version "20.5.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-20.5.0.tgz"

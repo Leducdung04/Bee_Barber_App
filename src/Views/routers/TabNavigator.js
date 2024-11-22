@@ -154,6 +154,7 @@ const TabNavigator = () => {
         }}
 
 
+
       />
       <CurvedBottomBar.Screen
         name="title2"
@@ -175,27 +176,27 @@ const TabNavigator = () => {
           ),
         }}
       />
-      <CurvedBottomBar.Screen
-        name="title3"
-        component={AppointmentHistoryScreen}
-        position="RIGHT"
-        options={{
-          title: '',
-          headerShown: true,
-          headerTitleAlign: 'center',
-          headerBackground: () => (
-            <View style={{ backgroundColor: 'white', height: 85, justifyContent: 'center' }}>
-              <Text style={globalStyles.titleStyle}>Lịch sử cắt</Text>
-            </View>
-          ),
-        }}
-      />
-      <CurvedBottomBar.Screen
-        name="title4"
-        component={AccountScreen}
-        position="RIGHT"
-      />
-    </CurvedBottomBar.Navigator>
+        <CurvedBottomBar.Screen
+          name="title3"
+          component={AppointmentHistoryScreen}
+          position="RIGHT"
+          options={{
+            title:'',
+            headerShown:true,
+            headerTitleAlign: 'center',
+            headerBackground: () => (
+              <View  style={{backgroundColor:'white',height:65,justifyContent:'center'}}>
+                  <Text style={globalStyles.titleStyle}>Lịch sử cắt ✂</Text>
+              </View>
+            ),
+          }}
+        />
+        <CurvedBottomBar.Screen
+          name="title4"
+          component={AccountScreen}
+          position="RIGHT"
+        />
+      </CurvedBottomBar.Navigator>
   )
 }
 

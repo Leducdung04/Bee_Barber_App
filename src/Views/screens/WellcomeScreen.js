@@ -23,8 +23,6 @@ const WelcomeScreen = ({ navigation }) => {
     const checkUserStatus = async () => {
       const userId = await AsyncStorage.getItem('userLocal');
       if (userId) {
-       // setIsUserLoggedIn(true);
-        // Nếu có userId, sau 3 giây chuyển đến màn Home
         setTimeout(() => {
           navigation.replace('TabNavigator');
         }, 3000);
@@ -36,7 +34,6 @@ const WelcomeScreen = ({ navigation }) => {
     };
 
     checkUserStatus();
-
     // Cleanup khi component unmount
     return () => clearTimeout();
   }, [navigation]);
@@ -54,14 +51,14 @@ const WelcomeScreen = ({ navigation }) => {
     );
   };
 
+  if(isLoadingData){
+    return (<View style={{flex:1}}>
+      <ImageBackground source={require('../../Resources/assets/images/wellcome.jpg')} style={styles.imageBackground} />
+      <ActivityIndicator style={{ position: 'absolute', bottom: 100, start: 0, end: 0 }} size={38} color={colors.primary} />
+    </View>)
+  }
   return (
     <View style={styles.container}>
-      {isLoadingData ? (
-        <Modal visible={isLoadingData} animationType='fade'>
-          <ImageBackground source={require('../../Resources/assets/images/wellcome.jpg')} style={styles.imageBackground} />
-          <ActivityIndicator style={{ position: 'absolute', bottom: 100, start: 0, end: 0 }} size={38} color={colors.primary} />
-        </Modal>
-      ) : (
         <FlatList
           data={listBanner}
           horizontal
@@ -73,8 +70,6 @@ const WelcomeScreen = ({ navigation }) => {
           viewabilityConfig={{ itemVisiblePercentThreshold: 50 }} // Đảm bảo hình ảnh hiển thị ít nhất 50%
           ref={flatListRef}
         />
-      )}
-
       <View style={styles.dotContainer}>
         {listBanner.map((_, index) => {
           return (
