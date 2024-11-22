@@ -69,19 +69,23 @@ const ProductScreen = () => {
 
   const handleBuyNow = async () => {
     try {
-        const cartItem = {
-            _id: product._id,
-            title: product.name,
-            price_selling: product.price_selling,
-            quantity,
-            image: url, // Add the image URL
-        };
+      const cartItem = {
+        _id: product._id,
+        title: product.name,
+        price_selling: product.price_selling,
+        quantity,
+        image: url, 
+      };
+  
+      closeModal();
+      setTimeout(() => {
         nav.navigate("OrderConfirmationScreen", { selectedItems: [cartItem] });
-
+      }, 300); 
     } catch (error) {
-        console.error("Error in Buy Now:", error.message);
+      console.error("Error in Buy Now:", error.message);
     }
-};
+  };
+  
 
   const handleAddToCartNotification = async () => {
     if (!token) {
