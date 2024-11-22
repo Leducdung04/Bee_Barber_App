@@ -5,6 +5,7 @@ import { get_list_cart_item, add_cart_item, delete_cart_item } from '../../Servi
 import { get_product_detail } from '../../Services/utils/httpProduct';
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
 import eventEmitter from '../../Services/utils/event';
+import { useNavigation } from '@react-navigation/native';
 
 
 const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
@@ -34,21 +35,18 @@ const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-
+  const nav = useNavigation()
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         const items = await get_list_cart_item();
         const productIds = items.map(item => item.product_id);
-        console.log("Cart Items:", items);
         const productDetails = await Promise.all(
           productIds.map(id => get_product_detail(id))
         );
-        console.log("Product Details:", productDetails);
         const updatedItems = items.map(item => {
           const productResponse = productDetails.find(product => product.data._id === item.product_id);
           if (!productResponse || !productResponse.data) {
-            console.error(`Product details not found for product_id: ${item.product_id}`);
             return { ...item };
           }
           const product = productResponse.data;
@@ -135,7 +133,7 @@ const Cart = () => {
   };
 
   const handleSelect = (id) => {
-    setCartItems(cartItems.map((i) => (i.id === id ? { ...i, selected: !i.selected } : i)));
+    setCartItems(cartItems.map((i) => (i._id === id ? { ...i, selected: !i.selected } : i)));
   };
 
   const handleSelectAll = () => {
@@ -147,7 +145,7 @@ const Cart = () => {
   const handlePlaceOrder = () => {
     const selectedItems = cartItems.filter((i) => i.selected);
     if (selectedItems.length > 0) {
-      Alert.alert('Đặt hàng thành công!', 'Bạn đã đặt hàng thành công.');
+      nav.navigate("OrderConfirmationScreen",{selectedItems})
     } else {
       Alert.alert('Thông báo', 'Vui lòng chọn ít nhất một sản phẩm để đặt hàng.');
     }

@@ -7,11 +7,6 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import CustomButton from '../components/shop/CustomButton';
-import GridDesign from '../components/shop/GridLayout';
-import CategoriesGridLayout from '../components/shop/CategoriesGridLayout';
-import TopSearch from '../components/shop/TopSearch';
-import PartnershipBranding from '../components/shop/PartnershipBranding';
 import MaterialTopTab from '../components/shop/ProductRecomendations';
 
 const ShopScreen = () => {

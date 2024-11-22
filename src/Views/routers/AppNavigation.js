@@ -7,7 +7,6 @@ import HomeScreen from '../screens/HomeScreen';
 import { Menu, Provider, TextInput } from 'react-native-paper';
 import CircleBorder from '../components/shop/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import CategoriesSortingProduct from '../components/shop/CategoriesSortingProduct';
 import CategoryScreen from '../components/shop/CategoryScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
 
@@ -28,6 +27,9 @@ import TestZaloPay from '../screens/TestZaloPay';
 import RegisterScreen from '../screens/RegisterScreen';
 import ProductScreen from '../components/shop/ProductScreen';
 import SearchProduct from '../components/shop/SearchProduct';
+import OrderConfirmationScreen from '../components/shop/OrderConfirmationScreen';
+import OrderScreen from '../screens/OrderScreen';
+import LocationPicker from '../components/shop/LocationPicker';
 
 
 
@@ -43,7 +45,7 @@ const AppNavigation = () => {
   const closeMenu1 = () => setVisible1(false);
   return (
     <Provider>
-      <Stack.Navigator initialRouteName="WelcomeScreen">
+      <Stack.Navigator initialRouteName="TabNavigator">
         <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{ headerShown: false }} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
@@ -53,76 +55,6 @@ const AppNavigation = () => {
           name="TabNavigator"
           component={TabNavigator}
           options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          headerBackButtonMenuEnabled
-          name="CategoriesSortingProduct"
-          component={CategoriesSortingProduct}
-          options={{
-            title: "Thêm",
-            headerShown: true,
-            headerRight: () => (
-              <View style={styles.headerRight}>
-                <CircleBorder
-                  name="search-outline"
-                  size={20}
-                  background="#f7f7f7"
-                  border="#e3e3e3"
-                />
-                <CircleBorder
-                  name="cart-outline"
-                  size={20}
-                  badgeCount={2}
-                  background="#f7f7f7"
-                  border="#e3e3e3"
-                />
-                <Menu
-                  visible={visible}
-                  onDismiss={closeMenu}
-                  mode="elevated"
-                  theme={{ colors: { primary: 'green' } }}
-                  anchor={
-                    <CircleBorder
-                      name="dots-three-vertical"
-                      size={20}
-                      background="#f7f7f7"
-                      border="#e3e3e3"
-                      onPress={openMenu}
-                    />
-                  }
-                  style={{ zIndex: 1000, marginTop: 32 }}>
-                  <Menu.Item
-                    onPress={() => {
-                      console.log('Option 1 clicked');
-                      closeMenu();
-                    }}
-                    leadingIcon={() => (
-                      <MaterialCommunityIcons
-                        name="home-outline"
-                        size={23}
-                        color="black"
-                      />
-                    )}
-                    title="Trang chủ"
-                  />
-                  <Menu.Item
-                    onPress={() => {
-                      console.log('Đơn hàng');
-                      closeMenu();
-                    }}
-                    leadingIcon={() => (
-                      <MaterialCommunityIcons
-                        name="clipboard-check-outline"
-                        size={23}
-                        color="black"
-                      />
-                    )}
-                    title="Đơn hàng"
-                  />
-                </Menu>
-              </View>
-            ),
-          }}
         />
         <Stack.Screen
           name="CategoryScreen"
@@ -169,7 +101,7 @@ const AppNavigation = () => {
                   />
                   <Menu.Item
                     onPress={() => {
-                      console.log('Đơn hàng');
+                      nav.navigate("OrderScreen")
                       closeMenu();
                     }}
                     title="Đơn hàng"
@@ -221,73 +153,22 @@ const AppNavigation = () => {
             headerTitleAlign: 'center',
           }}
         />
-        {/* <Stack.Screen
-          name="Search"
-          component={SearchProduct}
+        <Stack.Screen
+          name="OrderScreen"
+          component={OrderScreen}
           options={{
-            headerShown: true,
-            headerTitle: "",
-            headerRight: ({ navigation, route }) => {
-              const [searchTerm, setSearchTerm] = useState(route.params?.searchTerm || '');
-
-              return (
-                <View style={styles.headerRight}>
-                  <TextInput
-                    style={styles.searchContainer}
-                    placeholder="Tìm sản phẩm..."
-                    value={searchTerm}
-                    onChangeText={(text) => {
-                      setSearchTerm(text); // Update the local state
-                      navigation.setParams({ searchTerm: text }); // Update the route params
-                    }}
-                  />
-                  <CircleBorder
-                    name="cart-outline"
-                    size={20}
-                    badgeCount={2}
-                    background="#f7f7f7"
-                    border="#e3e3e3"
-                  />
-                  <Menu
-                    visible={visible1}
-                    onDismiss={closeMenu1}
-                    anchor={
-                      <CircleBorder
-                        name="dots-three-vertical"
-                        size={20}
-                        background="#f7f7f7"
-                        border="#e3e3e3"
-                        onPress={openMenu1}
-                      />
-                    }
-                    style={{ zIndex: 1000, marginTop: 32 }}
-                  >
-                    <Menu.Item
-                      onPress={() => {
-                        console.log('Trang chủ');
-                        closeMenu1();
-                      }}
-                      title="Trang chủ"
-                      leadingIcon={() => (
-                        <MaterialCommunityIcons name="home-outline" size={23} color="black" />
-                      )}
-                    />
-                    <Menu.Item
-                      onPress={() => {
-                        navigation.navigate("Cart");
-                      }}
-                      title="Đơn hàng"
-                      leadingIcon={() => (
-                        <MaterialCommunityIcons name="clipboard-check-outline" size={23} color="black" />
-                      )}
-                    />
-                  </Menu>
-                </View>
-              );
-            },
+            title: 'Đơn Hàng',
+            headerTitleAlign: 'center',
           }}
-        /> */}
-
+        />
+        <Stack.Screen
+          name="OrderConfirmationScreen"
+          component={OrderConfirmationScreen}
+          options={{
+            title: 'Xác Nhận Thanh Toán',
+            headerTitleAlign: 'center',
+          }}
+        />
       </Stack.Navigator>
     </Provider>
   );
