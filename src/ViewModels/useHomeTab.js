@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { get_List_Banner } from '../Services/utils/httpBanner';
 import { get_List_Category } from '../Services/utils/httpCategory';
 import { get_List_Category_Product } from '../Services/utils/httpCategoryProduct';
-import { get_list_barber } from '../Services/utils/httpBarber';
+import { get_list_barber } from '../Services/api/httpStylist';
 
 const useHomeTab = () => {
     const [listBanner, setlistBanner] = useState([]);
