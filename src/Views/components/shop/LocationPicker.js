@@ -3,7 +3,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import CustomTextInput from "./CustomTextInput";
 
-const LocationPicker = ({ userLocation }) => {
+const LocationPicker = ({ userLocation,onLocationChange }) => {
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [provinceParentCode, setProvinceParentCode] = useState(null);
   const [street, setStreet] = useState(userLocation?.location.street || "");
@@ -50,6 +50,15 @@ const LocationPicker = ({ userLocation }) => {
       console.error("Error fetching communes:", error);
     }
   };
+
+  useEffect(() => {
+    onLocationChange({
+      province: selectedProvince,
+      district: selectedDistrict,
+      commune: selectedCommune,
+      street: street,
+    });
+  }, [selectedProvince, selectedDistrict, selectedCommune, street]);
 
   useEffect(() => {
     fetchProvinces();

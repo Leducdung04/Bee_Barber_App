@@ -9,10 +9,16 @@ import { getUserDetailById } from "../../../Services/utils/httpUser";
 
 const OrderConfirmationScreen = () => {
 
-
+    const [locationDetails, setLocationDetails] = useState({
+        province: null,
+        district: null,
+        commune: null,
+        street: "",
+    });
+    const [method, setMethod] = useState(null)
     const [userDetails, setUserDetails] = useState(null);
     const route = useRoute();
-    const { selectedItems } = route.params || {}; 
+    const { selectedItems } = route.params || {};
     const methods = [
         {
             id: "1",
@@ -26,29 +32,48 @@ const OrderConfirmationScreen = () => {
         }
     ];
 
+    const handlePayment = () => {
+        if (!locationDetails.province || !locationDetails.district || !locationDetails.commune || !locationDetails.street) {
+          alert("Vui lòng nhập đầy đủ thông tin địa chỉ.");
+          return;
+        }
+      
+        const orderData = {
+          location: locationDetails,
+          products: products,
+          totalAmount: totalPrice + shippingFee - discount,
+          paymentMethod: method, 
+        };
+      
+        console.log("Order Data:", orderData);
+      
+      
+      };
+      
+
     const products = selectedItems?.map(item => ({
         id: item._id,
         name: item.title,
         price: item.price_selling,
         quantity: item.quantity,
         image: item.image,
-      })) || [];
+    })) || [];
 
-      const totalPrice = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
-      const shippingFee = 50000;  
-      const discount = 100000;
+    const totalPrice = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
+    const shippingFee = 50000;
+    const discount = 100000;
 
-      useEffect(() => {
+    useEffect(() => {
         getUserDetailById().then((data) => {
-          setUserDetails(data.data);
-          console.log("Fetched user details:", data.data);
+            setUserDetails(data.data);
+            console.log("Fetched user details:", data.data);
         });
-      }, []);
+    }, []);
 
     const data = [
         {
             title: 'Thông Tin Nhận Hàng',
-            component: <LocationPicker userLocation={userDetails} />
+            component: <LocationPicker userLocation={userDetails}   onLocationChange={(location) => setLocationDetails(location)}/>
         },
         {
             title: 'Sản Phẩm',
@@ -67,24 +92,24 @@ const OrderConfirmationScreen = () => {
         },
         {
             title: 'Phương Thức Thanh Toán',
-            component: <CustomRadioButton data={methods} />
+            component: <CustomRadioButton data={methods} onMethodChange={setMethod} />
         },
         {
             title: 'Thông Tin Đơn Hàng',
             component: <View style={styles.orderInfoContainer}>
-            <View style={styles.orderInfoRow}>
-                <Text style={styles.label}>Tổng Tiền Hàng</Text>
-                <Text style={styles.value}>₫ {totalPrice.toLocaleString()}</Text>
+                <View style={styles.orderInfoRow}>
+                    <Text style={styles.label}>Tổng Tiền Hàng</Text>
+                    <Text style={styles.value}>₫ {totalPrice.toLocaleString()}</Text>
+                </View>
+                <View style={styles.orderInfoRow}>
+                    <Text style={styles.label}>Phí Giao Hàng</Text>
+                    <Text style={styles.value}>₫ {shippingFee.toLocaleString()}</Text>
+                </View>
+                <View style={styles.orderInfoRow}>
+                    <Text style={styles.label}>Khuyến Mãi</Text>
+                    <Text style={styles.value}>₫ {discount.toLocaleString()}</Text>
+                </View>
             </View>
-            <View style={styles.orderInfoRow}>
-                <Text style={styles.label}>Phí Giao Hàng</Text>
-                <Text style={styles.value}>₫ {shippingFee.toLocaleString()}</Text>
-            </View>
-            <View style={styles.orderInfoRow}>
-                <Text style={styles.label}>Khuyến Mãi</Text>
-                <Text style={styles.value}>₫ {discount.toLocaleString()}</Text>
-            </View>
-        </View>
         },
     ];
 
@@ -103,8 +128,8 @@ const OrderConfirmationScreen = () => {
                     <Text style={styles.totalText}>Tổng Cộng: </Text>
                     <Text style={styles.totalAmount}>₫ {(totalPrice + shippingFee - discount).toLocaleString()}</Text>
                 </View>
-                <TouchableOpacity style={[styles.checkoutButton, { backgroundColor: color.primary }]} onPress={() => alert("Proceed to Checkout")}>
-                <Text style={styles.buttonText}>Thanh Toán</Text>
+                <TouchableOpacity style={[styles.checkoutButton, { backgroundColor: color.primary }]} onPress={() => handlePayment()}>
+                    <Text style={styles.buttonText} >Thanh Toán</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -118,7 +143,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollViewContainer: {
-        paddingBottom: 100,  
+        paddingBottom: 100,
     },
     section: {
         marginBottom: 20,

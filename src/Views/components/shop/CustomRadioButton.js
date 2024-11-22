@@ -1,24 +1,30 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-const CustomRadioButton = ({ data }) => {
-  const [selectedTime, setSelectedTime] = useState(null);
+const CustomRadioButton = ({ data,onMethodChange  }) => {
+  const [selectedMethod, setSelectedMethod] = useState(null);
+  const handleSelect = (id) => {
+    setSelectedMethod(id);
+    if (onMethodChange) {
+      onMethodChange(id); 
+    }
+  };
 
   return (
     <View style={{ flex: 1, padding: 10 }}>
       <View style={styles.section}>
-        {data.map((time) => (
+        {data.map((method) => (
           <TouchableOpacity
-            key={time.id}
+            key={method.id}
             style={styles.radioButtonContainer}
-            onPress={() => setSelectedTime(time.id)}
+            onPress={() => handleSelect(method.id)}
           >
             <View style={styles.radioCircle}>
-              {selectedTime === time.id && <View style={styles.selectedCircle} />}
+              {selectedMethod === method.id && <View style={styles.selectedCircle} />}
             </View>
             <View style={styles.textContainer}>
-              <Text style={styles.radioLabel}>{time.title}</Text>
-              {time.subTitle && <Text style={styles.subTitle}>{time.subTitle}</Text>}
+              <Text style={styles.radioLabel}>{method.title}</Text>
+              {method.subTitle && <Text style={styles.subTitle}>{method.subTitle}</Text>}
             </View>
           </TouchableOpacity>
         ))}
