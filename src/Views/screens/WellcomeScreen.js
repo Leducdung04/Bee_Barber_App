@@ -4,6 +4,12 @@ import { ActivityIndicator, Text } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from '../../Resources/styles/colors';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBarbers } from '../../stores/features/barbersSlice';
+import { fetchCategorys } from '../../stores/features/categorySlice';
+import { fetchBanners } from '../../stores/features/bannerSlice';
+import { fetchcategoryProduct } from '../../stores/features/categoryProductListSlice';
+import { fetchServices } from '../../stores/features/servicesSline';
 
 const { width: widthScreen, height: heightScreen } = Dimensions.get('window');
 
@@ -18,6 +24,18 @@ const WelcomeScreen = ({ navigation }) => {
   const flatListRef = useRef(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+
+  const dispatch = useDispatch();
+
+  // Gọi API khi component được render
+  useEffect(() => {
+    dispatch(fetchBarbers());
+    dispatch(fetchCategorys())
+    dispatch(fetchBanners())
+    dispatch(fetchcategoryProduct())
+    dispatch(fetchServices())
+  }, [dispatch]);
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -81,8 +99,14 @@ const WelcomeScreen = ({ navigation }) => {
           );
         })}
       </View>
-
-      <View style={[styles.dotContainer, { bottom: 150 }]}>
+      <View style={[styles.dotContainer, { bottom: 170 }]}>
+        <TouchableOpacity onPress={() => { navigation.navigate('TabNavigator'); }} style={{ flex: 1 }}>
+          <View style={{ flex: 1, height: 45, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100,borderWidth:1,borderColor:colors.primary }}>
+            <Text style={{ textAlign: 'center', color:colors.primary, fontSize: 18 }}>Trải nghiệm ngay</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={[styles.dotContainer, { bottom: 110 }]}>
         <TouchableOpacity onPress={() => { navigation.navigate('LoginScreen'); }} style={{ flex: 1 }}>
           <View style={{ flex: 1, height: 45, backgroundColor: colors.primary, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100 }}>
             <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Đăng nhập</Text>
@@ -109,7 +133,7 @@ const styles = StyleSheet.create({
   },
   dotContainer: {
     position: 'absolute',
-    bottom: 100, // Khoảng cách của dot từ dưới cùng
+    bottom: 80, // Khoảng cách của dot từ dưới cùng
     left: 0,
     right: 0,
     flexDirection: 'row',

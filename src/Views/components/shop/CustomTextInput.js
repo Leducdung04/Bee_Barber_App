@@ -8,14 +8,13 @@ const CustomTextInput = ({ label, error,value, ...props }) => {
     <View style={styles.container}>
       <TextInput
         {...props}
-        style={[styles.input, focused && styles.focusedInput, error && styles.errorInput]}
+        style={[styles.input]}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         placeholder={label}
         value={value}
         placeholderTextColor="#A8A8A8" 
       />
-      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };

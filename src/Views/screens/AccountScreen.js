@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Image, Modal } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { deleteUserlocal, getUserlocal } from '../../Services/utils/user__AsyncStorage';
 import colors from '../../Resources/styles/colors';
 
 const AccountScreen = ({navigation}) => {
 
   const [UserProfile, setUserProfile] = useState(null)
+  const [ModalDN, setModalDN] = useState(false)
 
-  useEffect(() => {
-     async function getUser(){
-      const user= await getUserlocal()
-      setUserProfile(user)
-    }
-    getUser()
-  }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      async function getUser(){
+        const user= await getUserlocal()
+        setUserProfile(user)
+        if(!user){
+           setModalDN(true)
+        }
+      }
+      getUser()
+  
+      return () => {
+        // Cleanup nếu cần khi màn hình/tab bị unfocus
+      };
+    }, [])
+  );
   
   const handlePress = (item) => {
     Alert.alert('Thông báo', `Bạn đã nhấn vào: ${item}`);
@@ -28,14 +39,14 @@ const AccountScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-          <View style={styles.userInfo}>
+          <View style={[styles.userInfo1,{flexDirection:'row'}]}>
             <View style={{width:64,height:64,borderRadius:50,backgroundColor:colors.primary300,alignItems:'center',justifyContent:'center'}}>
               <Image source={require('../../Resources/assets/images/men.png')} style={{width:52,height:52}}/>
             </View>
          
             <View style={styles.textContainer}>
               <Text style={styles.guestText}>{UserProfile?.name}</Text>
-              <Text style={styles.memberText}>{UserProfile?.loyaltyPoints} point</Text>
+              <Text>id {UserProfile?._id}</Text>
             </View>
           </View>
           <TouchableOpacity onPress={() => handlePress('Tùy chọn khác')}>
@@ -59,7 +70,7 @@ const AccountScreen = ({navigation}) => {
 
         {/* Nhóm chức năng sát nhau */}
         <View style={styles.group}>
-          {/* <TouchableOpacity style={styles.itemNoGap} onPress={() => navigation.navigate('UserProfile')}>
+          <TouchableOpacity style={styles.itemNoGap} onPress={() => navigation.navigate('UserProfile')}>
             <View style={styles.itemContainer}>
               <Image
                 source={require('../../Resources/assets/images/user.png')} // Placeholder cho icon
@@ -71,9 +82,9 @@ const AccountScreen = ({navigation}) => {
               source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
               style={styles.chevronIcon}
             />
-          </TouchableOpacity> */}
+          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.itemNoGap} onPress={() => handlePress('Địa chỉ của anh')}>
+          {/* <TouchableOpacity style={styles.itemNoGap} onPress={() => handlePress('Địa chỉ của anh')}>
             <View style={styles.itemContainer}>
               <Image
                 source={require('../../Resources/assets/images/Address.png')} // Placeholder cho icon
@@ -85,9 +96,9 @@ const AccountScreen = ({navigation}) => {
               source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
               style={styles.chevronIcon}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <TouchableOpacity style={styles.itemNoGap} onPress={() => navigation.navigate('Cart')}>
+          <TouchableOpacity style={styles.itemNoGap} onPress={() => navigation.navigate('OderHistory')}>
             <View style={styles.itemContainer}>
               <Image
                 source={require('../../Resources/assets/images/order.png')} // Placeholder cho icon
@@ -166,6 +177,30 @@ const AccountScreen = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
+
+
+
+        {/* Kiểm tra đăng nhập */}
+        <Modal visible={ModalDN} animationType='slide' transparent={true} >
+           <View style={{flex:1,justifyContent:'center',backgroundColor:'rgba(0, 0, 0, 0.2)'}}>
+              <View style={{height:180,backgroundColor:'white',margin:32,borderRadius:4,alignItems:'center',justifyContent:'space-around'}}>
+                   <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Đăng nhập</Text>
+                   <Text style={{fontSize:17}}>Đăng nhập ngay để sủ dụng tính năng này ?</Text>
+                   <View style={{flexDirection:'row'}}>
+                     <TouchableOpacity onPress={()=>{setModalDN(false)}}>
+                       <View style={{height:45,width:120,borderWidth:1,borderColor:colors.primary,borderRadius:8,marginHorizontal:12,justifyContent:'center',alignItems:'center'}}>
+                       <Text style={{color:colors.primary,fontWeight:'bold'}}>Để sau</Text>
+                       </View>
+                     </TouchableOpacity>
+                     <TouchableOpacity onPress={()=>{navigation.navigate('LoginScreen')}}>
+                       <View style={{height:45,width:120,marginHorizontal:12,backgroundColor:colors.primary,justifyContent:'center',alignItems:'center',borderRadius:8}}>
+                       <Text style={{fontWeight:'bold',color:'white'}}>Đồng ý</Text>
+                       </View>
+                     </TouchableOpacity>
+                   </View>
+              </View>
+           </View>
+      </Modal>
       </ScrollView>
     </View>
   );

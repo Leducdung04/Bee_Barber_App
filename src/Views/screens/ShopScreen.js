@@ -12,8 +12,8 @@ import MaterialTopTab from '../components/shop/ProductRecomendations';
 const ShopScreen = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      <ScrollView contentContainerStyle={{flexGrow: 1,paddingBottom:100}}>
-        <View style={styles.imageContainer}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <View>
           <ImageBackground
             source={require('../../Resources/assets/images/banner.png')}
             style={styles.imageBackground}>
@@ -32,9 +32,6 @@ const ShopScreen = () => {
 export default ShopScreen;
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    marginTop: 20,
-  },
   imageBackground: {
     height: 160,
     justifyContent: 'center',

@@ -63,7 +63,16 @@ const Cart = () => {
         console.error(error.message);
       }
     };
-    fetchCartItems();
+    async function getUser(){
+      const user= await getUserlocal()
+      setUserProfile(user)
+      if(!user){
+        // setModalDN(true)
+      }else{
+        fetchCartItems();
+      }
+    }
+    getUser()
   }, []);
 
   const handleAdd = async (id) => {

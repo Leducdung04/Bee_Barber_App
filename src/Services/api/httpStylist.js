@@ -17,6 +17,6 @@ export const get_list_barber = async () => {
         // Xử lý lỗi nếu có
         console.log('Error getting list barber', error.message); // In ra thông báo lỗi
         
-        return []; 
+        return []; // Trả về mảng rỗng nếu có lỗi
     }
 }
