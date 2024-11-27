@@ -3,6 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import AppNavigation from './src/Views/routers/AppNavigation';
 import { requestUserPermission } from './src/Services/api/notificationhelper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Provider } from 'react-redux';
+import store from './src/stores/redux/store';
 
 export default function App() {
 
@@ -15,9 +17,6 @@ export default function App() {
 
   async function getData(){
   await AsyncStorage.removeItem('fcmToken')
-
-  //  await requestUserPermission()
-  //  await getFcmToken()
   }
   async function getFcmToken() {
 
@@ -30,8 +29,10 @@ export default function App() {
   }
   
   return (
-    <NavigationContainer>
-       <AppNavigation/>
-    </NavigationContainer>
+   <Provider store={store}>
+      <NavigationContainer>
+         <AppNavigation/>
+      </NavigationContainer>
+   </Provider>
   );
 }

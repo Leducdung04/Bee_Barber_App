@@ -20,7 +20,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import globalStyles from '../../Resources/styles/globalStyles';
 import { useNavigation } from '@react-navigation/native';
 import UserProfile from '../screens/UserProfile';
-import TestZaloPay from '../screens/TestZaloPay';
 import CircleBorder from '../components/shop/CircleBorder';
 
 const TabNavigator = () => {
@@ -143,11 +142,12 @@ const TabNavigator = () => {
           ),
           headerRight: ({ tintColor }) => (
             <View style={{ flexDirection: 'row', marginHorizontal: 32 }}>
-              <TouchableOpacity onPress={() => nav.navigate("Cart")}>
-
+              <CircleBorder onPress={() => nav.navigate("Cart")} />
+              <TouchableOpacity onPress={() => nav.navigate("Notification")}>
+                <Image source={require('../../Resources/assets/icons/notification.png')}
+                  style={{ marginStart: 16, height: 26, width: 26 }} />
               </TouchableOpacity>
-              <Image source={require('../../Resources/assets/icons/notification.png')}
-                style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 12 }} />
+              
             </View>
           ),
 
@@ -172,6 +172,7 @@ const TabNavigator = () => {
           headerRight: () => (
             <View style={styles.headerRight}>
               <CircleBorder onPress={() => nav.navigate("Cart")} />
+                <View style={{marginStart:12}}></View>
             </View>
           ),
         }}

@@ -5,6 +5,7 @@ import { get_List_Services } from '../../Services/utils/httpServices';
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP'; // Nhập hàm thay thế
 import { useRoute, useNavigation } from '@react-navigation/native';
 import colors from '../../Resources/styles/colors';
+import { useSelector } from 'react-redux';
 
 const ServicesScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,14 +23,16 @@ const ServicesScreen = ({ navigation }) => {
   const ITEM_MARGIN = 10; // Khoảng cách giữa các item
   const ITEM_WIDTH = (width / 2) - ITEM_MARGIN - 20; // Chiều rộng của mỗi item
 
+  
+  const  servicesAPI  = useSelector((state) => state.services.services);
+
   // Fetch danh sách dịch vụ từ API khi màn hình được load
   useEffect(() => {
     const fetchServices = async () => {
       setIsLoading(true);
-      const services = await get_List_Services();
-      if (Array.isArray(services) && services.length > 0) {
+      if (Array.isArray(servicesAPI) && servicesAPI.length > 0) {
         // Thay thế localhost bằng IP nếu cần
-        const formattedServices = services.map(service => ({
+        const formattedServices = servicesAPI.map(service => ({
           ...service,
           images: service.images ? replaceLocalhostWithIP(service.images) : null,
         }));
@@ -208,7 +211,7 @@ const ServicesScreen = ({ navigation }) => {
                       <Text style={styles.itemText3} numberOfLines={2}>{item.description}</Text>
                       <Text style={styles.itemText4}>{item.ttthem}Giảm 5% cho lần tiếp theo</Text>
                       <Text style={styles.itemText5}>{item.danhgia}Tiêu chuẩn</Text>
-                      <Text style={styles.itemText6}>{item.price}k</Text>
+                      <Text style={styles.itemText6}>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
                     </View>
                     <TouchableOpacity onPress={() => handleAddService(item)}>
                       {/* <Text style={styles.itemText7}>
@@ -256,29 +259,30 @@ const ServicesScreen = ({ navigation }) => {
         <View style={styles.footerLine}></View>
 
         {/* Vocher */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={styles.footerText}>🎟️ Ưu đãi của anh</Text>
-          <TouchableOpacity>
-            <Text style={styles.footerText}>Chọn ưu đãi ➡️</Text>
-          </TouchableOpacity>
-        </View>
+            {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={styles.footerText}>🎟️ Ưu đãi của anh</Text>
+              <TouchableOpacity>
+                <Text style={styles.footerText}>Chọn ưu đãi ➡️</Text>
+              </TouchableOpacity>
+            </View> */}
 
         <View style={styles.footerLine}></View>
 
         {/* Button */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, alignItems: 'flex-end' }}>
           <TouchableOpacity>
-            <Text style={[styles.buttonText, { textDecorationLine: 'underline' }]}>Đã chọn {selectedServices.length} dịch vụ</Text>
+            <Text style={[styles.buttonText, { textDecorationLine: 'underline',marginBottom:20 }]}>Đã chọn {selectedServices.length} dịch vụ</Text>
           </TouchableOpacity>
-
-          <View style={{ flexDirection: 'column', alignItems: 'flex-end', marginLeft: 110 }}>
+          <View style={{flexDirection:'row',margin:10}}>
+          <View style={{ flexDirection: 'column' ,marginHorizontal:8}}>
             <Text style={styles.textprice}>Tổng thanh toán</Text>
-            <Text style={styles.price}>{totalPrice}K</Text>
+            <Text style={styles.price}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VND</Text>
           </View>
 
           <TouchableOpacity onPress={handleDone}>
             <Text style={styles.buttonText1}>Xong</Text>
           </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
@@ -567,7 +571,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#000099',
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '500',
     marginBottom: 5,
   },
@@ -583,13 +587,14 @@ const styles = StyleSheet.create({
   },
   buttonText1: {
     color: 'white',
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '500',
     borderRadius: 3,
-    backgroundColor: 'gray',
+    backgroundColor:colors.primary,
     paddingVertical: 10,
     paddingHorizontal: 20,
     marginBottom: 5,
+    marginEnd:12
 
   }
 });

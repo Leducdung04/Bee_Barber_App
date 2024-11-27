@@ -6,7 +6,7 @@ import CustomTextInput from "./CustomTextInput";
 const LocationPicker = ({ userLocation,onLocationChange }) => {
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [provinceParentCode, setProvinceParentCode] = useState(null);
-  const [street, setStreet] = useState(userLocation?.location.street || "");
+  const [street, setStreet] = useState(userLocation?.location?.street || "");
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [districtParentCode, setDistrictParentCode] = useState(null);
 
@@ -89,7 +89,7 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
           style={styles.picker}
         >
           <Picker.Item label="Tỉnh / Thành Phố*" value={null} />
-          {provinceList.map((item) => (
+          {provinceList?.map((item) => (
             <Picker.Item key={item._id} label={item.name} value={item} />
           ))}
         </Picker>
@@ -105,7 +105,7 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
           enabled={!!selectedProvince}
         >
           <Picker.Item label="Quận / Huyện*" value={null} />
-          {districtList.map((item) => (
+          {districtList?.map((item) => (
             <Picker.Item key={item._id} label={item.name} value={item} />
           ))}
         </Picker>
@@ -119,7 +119,7 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
           enabled={!!selectedDistrict}
         >
           <Picker.Item label="Xã / Thị trấn*" value={null} />
-          {communeList.map((item) => (
+          {communeList?.map((item) => (
             <Picker.Item key={item._id} label={item.name} value={item} />
           ))}
         </Picker>

@@ -30,27 +30,6 @@ const HomeScreen = () => {
       keyExtractor={(item) => item.key}
       showsVerticalScrollIndicator={false}
     />
-    // <ScrollView 
-    //   style={styles.container} 
-    //   scrollEnabled={scrollEnabled}
-    // >
-    //   <ListBanner 
-    //     listBanner={listBanner} 
-    //   />
-    //   <CategoryProductList 
-    //     categoryProductList={categoryProductList}
-    //   />
-    //   <HeaderOder/>
-    //   <ServiceCategoryList 
-    //     categoryList={categoryList}
-    //   />
-    //   <BarberList 
-    //     barberList={barberList}
-    //     onScrollStart={() => setScrollEnabled(false)}   
-    //     onScrollEnd={() => setScrollEnabled(true)}
-    //   />
-    //   {/* <Image source={require('../../Resources/assets/images/footer.png')} style={{width:Dimensions.get('window').width,height:220,marginBottom:120}}/> */}
-    // </ScrollView>
   );
 };
 

@@ -23,13 +23,13 @@ import WelcomeScreen from '../screens/WellcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SigupScreen from '../screens/SigupScreen';
 import { useNavigation } from '@react-navigation/native';
-import TestZaloPay from '../screens/TestZaloPay';
-import RegisterScreen from '../screens/RegisterScreen';
 import ProductScreen from '../components/shop/ProductScreen';
 import SearchProduct from '../components/shop/SearchProduct';
 import OrderConfirmationScreen from '../components/shop/OrderConfirmationScreen';
 import OrderScreen from '../screens/OrderScreen';
 import LocationPicker from '../components/shop/LocationPicker';
+import OderHistory from '../screens/OderHistory';
+import Notification from '../screens/Notification';
 
 
 
@@ -45,12 +45,13 @@ const AppNavigation = () => {
   const closeMenu1 = () => setVisible1(false);
   return (
     <Provider>
-      <Stack.Navigator initialRouteName="TabNavigator">
-        <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{ headerShown: false }} />
+      <Stack.Navigator initialRouteName="WelcomeScreen">
+        <Stack.Screen name="OderHistory" component={OderHistory} options={{title:'Đơn hàng của bạn'}} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SigupScreen" component={SigupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="Notification" component={Notification} options={{title:'Thông báo'}} />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
@@ -130,7 +131,7 @@ const AppNavigation = () => {
           headerBackButtonMenuEnabled
         />
         <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-          options={{ title: 'Đặt lịch giữ chỗ ' }} />
+          options={{ title: 'Đặt lịch giữ chỗ ' ,headerShown:false}} />
         <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
           options={{ title: 'Dịch vụ theo danh mục' }}
         />
