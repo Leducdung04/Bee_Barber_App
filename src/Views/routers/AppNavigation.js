@@ -44,12 +44,12 @@ const AppNavigation = () => {
   return (
     <Provider>
       <Stack.Navigator initialRouteName="WelcomeScreen">
-        <Stack.Screen name="OderHistory" component={OderHistory} options={{title:'Đơn hàng của bạn'}} />
+        <Stack.Screen name="OderHistory" component={OderHistory} options={{ title: 'Đơn hàng của bạn' }} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SigupScreen" component={SigupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="Notification" component={Notification} options={{title:'Thông báo'}} />
+        <Stack.Screen name="Notification" component={Notification} options={{ title: 'Thông báo' }} />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
@@ -129,7 +129,7 @@ const AppNavigation = () => {
           headerBackButtonMenuEnabled
         />
         <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-          options={{ title: 'Đặt lịch giữ chỗ ' ,headerShown:false}} />
+          options={{ title: 'Đặt lịch giữ chỗ ', headerShown: false }} />
         <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
           options={{ title: 'Dịch vụ theo danh mục' }}
         />
@@ -165,6 +165,14 @@ const AppNavigation = () => {
           component={OrderConfirmationScreen}
           options={{
             title: 'Xác Nhận Thanh Toán',
+            headerTitleAlign: 'center',
+          }}
+        />
+        <Stack.Screen
+          name="NotificationScreen"
+          component={NotificationScreen}
+          options={{
+            title: 'Thông báo',
             headerTitleAlign: 'center',
           }}
         />
