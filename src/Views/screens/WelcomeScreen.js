@@ -9,9 +9,9 @@ const { width: widthScreen, height: heightScreen } = Dimensions.get('window');
 
 const WelcomeScreen = ({ navigation }) => {
   const listBanner = [
-    require('../../Resources/assets/images/wellcome1.jpg'),
-    require('../../Resources/assets/images/wellcome2.jpg'),
-    require('../../Resources/assets/images/wellcome3.jpg'),
+    require('../../Resources/assets/images/wellcome.1.jpg'),
+    require('../../Resources/assets/images/wellcome.2.jpg'),
+    require('../../Resources/assets/images/wellcome.3.jpg'),
   ];
 
   const [indexImage, setIndexImage] = useState(0);
@@ -21,21 +21,18 @@ const WelcomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const checkUserStatus = async () => {
-      const userId = await AsyncStorage.getItem('userId');
+      const userId = await AsyncStorage.getItem('userLocal');
       if (userId) {
-        setIsUserLoggedIn(true);
+       // setIsUserLoggedIn(true);
         // Nếu có userId, sau 3 giây chuyển đến màn Home
         setTimeout(() => {
-          navigation.replace('TabNavigator');
+          navigation.replace('LoginScreen');
         }, 3000);
       } else {
         setTimeout(() => {
           setIsLoadingData(false);
         }, 3000);
       }
-        // setTimeout(() => {
-        //   setIsLoadingData(false);
-        // }, 3000);
     };
 
     checkUserStatus();
@@ -91,7 +88,7 @@ const WelcomeScreen = ({ navigation }) => {
       </View>
 
       <View style={[styles.dotContainer, { bottom: 150 }]}>
-        <TouchableOpacity onPress={() => { navigation.navigate('Login'); }} style={{ flex: 1 }}>
+        <TouchableOpacity onPress={() => { navigation.navigate('LoginScreen'); }} style={{ flex: 1 }}>
           <View style={{ flex: 1, height: 45, backgroundColor: colors.primary, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100 }}>
             <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Đăng nhập</Text>
           </View>

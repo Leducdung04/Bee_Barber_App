@@ -73,7 +73,7 @@ const OrderConfirmationScreen = () => {
     const data = [
         {
             title: 'Thông Tin Nhận Hàng',
-            component: <LocationPicker userLocation={userDetails}   onLocationChange={(location) => setLocationDetails(location)}/>
+            component: <LocationPicker userLocation={userDetails} onLocationChange={(location) => setLocationDetails(location)}/>
         },
         {
             title: 'Sản Phẩm',

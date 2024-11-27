@@ -146,8 +146,11 @@ const TabNavigator = () => {
               <TouchableOpacity onPress={() => nav.navigate("Cart")}>
 
               </TouchableOpacity>
-              <Image source={require('../../Resources/assets/icons/notification.png')}
-                style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 12 }} />
+              <TouchableOpacity onPress={() => nav.navigate("NotificationScreen")}>
+                <Image source={require('../../Resources/assets/icons/notification.png')}
+                  style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 12 }} />
+              </TouchableOpacity>
+
             </View>
           ),
 

@@ -10,8 +10,11 @@ import SelectedServices from '../components/Appointment/SelectedServices';
 import ItemService from '../components/Item/ItemService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { deleteZaloPayload } from '../../Services/utils/ZaloPay_AsyncStorage';
-const AppointmentScreen = ({ route, navigation}) => {
-  
+import { requestUserPermission } from '../../Services/api/notificationhelper';
+import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../../Services/api/notificationhelper'
+
+const AppointmentScreen = ({ route, navigation }) => {
+
   const {
     setmodalCheck,
     setmodalIsloading,
@@ -34,11 +37,20 @@ const AppointmentScreen = ({ route, navigation}) => {
   const [time_Selected, settime_Selected] = useState(null)
   const [pay_Method, setpay_Method] = useState(null)
   const [totalAmount, settotalAmount] = useState(0)
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     const totalPrice = selectedServices.reduce((total, service) => total + service.price, 0);
     settotalAmount(totalPrice);
   }, [selectedServices])
+
+  useEffect(() => {
+    const setupNotifications = async () => {
+      await requestUserPermission();
+      await initializeFCM(getToken, setToken);
+    };
+    setupNotifications();
+  }, []);
 
   // xử lý chọn giờ 
   const handleTimeSelect = (time) => {
@@ -47,34 +59,60 @@ const AppointmentScreen = ({ route, navigation}) => {
   useEffect(() => {
     console.log('dữ liệu code zalopay', dataChechZaloPay)
   }, [dataChechZaloPay])
-  
-  const  onHandel_Order = async() => {
+
+  const onHandel_Order = async () => {
     setmodalIsloading(true)
     const currentDate = new Date();
     const currentTime = currentDate.toLocaleTimeString('en-US', { hour12: false });
-       const appointment = {
-        appointment: {
-            barber_id: barber_Selected?._id,
-            user_id: "66fe1856faa0e86597afdbae",
-            service_id: selectedServices.map(item => item._id),
-            appointment_time: time_Selected,
-            appointment_date:day_Selected.date,
-            appointment_status: "pending",
-            price:parseInt(totalAmount+'000', 10) ,
-            },
+    const appointment = {
+      appointment: {
+        barber_id: barber_Selected?._id,
+        user_id: "66fe1856faa0e86597afdbae",
+        service_id: selectedServices.map(item => item._id),
+        appointment_time: time_Selected,
+        appointment_date: day_Selected.date,
+        appointment_status: "pending",
+        price: parseInt(totalAmount + '000', 10),
+      },
       payment: {
-            user_id: "66fe1856faa0e86597afdbae",
-            pay_type: "booking",
-            pay_method: pay_Method,
-            time: currentTime,
-            date: currentDate.toISOString().split("T")[0],
-            price: parseInt(totalAmount+'000', 10)
-            }
-       }
+        user_id: "66fe1856faa0e86597afdbae",
+        pay_type: "booking",
+        pay_method: pay_Method,
+        time: currentTime,
+        date: currentDate.toISOString().split("T")[0],
+        price: parseInt(totalAmount + '000', 10)
+      }
+    }
 
-       console.log('data thêm ',appointment)
-       handle_Order_Appointment(appointment)
+    console.log('data thêm ', appointment)
+    handle_Order_Appointment(appointment)
   }
+
+
+
+  const scheduleAppointmentNotification = (appointmentDate, appointmentTime) => {
+    const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}`);
+    const currentDateTime = new Date();
+
+    const timeDifference = appointmentDateTime - currentDateTime;
+
+    if (timeDifference > 0) {
+      PushNotification.localNotificationSchedule({
+        channelId: 'default-channel', // Ensure the channel exists
+        title: 'Upcoming Appointment Reminder',
+        message: 'You have an appointment today. Don’t forget!',
+        date: appointmentDateTime,
+        allowWhileIdle: true,
+      });
+
+      console.log('Notification scheduled for:', appointmentDateTime);
+    } else {
+      console.warn('Appointment time is in the past or immediate.');
+    }
+  };
+
+
+
   const Item_Barber = ({ item }) => {
     if (!item) {
       return null;
@@ -301,101 +339,101 @@ const AppointmentScreen = ({ route, navigation}) => {
             <View style={{ height: 2, width: 20, backgroundColor: checkButtom() }}>
 
             </View>
-            {selectedServices && barber_Selected && time_Selected && day_Selected && pay_Method ? 
-              <TouchableOpacity onPress={()=>{onHandel_Order()}} style={{ flex: 1 }}>
-              <View style={{ flex: 1, height: 50, backgroundColor: colors.primary, borderRadius: 8, justifyContent: 'center' }}>
-                <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
+            {selectedServices && barber_Selected && time_Selected && day_Selected && pay_Method ?
+              <TouchableOpacity onPress={() => { onHandel_Order() }} style={{ flex: 1 }}>
+                <View style={{ flex: 1, height: 50, backgroundColor: colors.primary, borderRadius: 8, justifyContent: 'center' }}>
+                  <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
+                </View>
+              </TouchableOpacity>
+              :
+              <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, height: 50, backgroundColor: 'gray', borderRadius: 8, justifyContent: 'center' }}>
+                  <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
+                </View>
               </View>
-            </TouchableOpacity>
-            :
-            <View style={{ flex: 1 }}>
-              <View style={{ flex: 1, height: 50, backgroundColor: 'gray', borderRadius: 8, justifyContent: 'center' }}>
-                <Text style={{ textAlign: 'center', color: 'white', fontSize: 20, fontWeight: 'bold' }}>Chốt giờ cắt</Text>
-              </View>
-            </View>
             }
 
           </View>
 
           <Modal visible={modalCheck} animationType='fade' transparent={true}>
-                 <View style={{flex:1,backgroundColor:colors.background}}>
-                       <Text style={{textAlign:'center',marginTop:32,fontSize:20,fontWeight:'bold',color:'green'}}>Bạn đang có giao dịch </Text>
-                       <View style={{backgroundColor:'white',marginHorizontal:24,borderRadius:24,marginTop:24}}>
-                         <Image source={require('../../Resources/assets/logo/Bee_Barber.png')} style={{width:120,height:22,margin:12}}/>
-                         <View style={{marginStart:12}}>
-                              <Text style={{fontWeight:'bold',color:colors.primary200}}>Đặt lịch cắt tóc</Text>
-                              <View>
-                                 <Text style={{marginVertical:4}}>Barber : {barber_Selected?.name}</Text>
-                                 <Text style={{marginVertical:4}}>Danh sách dịch vụ : {selectedServices.length}</Text>
-                                 <Text style={{marginVertical:4}}>Tổng tiền : <Text style={{color:colors.primary,fontWeight:'bold'}}>{totalAmount}.000</Text></Text>
-                                <FlatList style={{marginEnd:12,marginBottom:12}} data={selectedServices} 
-                                          horizontal={true}
-                                          keyExtractor={(item) => item._id}
-                                          showsHorizontalScrollIndicator={false}
-                                          renderItem={({item})=>{
-                                            const url = replaceLocalhostWithIP(item.images)
-                                            return (
-                                                  <View style={{width:120,backgroundColor:colors.background,margin:6,borderRadius:12,padding:4}}>
-                                                          <Text style={styles.textName}>{item.name}</Text>
-                                                          <Image source={{uri:url}} style={{width:100,height:80,borderRadius:8}}/>
-                                            
-                                                      <View style={{flexDirection:'row',marginTop:24,bottom:10,justifyContent:'space-around',alignItems:'center'}}>
-                                                              <Text style={{color:colors.primary200,textAlign:'center'}}>{item.duration}'</Text>
-                                                               <Text style={{color:colors.primary,fontWeight:'bold',textAlign:'center'}}>{item.price}k</Text>
-                                                       
-                                                      </View>
-                                                  </View>
-                                            )
-                                          }}
-                                />
-                              </View>
-                         </View>
-                       </View>
-                       <View style={{width:'100%',alignItems:'center',marginTop:40}}>
-                          <Image style={{width:80,height:80}} source={dataChechZaloPay?.return_code ===1 ? require('../../Resources/assets/icons/Success.png') :require('../../Resources/assets/icons/filled.png') }/>
-                       </View>
-                      
-                       <Text style={{textAlign:'center',marginTop:12,fontSize:16,color:dataChechZaloPay?.return_code ===1 ?'green':'red'}}>{dataChechZaloPay?.return_message}</Text>
-                       
-                       {dataChechZaloPay?.return_code ===1 ? <View style={{alignItems:'center'}}>
-                        <TouchableOpacity onPress={()=>{navigation.navigate('title3')}}>
-                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,backgroundColor:colors.primary}}>
-                             <Text style={{fontWeight:'bold',color:'white'}}>OK</Text>
-                           </View>
-                        </TouchableOpacity>
-                       </View> : 
-                       <View style={{flexDirection:'row',justifyContent:'space-around'}}>
-                        <TouchableOpacity onPress={()=>{deleteZaloPayload();setmodalCheck(false)}}>
-                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,}}>
-                             <Text style={{fontWeight:'bold',color:'black'}}>Hủy</Text>
-                           </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>{onHandel_Order()}}>
-                           <View style={{paddingHorizontal:12,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,backgroundColor:colors.primary}}>
-                             <Text style={{fontWeight:'bold',color:'white'}}>Thanh toán lại</Text>
-                           </View>
-                        </TouchableOpacity>
-                      </View>}
-                 </View>
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
+              <Text style={{ textAlign: 'center', marginTop: 32, fontSize: 20, fontWeight: 'bold', color: 'green' }}>Bạn đang có giao dịch </Text>
+              <View style={{ backgroundColor: 'white', marginHorizontal: 24, borderRadius: 24, marginTop: 24 }}>
+                <Image source={require('../../Resources/assets/logo/Bee_Barber.png')} style={{ width: 120, height: 22, margin: 12 }} />
+                <View style={{ marginStart: 12 }}>
+                  <Text style={{ fontWeight: 'bold', color: colors.primary200 }}>Đặt lịch cắt tóc</Text>
+                  <View>
+                    <Text style={{ marginVertical: 4 }}>Barber : {barber_Selected?.name}</Text>
+                    <Text style={{ marginVertical: 4 }}>Danh sách dịch vụ : {selectedServices.length}</Text>
+                    <Text style={{ marginVertical: 4 }}>Tổng tiền : <Text style={{ color: colors.primary, fontWeight: 'bold' }}>{totalAmount}.000</Text></Text>
+                    <FlatList style={{ marginEnd: 12, marginBottom: 12 }} data={selectedServices}
+                      horizontal={true}
+                      keyExtractor={(item) => item._id}
+                      showsHorizontalScrollIndicator={false}
+                      renderItem={({ item }) => {
+                        const url = replaceLocalhostWithIP(item.images)
+                        return (
+                          <View style={{ width: 120, backgroundColor: colors.background, margin: 6, borderRadius: 12, padding: 4 }}>
+                            <Text style={styles.textName}>{item.name}</Text>
+                            <Image source={{ uri: url }} style={{ width: 100, height: 80, borderRadius: 8 }} />
+
+                            <View style={{ flexDirection: 'row', marginTop: 24, bottom: 10, justifyContent: 'space-around', alignItems: 'center' }}>
+                              <Text style={{ color: colors.primary200, textAlign: 'center' }}>{item.duration}'</Text>
+                              <Text style={{ color: colors.primary, fontWeight: 'bold', textAlign: 'center' }}>{item.price}k</Text>
+
+                            </View>
+                          </View>
+                        )
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View style={{ width: '100%', alignItems: 'center', marginTop: 40 }}>
+                <Image style={{ width: 80, height: 80 }} source={dataChechZaloPay?.return_code === 1 ? require('../../Resources/assets/icons/Success.png') : require('../../Resources/assets/icons/filled.png')} />
+              </View>
+
+              <Text style={{ textAlign: 'center', marginTop: 12, fontSize: 16, color: dataChechZaloPay?.return_code === 1 ? 'green' : 'red' }}>{dataChechZaloPay?.return_message}</Text>
+
+              {dataChechZaloPay?.return_code === 1 ? <View style={{ alignItems: 'center' }}>
+                <TouchableOpacity onPress={() => { navigation.navigate('title3') }}>
+                  <View style={{ width: 100, height: 45, borderWidth: 1, borderColor: colors.primary100, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40, backgroundColor: colors.primary }}>
+                    <Text style={{ fontWeight: 'bold', color: 'white' }}>OK</Text>
+                  </View>
+                </TouchableOpacity>
+              </View> :
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <TouchableOpacity onPress={() => { deleteZaloPayload(); setmodalCheck(false) }}>
+                    <View style={{ width: 100, height: 45, borderWidth: 1, borderColor: colors.primary, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40, }}>
+                      <Text style={{ fontWeight: 'bold', color: 'black' }}>Hủy</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => { onHandel_Order() }}>
+                    <View style={{ paddingHorizontal: 12, height: 45, borderWidth: 1, borderColor: colors.primary100, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40, backgroundColor: colors.primary }}>
+                      <Text style={{ fontWeight: 'bold', color: 'white' }}>Thanh toán lại</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>}
+            </View>
           </Modal>
 
           <Modal visible={modalSucces} animationType='fade'>
-                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <Text style={{fontSize:20,marginBottom:60}}>Đặt lịch thành công</Text>
-                        <Image source={require('../../Resources/assets/icons/Success.png')} style={{width:80,height:80}} />
-                        <TouchableOpacity onPress={()=>{setmodalSucces(false);navigation.navigate('title3')}}>
-                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40}}>
-                             <Text style={{fontWeight:'bold',color:colors.primary}}>OK</Text>
-                           </View>
-                        </TouchableOpacity>
-                 </View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ fontSize: 20, marginBottom: 60 }}>Đặt lịch thành công</Text>
+              <Image source={require('../../Resources/assets/icons/Success.png')} style={{ width: 80, height: 80 }} />
+              <TouchableOpacity onPress={() => { setmodalSucces(false); navigation.navigate('title3') }}>
+                <View style={{ width: 100, height: 45, borderWidth: 1, borderColor: colors.primary100, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
+                  <Text style={{ fontWeight: 'bold', color: colors.primary }}>OK</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </Modal>
           <Modal visible={modalIsloading} animationType='fade' transparent={true}>
-                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <View style={{width:120,height:120,backgroundColor:'white',justifyContent:'center',alignItems:'center',borderRadius:12}}>
-                          <ActivityIndicator size={50} color={colors.primary} />
-                        </View>
-                 </View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ width: 120, height: 120, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', borderRadius: 12 }}>
+                <ActivityIndicator size={50} color={colors.primary} />
+              </View>
+            </View>
           </Modal>
         </View>
       </ScrollView>

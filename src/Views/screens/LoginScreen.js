@@ -1,50 +1,52 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Alert, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { checkPhoneAndGetId, loginPhone } from '../../Services/utils/httpSingup'; // Đảm bảo đường dẫn đúng
+import { checkPhoneAndGetId, loginPhone, registerUser } from '../../Services/utils/httpSingup'; // Đảm bảo đường dẫn đúng
 import { isValidPhoneNumber } from '../../Services/utils/ValidPhoneNumber';
 import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
 import colors from '../../Resources/styles/colors';
+import { useUserId } from '../../Services/utils/userContext'
+
 
 const LoginScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [name, setname] = useState('')
+  const [validatePhoneNumber, setValidatePhoneNumber] = useState(false)
+  const [textValidatePhone, settextValidatePhone] = useState('Số điện thoại không đúng định dạng !')
+  const [validatePassword, setvalidatePassword] = useState(false)
+  const [validateName, setvalidateName] = useState(false)
   const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true); // Để kiểm soát trạng thái hiển thị mật khẩu
-  const [validatePhoneNumber, setValidatePhoneNumber] = useState(false)
-  const [validatePassword, setvalidatePassword] = useState(false)
-  const [textPhone, settextPhone] = useState('Vui lòng nhập số điện thoại')
-  const [textPassword, settextPassword] = useState('Mật khẩu phải lớn hơn 6 ký tự')
-
-
-  const handleLogin = async () => {
+  const {setUserId} = useUserId();
+ 
+  async function handleSigup(){
     if(validateAccount()){
-      const responseUres= await loginPhone(phoneNumber,password)
-        if(responseUres?.code ===200){
-          await setUserlocal(responseUres.data)
-          navigation.navigate('TabNavigator')
-        }else if(responseUres?.code === 210){
-            settextPhone('Số điện thoại không tồn tại')
-            setValidatePhoneNumber(true)
-        }else if(responseUres?.code === 220){
-            settextPhone('Số điện thoại và mật khẩu không đúng')
-            setValidatePhoneNumber(true)
-            settextPassword('Số điện thoại và mật khẩu không đúng')
-            setvalidatePassword(true)
-        }
+      const responseUres = await registerUser(phoneNumber,password,name)
+      console.log('data',responseUres)
+      if(responseUres.status === 200){
+        await setUserlocal(responseUres.data)
+        navigation.navigate('TabNavigator')
+      }else if(responseUres.status ===210){
+        setValidatePhoneNumber(true)
+        settextValidatePhone('Số điện thoại đã được đăng ký')
+      }
     }
-  };
+
+  }
 
   function validateAccount(){
+    if(name === ''){
+      setvalidateName(true)
+    }
     if(!isValidPhoneNumber(phoneNumber)){
+      settextValidatePhone('Số điện thoại không đúng định dạng !')
       setValidatePhoneNumber(true)
-      settextPhone('Số điện thoại không đúng định dạng')
     }
-    if(password.length<6){
+    if(password.length<=6){
       setvalidatePassword(true)
-      settextPassword('Mật khẩu phải lớn hơn 6 ký tự')
     }
-    if( !isValidPhoneNumber(phoneNumber) && password.length<6){
-      return 
+    if(name === '' && phoneNumber === ''&& password.length<=6){
+      return false
     }
     return true
   }
@@ -52,16 +54,26 @@ const LoginScreen = ({ navigation }) => {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.screenContainer}>
-        {/* Banner Image */}
-        <Text style={styles.title}>Đăng nhập</Text>
-        <View style={{alignItems:'center',marginVertical:32}}>
-        <Image
-          source={require('../../Resources/assets/logo/Bee_Barber.png')} // Placeholder cho ảnh đại diện
-          style={styles.bannerImage}
-        />
+       
+        <Text  style={styles.title}>Đăng ký tài khoản</Text>
+        <View style={{alignItems:'center',marginVertical:24}}>
+          <Image source={require('../../Resources/assets/logo/Bee_Barber.png')}/>
         </View>
-        
-        
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Họ tên"
+            value={name}
+            onChangeText={text => {setname(text);setvalidateName(false)}}
+          />
+          <TouchableOpacity onPress={() => setname('')}>
+            <Image
+              source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
+              style={styles.clearIcon}
+            />
+          </TouchableOpacity>
+        </View>
+        {validateName && <Text style={{color:'red'}}>Vui lòng nhập họ tên !</Text>}
         {/* Nhập số điện thoại */}
         <View style={styles.inputContainer}>
           <TextInput
@@ -74,10 +86,11 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity onPress={() => setPhoneNumber('')}>
             <Image
               source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
+              style={styles.clearIcon}
             />
           </TouchableOpacity>
         </View>
-        {validatePhoneNumber && <Text style={{color:'red'}}>{textPhone}</Text>}
+        {validatePhoneNumber && <Text style={{color:'red'}}>{textValidatePhone}</Text>}
         {/* Nhập mật khẩu */}
         <View style={styles.inputContainer}>
           <TextInput
@@ -96,10 +109,9 @@ const LoginScreen = ({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
-        {validatePassword && <Text style={{color:'red'}}>{textPassword}</Text>}
-
+        {validatePassword && <Text style={{color:'red'}}>Mật khẩu chứa ít nhất 6 ký tự !</Text>}
         {/* Nút Đăng nhập */}
-        <TouchableOpacity style={styles.nextButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.nextButton} onPress={handleSigup}>
           <Image
             source={{ uri: 'https://img.icons8.com/ios-glyphs/30/ffffff/chevron-right.png' }}
             style={styles.icon}
@@ -111,8 +123,8 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity onPress={() => Alert.alert('Quên mật khẩu', 'Chức năng này chưa được triển khai.')}>
             <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('SigupScreen')}>
-            <Text style={styles.signUpText}>Chưa có tài khoản?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+            <Text style={styles.signUpText}>Bạn đã có tài khoản?</Text>
           </TouchableOpacity>
         </View>
         
@@ -131,34 +143,44 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     paddingHorizontal: 20,
     backgroundColor: '#f5f5f5',
   },
   screenContainer: {
     flex: 1,
-    marginHorizontal:24
+    marginHorizontal:12
+    //justifyContent: 'center',
   },
- 
+  bannerImage: {
+    width: '100%',
+    height: 69, // Điều chỉnh kích thước theo nhu cầu
+    marginTop: -100,
+
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#153A80',
-    marginTop: 70,
+    marginTop: 100,
+    marginBottom:24,
     textAlign: 'center',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: colors.primary300,
-    marginBottom: 20,
+    borderBottomColor:colors.primary300,
+    marginBottom: 12,
+    // paddingHorizontal: 6,
     width: '100%',
-    marginTop: 20,
+    marginVertical:32,
+
   },
   input: {
     flex: 1,
     fontSize: 18,
-    paddingVertical: 12
+    paddingVertical: 5,
   },
   clearIcon: {
     width: 20,
@@ -208,7 +230,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     top: 20,
-    left: -20,
+    left: 0,
     width: 40,
     height: 40,
     justifyContent: 'center',

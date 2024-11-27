@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import { registerUser, checkPhoneNumberExists } from '../../Services/utils/httpSingup'; // Giữ nguyên các hàm kiểm tra và đăng ký của bạn
+
 
 const RegisterScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
