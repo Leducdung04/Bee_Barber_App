@@ -7,12 +7,11 @@ import TimeSelectionComponent from '../components/TimeSelectionComponent';
 import { useBookingViewModel } from '../../ViewModels/AppointmentModel';
 import { fomatsDate } from '../../Services/utils/fomatsDate';
 import SelectedServices from '../components/Appointment/SelectedServices';
-import ItemService from '../components/Item/ItemService';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { deleteZaloPayload } from '../../Services/utils/ZaloPay_AsyncStorage';
 import { requestUserPermission } from '../../Services/api/notificationhelper';
 import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../../Services/api/notificationhelper'
 
+import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 const AppointmentScreen = ({ route, navigation }) => {
 
   const {
@@ -38,7 +37,15 @@ const AppointmentScreen = ({ route, navigation }) => {
   const [pay_Method, setpay_Method] = useState(null)
   const [totalAmount, settotalAmount] = useState(0)
   const [token, setToken] = useState(null);
+  const [UserProfile, setUserProfile] = useState(null)
 
+  useEffect(() => {
+     async function getUser(){
+      const user= await getUserlocal()
+      setUserProfile(user)
+    }
+    getUser()
+  }, [])
   useEffect(() => {
     const totalPrice = selectedServices.reduce((total, service) => total + service.price, 0);
     settotalAmount(totalPrice);
@@ -64,25 +71,26 @@ const AppointmentScreen = ({ route, navigation }) => {
     setmodalIsloading(true)
     const currentDate = new Date();
     const currentTime = currentDate.toLocaleTimeString('en-US', { hour12: false });
-    const appointment = {
-      appointment: {
-        barber_id: barber_Selected?._id,
-        user_id: "66fe1856faa0e86597afdbae",
-        service_id: selectedServices.map(item => item._id),
-        appointment_time: time_Selected,
-        appointment_date: day_Selected.date,
-        appointment_status: "pending",
-        price: parseInt(totalAmount + '000', 10),
-      },
+       const appointment = {
+        appointment: {
+            barber_id: barber_Selected?._id,
+            user_id: UserProfile._id,
+            service_id: selectedServices.map(item => item._id),
+            appointment_time: time_Selected,
+            appointment_date:day_Selected.date,
+            appointment_status: "pending",
+            price:parseInt(totalAmount, 10) ,
+            },
       payment: {
-        user_id: "66fe1856faa0e86597afdbae",
-        pay_type: "booking",
-        pay_method: pay_Method,
-        time: currentTime,
-        date: currentDate.toISOString().split("T")[0],
-        price: parseInt(totalAmount + '000', 10)
-      }
-    }
+            user_id: UserProfile._id,
+            pay_type: "booking",
+            pay_method: pay_Method,
+            time: currentTime,
+            date: currentDate.toISOString().split("T")[0],
+            price: parseInt(totalAmount, 10),
+            pay_method_status: pay_Method =='ZaloPay' ? 'Success':'Unpaid'
+            }
+       }
 
     console.log('data thêm ', appointment)
     handle_Order_Appointment(appointment)
@@ -328,7 +336,9 @@ const AppointmentScreen = ({ route, navigation }) => {
 
               {/* xử lý khi có dịch vụ được chọn */}
               <View style={{ height: 90 }}>
-                <Text style={{ marginTop: 24, fontSize: 18, fontWeight: 'bold', color: colors.primary }}>Tổng tiền dịch vụ : {totalAmount} K</Text>
+
+                <Text style={{ marginTop:24 ,fontSize:18,fontWeight:'bold',color:colors.primary}}>Tổng tiền dịch vụ : {totalAmount} VND</Text>
+
               </View>
 
             </View>

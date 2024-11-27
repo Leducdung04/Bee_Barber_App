@@ -35,7 +35,7 @@ export const useBookingViewModel = () => {
          // tạo đơn
         const data=await getZaloPay()
         console.log('dữ liệu lấy từ dien thoại', data)
-        await Add_Appointment_API(data.appointment)
+        await Add_Appointment_API(data.data)
         setmodalIsloading(false)
       }
       setdataChechZaloPay(Checking)
