@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { get_Service_By_Category } from '../../Services/utils/httpService';
+import { get_Service_By_Category } from '../../Services/utils/httpServices';
 import globalStyles from '../../Resources/styles/globalStyles';
 import colors from '../../Resources/styles/colors';
 import ItemService from '../components/Item/ItemService';

@@ -143,11 +143,11 @@ const TabNavigator = () => {
           headerRight: ({ tintColor }) => (
             <View style={{ flexDirection: 'row', marginHorizontal: 32 }}>
               <CircleBorder onPress={() => nav.navigate("Cart")} />
-              <TouchableOpacity onPress={() => nav.navigate("Notification")}>
+              <TouchableOpacity onPress={() => nav.navigate("NotificationScreen")}>
                 <Image source={require('../../Resources/assets/icons/notification.png')}
-                  style={{ marginStart: 16, height: 26, width: 26 }} />
+                  style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 12 }} />
               </TouchableOpacity>
-              
+
             </View>
           ),
 

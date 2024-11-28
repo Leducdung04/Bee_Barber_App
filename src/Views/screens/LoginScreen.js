@@ -111,7 +111,7 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity onPress={() => Alert.alert('Quên mật khẩu', 'Chức năng này chưa được triển khai.')}>
             <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('SigupScreen')}>
+          <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
             <Text style={styles.signUpText}>Chưa có tài khoản?</Text>
           </TouchableOpacity>
         </View>

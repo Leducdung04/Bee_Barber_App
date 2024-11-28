@@ -1,17 +1,14 @@
-import { API, API_GET_USER_CART } from '@env'; 
+import { API, API_GET_USER_CART, API_ADD_CART } from '@env';
 
-export const get_user_cart = async (token) => {
+export const get_user_cart = async (userId) => {
     try {
-        const response = await fetch(`${API}${API_GET_USER_CART}`, {
+        const response = await fetch(`${API}${API_GET_USER_CART}/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                // Authorization: `Bearer ${token}`,
-                // 'Cache-Control': 'no-cache', 
-                // Pragma: 'no-cache',
-                // Expires: '0',
             },
         });
+ 
         if (!response.ok) {
             const error = await response.json();
             throw new Error(error.msg || "Failed to fetch user cart.");
@@ -27,3 +24,23 @@ export const get_user_cart = async (token) => {
         throw error;
     }
 };
+
+export const add_user_cart = async (userId) => {
+    try {
+        const response = await fetch(`${API}${API_ADD_CART}/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.msg || "Failed to add cart.");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error adding cart:", error.message);
+        throw error;
+    }
+};
+
