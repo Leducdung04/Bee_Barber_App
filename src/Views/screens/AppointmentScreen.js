@@ -8,8 +8,7 @@ import { useBookingViewModel } from '../../ViewModels/AppointmentModel';
 import { fomatsDate } from '../../Services/utils/fomatsDate';
 import SelectedServices from '../components/Appointment/SelectedServices';
 import { deleteZaloPayload } from '../../Services/utils/ZaloPay_AsyncStorage';
-import { requestUserPermission } from '../../Services/api/notificationhelper';
-import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../../Services/api/notificationhelper'
+import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../Services/api/notificationhelper'
 
 import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 const AppointmentScreen = ({ route, navigation }) => {
