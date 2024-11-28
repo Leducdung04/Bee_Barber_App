@@ -39,8 +39,8 @@ const AppointmentScreen = ({ route, navigation }) => {
   const [UserProfile, setUserProfile] = useState(null)
 
   useEffect(() => {
-     async function getUser(){
-      const user= await getUserlocal()
+    async function getUser() {
+      const user = await getUserlocal()
       setUserProfile(user)
     }
     getUser()
@@ -70,28 +70,29 @@ const AppointmentScreen = ({ route, navigation }) => {
     setmodalIsloading(true)
     const currentDate = new Date();
     const currentTime = currentDate.toLocaleTimeString('en-US', { hour12: false });
-       const appointment = {
-        appointment: {
-            barber_id: barber_Selected?._id,
-            user_id: UserProfile._id,
-            service_id: selectedServices.map(item => item._id),
-            appointment_time: time_Selected,
-            appointment_date:day_Selected.date,
-            appointment_status: "pending",
-            price:parseInt(totalAmount, 10) ,
-            },
+    const appointment = {
+      appointment: {
+        barber_id: barber_Selected?._id,
+        user_id: UserProfile._id,
+        service_id: selectedServices.map(item => item._id),
+        appointment_time: time_Selected,
+        appointment_date: day_Selected.date,
+        appointment_status: "pending",
+        price: parseInt(totalAmount, 10),
+      },
       payment: {
-            user_id: UserProfile._id,
-            pay_type: "booking",
-            pay_method: pay_Method,
-            time: currentTime,
-            date: currentDate.toISOString().split("T")[0],
-            price: parseInt(totalAmount, 10),
-            pay_method_status: pay_Method =='ZaloPay' ? 'Success':'Unpaid'
-            }
-       }
+        user_id: UserProfile._id,
+        pay_type: "booking",
+        pay_method: pay_Method,
+        time: currentTime,
+        date: currentDate.toISOString().split("T")[0],
+        price: parseInt(totalAmount, 10),
+        pay_method_status: pay_Method == 'ZaloPay' ? 'Success' : 'Unpaid'
+      }
+    }
 
-    console.log('data thêm ', appointment)
+    scheduleAppointmentNotification(day_Selected.date, time_Selected);
+
     handle_Order_Appointment(appointment)
   }
 
@@ -105,16 +106,16 @@ const AppointmentScreen = ({ route, navigation }) => {
 
     if (timeDifference > 0) {
       PushNotification.localNotificationSchedule({
-        channelId: 'default-channel', // Ensure the channel exists
-        title: 'Upcoming Appointment Reminder',
+        channelId: 'default-channel', 
+        title: 'Sắp có lịch hẹn',
         message: 'You have an appointment today. Don’t forget!',
         date: appointmentDateTime,
         allowWhileIdle: true,
       });
 
-      console.log('Notification scheduled for:', appointmentDateTime);
+      console.log('Thông báo được đặt cho ngày', appointmentDateTime);
     } else {
-      console.warn('Appointment time is in the past or immediate.');
+      console.warn('Giờ đặt lịch hẹn đã qua');
     }
   };
 
@@ -336,7 +337,7 @@ const AppointmentScreen = ({ route, navigation }) => {
               {/* xử lý khi có dịch vụ được chọn */}
               <View style={{ height: 90 }}>
 
-                <Text style={{ marginTop:24 ,fontSize:18,fontWeight:'bold',color:colors.primary}}>Tổng tiền dịch vụ : {totalAmount} VND</Text>
+                <Text style={{ marginTop: 24, fontSize: 18, fontWeight: 'bold', color: colors.primary }}>Tổng tiền dịch vụ : {totalAmount} VND</Text>
 
               </View>
 

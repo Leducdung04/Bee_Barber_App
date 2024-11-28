@@ -5,7 +5,7 @@ import CustomRadioButton from "./CustomRadioButton";
 import MessageInput from "./MessageInput";
 import { useRoute } from "@react-navigation/native";
 import color from '../../../Resources/styles/colors'
-import { getUserDetailById } from "../../../Services/utils/httpUser";
+import { getUserDetailById } from "../../../Services/utils/httpSingup";
 import { getUserlocal } from "../../../Services/utils/user__AsyncStorage";
 import { OderProduct } from "../../../ViewModels/OderProduct";
 import { Modal } from "react-native-paper";

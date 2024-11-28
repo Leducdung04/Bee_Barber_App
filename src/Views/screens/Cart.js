@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { get_list_cart_item, add_cart_item, delete_cart_item } from '../../Services/utils/httpCartItem';
+import { get_user_cart } from '../../Services/utils/httpCart';
 import { get_product_detail } from '../../Services/utils/httpProduct';
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
 import eventEmitter from '../../Services/utils/event';
 import { useNavigation } from '@react-navigation/native';
+import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 
 
 const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
@@ -35,15 +37,46 @@ const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [userProfile, setUserProfile] = useState(null)
+  const [cartId, setCartId] = useState(null)
+
   const nav = useNavigation()
   useEffect(() => {
-    const fetchCartItems = async () => {
+    const fetchUserAndCart = async () => {
       try {
-        const items = await get_list_cart_item();
+        const user = await getUserlocal();
+        if (!user) {
+          nav.navigate('LoginScreen');
+          return;
+        }
+        setUserProfile(user);
+  
+        const userCart = await get_user_cart(user._id);
+        if (!userCart || !userCart._id) {
+          console.error("No cart found or cart ID is undefined.");
+          return;
+        }
+        setCartId(userCart._id);
+
+      } catch (error) {
+        console.error("Error fetching user or cart:", error.message);
+      }
+    };
+  
+    fetchUserAndCart();
+  }, []);
+  
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (!cartId) return;
+  
+      try {
+        const items = await get_list_cart_item(cartId);
         const productIds = items.map(item => item.product_id);
         const productDetails = await Promise.all(
           productIds.map(id => get_product_detail(id))
         );
+  
         const updatedItems = items.map(item => {
           const productResponse = productDetails.find(product => product.data._id === item.product_id);
           if (!productResponse || !productResponse.data) {
@@ -58,22 +91,14 @@ const Cart = () => {
           };
         });
         setCartItems(updatedItems);
-
       } catch (error) {
-        console.error(error.message);
+        console.error("Error fetching cart items:", error.message);
       }
     };
-    async function getUser(){
-      const user= await getUserlocal()
-      setUserProfile(user)
-      if(!user){
-        // setModalDN(true)
-      }else{
-        fetchCartItems();
-      }
-    }
-    getUser()
-  }, []);
+  
+    fetchCartItems();
+  }, [cartId]); 
+  
 
   const handleAdd = async (id) => {
     const item = cartItems.find((i) => i._id === id);
@@ -81,25 +106,24 @@ const Cart = () => {
       console.error(`Item with id ${id} not found in cart.`);
       return;
     }
-
     try {
-      await add_cart_item({
+      await add_cart_item(cartId,{
         product_id: item.product_id,
         quantity: item.quantity + 1,
         total: item.price_selling * (item.quantity + 1),
       });
-
+  
       setCartItems(
         cartItems.map((i) =>
-          i._id === id
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
+          i._id === id ? { ...i, quantity: i.quantity + 1 } : i
         )
       );
+      eventEmitter.emit('cartUpdated');
     } catch (error) {
       console.error(`Error adding item with id ${id}:`, error.message);
     }
   };
+  
 
 
   const handleRemove = async (id) => {
@@ -154,7 +178,7 @@ const Cart = () => {
   const handlePlaceOrder = () => {
     const selectedItems = cartItems.filter((i) => i.selected);
     if (selectedItems.length > 0) {
-      nav.navigate("OrderConfirmationScreen",{selectedItems})
+      nav.navigate("OrderConfirmationScreen", { selectedItems })
     } else {
       Alert.alert('Thông báo', 'Vui lòng chọn ít nhất một sản phẩm để đặt hàng.');
     }

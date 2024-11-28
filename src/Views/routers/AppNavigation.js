@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
-
 import { Menu, Provider, TextInput } from 'react-native-paper';
 import CircleBorder from '../components/shop/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -13,14 +12,12 @@ import { UserContext } from '../../Services/utils/userContext';
 import AppointmentScreen from '../screens/AppointmentScreen';
 import colors from '../../Resources/styles/colors';
 import ServicesScreen from '../screens/ServicesScreen';
-
 import UserProfile from '../screens/UserProfile';
+import LoginScreen from "../screens/LoginScreen"
+import SignUpScreen from '../screens/SignUpScreen';
 import Cart from '../screens/Cart';
-
 import DetailsHistoryScreen from '../screens/DetailsHistoryScreen';
-
 import WelcomeScreen from '../screens/WelcomeScreen';
-import LoginScreen from '../screens/LoginScreen';
 import { useNavigation } from '@react-navigation/native';
 import ProductScreen from '../components/shop/ProductScreen';
 import OrderConfirmationScreen from '../components/shop/OrderConfirmationScreen';
@@ -43,11 +40,11 @@ const AppNavigation = () => {
   const closeMenu1 = () => setVisible1(false);
   return (
     <Provider>
-      <Stack.Navigator initialRouteName="WelcomeScreen">
+      <Stack.Navigator initialRouteName="LoginScreen">
         <Stack.Screen name="OderHistory" component={OderHistory} options={{ title: 'Đơn hàng của bạn' }} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SigupScreen" component={SigupScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen } options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Notification" component={Notification} options={{ title: 'Thông báo' }} />
         <Stack.Screen

@@ -10,6 +10,7 @@ const MaterialTopApp = () => {
   const { productList, categoryProductList } = useShopTab();
   const [filteredProducts, setFilteredProducts] = useState(productList);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [contentHeight, setContentHeight] = useState(0);  
 
   useEffect(() => {
   
@@ -46,6 +47,10 @@ const MaterialTopApp = () => {
       keyExtractor={item => item.id?.toString() || Math.random().toString()} 
       scrollEnabled={false}
       ListHeaderComponent={HeaderTabs}
+      onContentSizeChange={(contentWidth, contentHeight) => setContentHeight(contentHeight)}  
+      contentContainerStyle={{
+        paddingBottom: contentHeight > 0 ? 100 : 0,  
+      }}
     />
   );
 
