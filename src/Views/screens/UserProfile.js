@@ -6,7 +6,7 @@ import { getUserInfoById } from '../../Services/utils/httpSingup'; // Hàm lấy
 const UserProfile = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState(null); // Tạo state để lưu thông tin người dùng
   const [loading, setLoading] = useState(true); // Tạo state để quản lý trạng thái tải dữ liệu
-
+  
   // Hàm lấy thông tin người dùng
   const fetchUserInfo = async () => {
     try {
@@ -25,7 +25,6 @@ const UserProfile = ({ navigation }) => {
 
   useEffect(() => {
     fetchUserInfo(); // Gọi fetchUserInfo khi component được mount
-
     // Lắng nghe sự kiện focus của màn hình để tải lại thông tin người dùng khi quay lại
     const unsubscribe = navigation.addListener('focus', () => {
       fetchUserInfo();

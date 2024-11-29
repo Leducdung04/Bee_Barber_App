@@ -4,11 +4,13 @@ import {View, FlatList, Text, TouchableOpacity, StyleSheet, ScrollView} from 're
 import ProductLayout from './ProductLayout';
 import useShopTab from '../../../ViewModels/useShopTab';
 import { get_List_Product_By_Category } from '../../../Services/utils/httpProduct';
+import colors from '../../../Resources/styles/colors';
 
 const MaterialTopApp = () => {
   const { productList, categoryProductList } = useShopTab();
   const [filteredProducts, setFilteredProducts] = useState(productList);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [contentHeight, setContentHeight] = useState(0);  
 
   useEffect(() => {
   
@@ -38,12 +40,17 @@ const MaterialTopApp = () => {
 
   const ProductRecomendationsList = ({products}) => (
     <FlatList
+     style={{backgroundColor:colors.background}}
       data={products}
       numColumns={2}
       renderItem={({item}) => <ProductLayout item={item} onPress={item.onPress} />}
       keyExtractor={item => item.id?.toString() || Math.random().toString()} 
       scrollEnabled={false}
       ListHeaderComponent={HeaderTabs}
+      onContentSizeChange={(contentWidth, contentHeight) => setContentHeight(contentHeight)}  
+      contentContainerStyle={{
+        paddingBottom: contentHeight > 0 ? 100 : 0,  
+      }}
     />
   );
 

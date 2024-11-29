@@ -4,14 +4,20 @@ import { ActivityIndicator, Text } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from '../../Resources/styles/colors';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBarbers } from '../../stores/features/barbersSlice';
+import { fetchCategorys } from '../../stores/features/categorySlice';
+import { fetchBanners } from '../../stores/features/bannerSlice';
+import { fetchcategoryProduct } from '../../stores/features/categoryProductListSlice';
+import { fetchServices } from '../../stores/features/servicesSline';
 
 const { width: widthScreen, height: heightScreen } = Dimensions.get('window');
 
 const WelcomeScreen = ({ navigation }) => {
   const listBanner = [
-    require('../../Resources/assets/images/wellcome1.jpg'),
-    require('../../Resources/assets/images/wellcome2.jpg'),
-    require('../../Resources/assets/images/wellcome3.jpg'),
+    require('../../Resources/assets/images/wellcome.1.jpg'),
+    require('../../Resources/assets/images/wellcome.2.jpg'),
+    require('../../Resources/assets/images/wellcome.3.jpg'),
   ];
 
   const [indexImage, setIndexImage] = useState(0);
@@ -19,12 +25,22 @@ const WelcomeScreen = ({ navigation }) => {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
+
+  const dispatch = useDispatch();
+
+  // Gọi API khi component được render
+  useEffect(() => {
+    dispatch(fetchBarbers());
+    dispatch(fetchCategorys())
+    dispatch(fetchBanners())
+    dispatch(fetchcategoryProduct())
+    dispatch(fetchServices())
+  }, [dispatch]);
+
   useEffect(() => {
     const checkUserStatus = async () => {
-      const userId = await AsyncStorage.getItem('userId');
+      const userId = await AsyncStorage.getItem('userLocal');
       if (userId) {
-        setIsUserLoggedIn(true);
-        // Nếu có userId, sau 3 giây chuyển đến màn Home
         setTimeout(() => {
           navigation.replace('TabNavigator');
         }, 3000);
@@ -33,13 +49,9 @@ const WelcomeScreen = ({ navigation }) => {
           setIsLoadingData(false);
         }, 3000);
       }
-        // setTimeout(() => {
-        //   setIsLoadingData(false);
-        // }, 3000);
     };
 
     checkUserStatus();
-
     // Cleanup khi component unmount
     return () => clearTimeout();
   }, [navigation]);
@@ -57,14 +69,14 @@ const WelcomeScreen = ({ navigation }) => {
     );
   };
 
+  if(isLoadingData){
+    return (<View style={{flex:1}}>
+      <ImageBackground source={require('../../Resources/assets/images/wellcome.jpg')} style={styles.imageBackground} />
+      <ActivityIndicator style={{ position: 'absolute', bottom: 100, start: 0, end: 0 }} size={38} color={colors.primary} />
+    </View>)
+  }
   return (
     <View style={styles.container}>
-      {isLoadingData ? (
-        <Modal visible={isLoadingData} animationType='fade'>
-          <ImageBackground source={require('../../Resources/assets/images/wellcome.jpg')} style={styles.imageBackground} />
-          <ActivityIndicator style={{ position: 'absolute', bottom: 100, start: 0, end: 0 }} size={38} color={colors.primary} />
-        </Modal>
-      ) : (
         <FlatList
           data={listBanner}
           horizontal
@@ -76,8 +88,6 @@ const WelcomeScreen = ({ navigation }) => {
           viewabilityConfig={{ itemVisiblePercentThreshold: 50 }} // Đảm bảo hình ảnh hiển thị ít nhất 50%
           ref={flatListRef}
         />
-      )}
-
       <View style={styles.dotContainer}>
         {listBanner.map((_, index) => {
           return (
@@ -89,9 +99,15 @@ const WelcomeScreen = ({ navigation }) => {
           );
         })}
       </View>
-
-      <View style={[styles.dotContainer, { bottom: 150 }]}>
-        <TouchableOpacity onPress={() => { navigation.navigate('Login'); }} style={{ flex: 1 }}>
+      <View style={[styles.dotContainer, { bottom: 170 }]}>
+        <TouchableOpacity onPress={() => { navigation.navigate('TabNavigator'); }} style={{ flex: 1 }}>
+          <View style={{ flex: 1, height: 45, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100,borderWidth:1,borderColor:colors.primary }}>
+            <Text style={{ textAlign: 'center', color:colors.primary, fontSize: 18 }}>Trải nghiệm ngay</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={[styles.dotContainer, { bottom: 110 }]}>
+        <TouchableOpacity onPress={() => { navigation.navigate('LoginScreen'); }} style={{ flex: 1 }}>
           <View style={{ flex: 1, height: 45, backgroundColor: colors.primary, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100 }}>
             <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Đăng nhập</Text>
           </View>
@@ -117,7 +133,7 @@ const styles = StyleSheet.create({
   },
   dotContainer: {
     position: 'absolute',
-    bottom: 100, // Khoảng cách của dot từ dưới cùng
+    bottom: 80, // Khoảng cách của dot từ dưới cùng
     left: 0,
     right: 0,
     flexDirection: 'row',

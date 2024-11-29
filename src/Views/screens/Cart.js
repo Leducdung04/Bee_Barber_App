@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import { get_list_cart_item, add_cart_item, delete_cart_item } from '../../Services/utils/httpCartItem';
+import { get_user_cart } from '../../Services/utils/httpCart';
 import { get_product_detail } from '../../Services/utils/httpProduct';
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
 import eventEmitter from '../../Services/utils/event';
 import { useNavigation } from '@react-navigation/native';
+import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
+import colors from '../../Resources/styles/colors';
 
 
 const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
@@ -35,15 +38,49 @@ const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [userProfile, setUserProfile] = useState(null)
+  const [cartId, setCartId] = useState(null)
+  const [ModalDN, setModalDN] = useState(false); // Modal for sign-in check
+
+
   const nav = useNavigation()
   useEffect(() => {
-    const fetchCartItems = async () => {
+    const fetchUserAndCart = async () => {
       try {
-        const items = await get_list_cart_item();
+        const user = await getUserlocal();
+        if (!user) {
+          setModalDN(true); 
+          return;
+        }
+
+        setUserProfile(user);
+
+        const userCart = await get_user_cart(user._id);
+        if (!userCart || !userCart._id) {
+          console.error("No cart found or cart ID is undefined.");
+          return;
+        }
+        setCartId(userCart._id);
+
+      } catch (error) {
+        console.error("Error fetching user or cart:", error.message);
+      }
+    };
+
+    fetchUserAndCart();
+  }, []);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (!cartId) return;
+
+      try {
+        const items = await get_list_cart_item(cartId);
         const productIds = items.map(item => item.product_id);
         const productDetails = await Promise.all(
           productIds.map(id => get_product_detail(id))
         );
+
         const updatedItems = items.map(item => {
           const productResponse = productDetails.find(product => product.data._id === item.product_id);
           if (!productResponse || !productResponse.data) {
@@ -58,13 +95,14 @@ const Cart = () => {
           };
         });
         setCartItems(updatedItems);
-
       } catch (error) {
-        console.error(error.message);
+        console.error("Error fetching cart items:", error.message);
       }
     };
+
     fetchCartItems();
-  }, []);
+  }, [cartId]);
+
 
   const handleAdd = async (id) => {
     const item = cartItems.find((i) => i._id === id);
@@ -72,9 +110,8 @@ const Cart = () => {
       console.error(`Item with id ${id} not found in cart.`);
       return;
     }
-
     try {
-      await add_cart_item({
+      await add_cart_item(cartId, {
         product_id: item.product_id,
         quantity: item.quantity + 1,
         total: item.price_selling * (item.quantity + 1),
@@ -82,15 +119,15 @@ const Cart = () => {
 
       setCartItems(
         cartItems.map((i) =>
-          i._id === id
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
+          i._id === id ? { ...i, quantity: i.quantity + 1 } : i
         )
       );
+      eventEmitter.emit('cartUpdated');
     } catch (error) {
       console.error(`Error adding item with id ${id}:`, error.message);
     }
   };
+
 
 
   const handleRemove = async (id) => {
@@ -145,7 +182,7 @@ const Cart = () => {
   const handlePlaceOrder = () => {
     const selectedItems = cartItems.filter((i) => i.selected);
     if (selectedItems.length > 0) {
-      nav.navigate("OrderConfirmationScreen",{selectedItems})
+      nav.navigate("OrderConfirmationScreen", { selectedItems })
     } else {
       Alert.alert('Thông báo', 'Vui lòng chọn ít nhất một sản phẩm để đặt hàng.');
     }
@@ -184,6 +221,28 @@ const Cart = () => {
           </TouchableOpacity>
         </View>
       </View>
+      {/* Kiểm tra đăng nhập */}
+      <Modal visible={ModalDN} animationType='slide' transparent={true} >
+        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          <View style={{ height: 180, backgroundColor: 'white', margin: 32, borderRadius: 4, alignItems: 'center', justifyContent: 'space-around' }}>
+            <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>Đăng nhập</Text>
+            <Text style={{ fontSize: 17 }}>Đăng nhập ngay để sủ dụng tính năng này ?</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={() => { setModalDN(false) }}>
+                <View style={{ height: 45, width: 120, borderWidth: 1, borderColor: colors.primary, borderRadius: 8, marginHorizontal: 12, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ color: colors.primary, fontWeight: 'bold' }}>Để sau</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { nav.navigate('LoginScreen') }}>
+                <View style={{ height: 45, width: 120, marginHorizontal: 12, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 8 }}>
+                  <Text style={{ fontWeight: 'bold', color: 'white' }}>Đồng ý</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 };

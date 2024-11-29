@@ -1,4 +1,4 @@
-import { API, API_GET_LIST_SERVICES } from '@env'; // Nhập các biến môi trường từ file cấu hình
+import { API, API_GET_LIST_SERVICES,API_GET_SERVICE_BY_CATEGORY } from '@env'; // Nhập các biến môi trường từ file cấu hình
 
 // Hàm lấy danh sách cuộc hẹn từ API
 export const get_List_Services = async () => {
@@ -19,3 +19,14 @@ export const get_List_Services = async () => {
         return []; // Trả về mảng rỗng nếu có lỗi
     }
 };
+
+export const get_Service_By_Category= async (id_category)=>{
+    try {
+        const response = await fetch(`${API}${API_GET_SERVICE_BY_CATEGORY}/${id_category}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.log('Error getting list Banner', error)
+        return []
+    }
+}

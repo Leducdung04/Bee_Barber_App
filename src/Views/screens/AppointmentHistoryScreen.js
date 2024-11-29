@@ -13,9 +13,10 @@ import {
 import React, {useEffect, useState} from 'react';
 import colors from '../../Resources/styles/colors';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {get_Appointment_history, updateAppointmentStatusToCancelel_Case, updateAppointmentStatusToCancelel_ZaloPay} from '../../Services/api/httpAppointment';
+import {get_Appointment_history, updateAppointmentStatusFalse, updateAppointmentStatusToCancelel_Case, updateAppointmentStatusToCancelel_ZaloPay} from '../../Services/api/httpAppointment';
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
 import { Add_Review_API } from '../../Services/api/httpReview';
+import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 
 const AppointmentHistoryScreen = ({navigation}) => {
   const nav = useNavigation();
@@ -26,10 +27,20 @@ const AppointmentHistoryScreen = ({navigation}) => {
   const [ItemCancedel, setItemCancedel] = useState(null)
   const [isCancedal, setisCancedal] = useState(false)
   const [bank_account, setbank_account] = useState('')
+  const [ModalDelete, setModalDelete] = useState(false)
+  const [ModalHuyLich, setModalHuyLich] = useState(false)
+  const [ItemDelete, setItemDelete] = useState(null)
+
+  const [isLogin, setisLogin] = useState(false)
+
   const getApi = async () => {
-    const data = await get_Appointment_history();
-    console.log('hihi', data);
-    setdatahisStory(data);
+      const user= await getUserlocal()
+      if(user){
+        const data = await get_Appointment_history();
+        setdatahisStory(data);
+      }else{
+       setisLogin(true)
+      }
   };
 
   useFocusEffect(
@@ -60,36 +71,44 @@ const AppointmentHistoryScreen = ({navigation}) => {
       }
     }
 
-    const Handalcanceled=async(item)=>{
-       Alert.alert("Xác nhận hủy lịch", "Bạn có chắc muốn hủy lịch hẹn này?", [
-        {
-          text: "No",
-          onPress: () => console.log("Người dùng đã chọn No"),
-          style: "cancel",
-        },
-        {
-          text: "Yes",
-          onPress: async() => {
-            if(item.payment.pay_method === "ZaloPay"){
-              setItemCancedel(item._id)
+   
+    function HandalModalHuyLich(item){
+      setItemCancedel(item)
+      setModalHuyLich(true)
+    }
+    const Handalcanceled=async()=>{
+            if(ItemCancedel?.payment.pay_method === "ZaloPay"){
               setisCancedal(true)
+              setModalHuyLich(false)
             }else{
-              await updateAppointmentStatusToCancelel_Case(item._id)
+              await updateAppointmentStatusToCancelel_Case(ItemCancedel._id)
               await getApi()
+              setModalHuyLich(false)
             }
-          },
-        }] ,{ cancelable: true })
-      
     }
 
     async function capnhathuy(){
-      const response= await  updateAppointmentStatusToCancelel_ZaloPay(ItemCancedel,bank_account)
+      if(bank_account == ''){
+        Alert.alert('Vui lòng nhập số tài khoản ')
+        return
+     }
+      const response= await  updateAppointmentStatusToCancelel_ZaloPay(ItemCancedel._id,bank_account)
       if(response){
         await getApi()
         setisCancedal(false)
       }else{
         Alert.alert("Vui lòng thử lại sau")
       }
+    }
+    
+    const HandalDeleteModal=async(item)=>{
+      setItemDelete(item._id)
+      setModalDelete(true)
+    }
+    async function handelDelete(id){
+            await updateAppointmentStatusFalse(ItemDelete)
+            await getApi()
+            setModalDelete(false)
     }
     
   const StarRating = () => {
@@ -137,9 +156,16 @@ const AppointmentHistoryScreen = ({navigation}) => {
             style={{fontSize: 16, fontWeight: 'bold', color: colors.primary}}>
             Lịch hẹn
           </Text>
+          <View style={{flexDirection:'row',alignItems:'center'}}>
           <Image
             source={require('../../Resources/assets/logo/Bee_Barber.png')}
           />
+          <TouchableOpacity onPress={()=>{HandalDeleteModal(item)}}>
+          <Image
+            style={{width:20,height:20,marginStart:8}}
+            source={require('../../Resources/assets/icons/delete.png')}
+          /></TouchableOpacity>
+          </View>
         </View>
         <View style={{flexDirection:'row',justifyContent:'space-around',marginVertical:4}}>
            <View style={{flexDirection:'row'}}>
@@ -178,9 +204,9 @@ const AppointmentHistoryScreen = ({navigation}) => {
        <View style={{flexDirection:'row',justifyContent:'space-evenly'}}>
           {item.payment.pay_method_status === 'Unpaid'? <View><Text style={{color:'red'}}>Chưa thanh toán</Text></View>:
           item.payment.pay_method_status === 'Success'? <View><Text style={{color:'green'}}>Đã thanh toán</Text></View>:
-          item.payment.pay_method_status === 'canceled'? <View><Text style={{color:'orange'}}>Đã hủy lịch hoàn tiền trong 24h tới</Text></View>:
+          item.payment.pay_method_status === 'Norefundyet'? <View><Text style={{color:'orange'}}>Đã hủy lịch hoàn tiền trong 24h tới</Text></View>:
           item.payment.pay_method_status === 'Refunded'? <View><Text style={{color:'green'}}>Đã hoàn tiền</Text></View>:<View></View>}
-            {item.appointment_status === 'pending' ? <TouchableOpacity onPress={()=>{Handalcanceled(item)}}><View style={{width:100,height:40,borderWidth:1,borderColor:colors.primary300,borderRadius:24,justifyContent:'center',alignItems:'center'}}><Text style={{color:colors.primary200}}>Hủy lịch</Text></View></TouchableOpacity> :
+            {item.appointment_status === 'pending' ? <TouchableOpacity onPress={()=>{HandalModalHuyLich(item)}}><View style={{width:100,height:40,borderWidth:1,borderColor:colors.primary300,borderRadius:24,justifyContent:'center',alignItems:'center'}}><Text style={{color:colors.primary200}}>Hủy lịch</Text></View></TouchableOpacity> :
             item.appointment_status === 'completed' ? <View style={{flexDirection:'row'}}><Text style={{color:'green'}}>Đã cắt</Text>
             <TouchableOpacity onPress={()=>{setisRating(true);setItemRating(item)}}><Text  style={{color:'blue'}}>     Đánh giá ngay</Text></TouchableOpacity></View> :
             item.appointment_status === 'canceled' ? <View><Text style={{color:'red'}}>Đã hủy</Text></View> :
@@ -198,8 +224,9 @@ const AppointmentHistoryScreen = ({navigation}) => {
         renderItem={renderItem}
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
+        ListHeaderComponent={()=>{isLogin === true? <TouchableOpacity><Text>Đăng nhập ngày để trải nhiệm dịch vụ</Text></TouchableOpacity>:null}}
         ListEmptyComponent={() => {
-          return <Text style={styles.emptyText}>Không có lịch cắt nào.</Text>;
+          return isLogin === true? <TouchableOpacity onPress={()=>{navigation.navigate('LoginScreen')}}><Text style={{textAlign:'center',fontSize:16,margin:12,textDecorationLine: 'underline',color:colors.primary}}>Đăng nhập ngày để trải nhiệm dịch vụ</Text></TouchableOpacity>:<Text>Bạn chưa có lịch hẹn nào </Text>
         }}
       />
       <Modal visible={isRating} animationType='slide' transparent={true}>
@@ -220,7 +247,7 @@ const AppointmentHistoryScreen = ({navigation}) => {
              <TouchableOpacity style={{flex:1}} onPress={()=>{setisCancedal(false)}}></TouchableOpacity>
              <View style={{height:240,width:'100%',backgroundColor:'white',alignItems:'center'}}>
                <Text style={styles.textdanhgia}>Nhập thông tin tài khoản hoàn tiền</Text>
-                <TextInput numberOfLines={3} placeholder='Thông tin tài khoản' style={{borderWidth:1,width:300,marginVertical:24,borderRadius:12}}/>
+                <TextInput data={bank_account} onChangeText={text =>{setbank_account(text)}} numberOfLines={3} placeholder='Thông tin tài khoản' style={{borderWidth:1,width:300,marginVertical:24,borderRadius:12}}/>
                   <TouchableOpacity onPress={()=>{capnhathuy()}}>
                   <View style={{height: 45,width:120, backgroundColor: colors.primary, borderRadius: 8, justifyContent: 'center' }}>
                     <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Xác nhận</Text>
@@ -229,6 +256,51 @@ const AppointmentHistoryScreen = ({navigation}) => {
              </View>
         </View>
       </Modal>
+
+      {/* modal xóa */}
+      <Modal visible={ModalDelete} animationType='slide' transparent={true} >
+           <View style={{flex:1,justifyContent:'center',backgroundColor:'rgba(0, 0, 0, 0.2)'}}>
+              <View style={{height:180,backgroundColor:'white',margin:32,borderRadius:4,alignItems:'center',justifyContent:'space-around'}}>
+                   <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Xác nhận xóa</Text>
+                   <Text style={{fontSize:17}}>Bạn có muốn xóa lịch hẹn này không ?</Text>
+                   <View style={{flexDirection:'row'}}>
+                     <TouchableOpacity onPress={()=>{setModalDelete(false)}}>
+                       <View style={{height:45,width:120,borderWidth:1,borderColor:colors.primary,borderRadius:8,marginHorizontal:12,justifyContent:'center',alignItems:'center'}}>
+                       <Text style={{color:colors.primary,fontWeight:'bold'}}>Không</Text>
+                       </View>
+                     </TouchableOpacity>
+                     <TouchableOpacity onPress={()=>{handelDelete()}}>
+                       <View style={{height:45,width:120,marginHorizontal:12,backgroundColor:colors.primary,justifyContent:'center',alignItems:'center',borderRadius:8}}>
+                       <Text style={{fontWeight:'bold',color:'white'}}>Đồng ý</Text>
+                       </View>
+                     </TouchableOpacity>
+                   </View>
+              </View>
+           </View>
+      </Modal>
+        
+        {/* Hủy lịch */}
+      <Modal visible={ModalHuyLich} animationType='slide' transparent={true} >
+           <View style={{flex:1,justifyContent:'center',backgroundColor:'rgba(0, 0, 0, 0.2)'}}>
+              <View style={{height:180,backgroundColor:'white',margin:32,borderRadius:4,alignItems:'center',justifyContent:'space-around'}}>
+                   <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Xác nhận hủy lịch</Text>
+                   <Text style={{fontSize:17}}>Bạn có muốn hủy lịch hẹn này không ?</Text>
+                   <View style={{flexDirection:'row'}}>
+                     <TouchableOpacity onPress={()=>{setModalHuyLich(false)}}>
+                       <View style={{height:45,width:120,borderWidth:1,borderColor:colors.primary,borderRadius:8,marginHorizontal:12,justifyContent:'center',alignItems:'center'}}>
+                       <Text style={{color:colors.primary,fontWeight:'bold'}}>Không</Text>
+                       </View>
+                     </TouchableOpacity>
+                     <TouchableOpacity onPress={()=>{Handalcanceled()}}>
+                       <View style={{height:45,width:120,marginHorizontal:12,backgroundColor:colors.primary,justifyContent:'center',alignItems:'center',borderRadius:8}}>
+                       <Text style={{fontWeight:'bold',color:'white'}}>Đồng ý</Text>
+                       </View>
+                     </TouchableOpacity>
+                   </View>
+              </View>
+           </View>
+      </Modal>
+
     </View>
   );
 };

@@ -84,3 +84,24 @@ export const updateAppointmentStatusToCancelel_ZaloPay = async (appointmentId,ba
     return false;
   }
 };
+
+export const updateAppointmentStatusFalse = async (appointmentId) => {
+  try {
+    const response = await fetch(`${API}updateAppointmentStatus/${appointmentId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      console.log('Error:', data);
+      return false;
+    }
+    console.log("Lấy dữ liệu thành công", data);
+    return data;
+  } catch (error) {
+    console.log('Error add appointment', error);
+    return false;
+  }
+};

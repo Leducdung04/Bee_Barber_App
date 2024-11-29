@@ -5,8 +5,9 @@ import { checkPhoneAndGetId, loginPhone, registerUser } from '../../Services/uti
 import { isValidPhoneNumber } from '../../Services/utils/ValidPhoneNumber';
 import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
 import colors from '../../Resources/styles/colors';
+import { add_user_cart } from '../../Services/utils/httpCart';
 
-const SigupScreen = ({ navigation }) => {
+const SignUpScreen= ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setname] = useState('')
   const [validatePhoneNumber, setValidatePhoneNumber] = useState(false)
@@ -22,6 +23,13 @@ const SigupScreen = ({ navigation }) => {
       const responseUres = await registerUser(phoneNumber,password,name)
       console.log('data',responseUres)
       if(responseUres.status === 200){
+         try {
+                const userId = responseUres.data._id; 
+                await add_user_cart(userId);
+                console.log("Cart added successfully.");
+            } catch (error) {
+                console.error("Failed to add cart:", error.message);
+            }
         await setUserlocal(responseUres.data)
         navigation.navigate('TabNavigator')
       }else if(responseUres.status ===210){
@@ -241,4 +249,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SigupScreen;
+export default SignUpScreen;

@@ -15,29 +15,12 @@ const OrderScreen = () => {
     const [scrollBarWidth, setScrollBarWidth] = useState(new Animated.Value(0)); // Animated width for scroll indicator
     const [selectedStatus, setSelectedStatus] = useState("Tất Cả"); // Track the selected status
 
-    const handleScroll = (event) => {
-        const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-        const completeWidth = contentSize.width;
-        const visibleWidth = layoutMeasurement.width;
-        const scrollRatio = contentOffset.x / (completeWidth - visibleWidth);
-
-        // Animate the scroll indicator width
-        Animated.timing(scrollBarWidth, {
-            toValue: Math.min(
-                scrollRatio * scrollTrackWidth.current,
-                scrollTrackWidth.current
-            ),
-            duration: 50,
-            useNativeDriver: false,
-        }).start();
-    };
 
     return (
         <View style={styles.container}>
             <View style={styles.scrollContainer}>
                 <ScrollView
                     horizontal
-                    onScroll={handleScroll}
                     scrollEventThrottle={16}
                     showsHorizontalScrollIndicator={false}
                     contentContainerStyle={styles.statusContainer}

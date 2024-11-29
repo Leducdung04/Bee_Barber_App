@@ -55,3 +55,19 @@ export const loginPhone = async (phone, password) => {
     }
 };
 
+export const getUserInfoById = async(id) => {
+    try {
+        const response = await fetch(`${API}${API_GET_USER_DETAIL}/${id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Lấy dữ liệu người dùng thành công", data);
+        return data;
+    } catch (error) {
+        console.log('Lấy dữ liệu người dùng thất bại', error.message);
+        console.log(IP);
+        return [];
+    }
+}

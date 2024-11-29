@@ -17,7 +17,9 @@ import { API_SEND_NOTIFICATION, API } from '@env'
 import { add_cart_item } from '../../../Services/utils/httpCartItem';
 import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../../Services/api/notificationhelper'
 import eventEmitter from '../../../Services/utils/event';
-
+import colors from '../../../Resources/styles/colors';
+import { get_user_cart } from '../../../Services/utils/httpCart';
+import { getUserlocal } from '../../../Services/utils/user__AsyncStorage';
 
 const ProductScreen = () => {
   const route = useRoute();
@@ -26,7 +28,9 @@ const ProductScreen = () => {
   const [animation] = useState(new Animated.Value(0));
   const [quantity, setQuantity] = useState(1);
   const [token, setToken] = useState(null);
-
+  const [ModalDN, setModalDN] = useState(false)
+  const [userProfile, setUserProfile] = useState(null)
+  const [cartId, setCartId] = useState(null)
   const product = route.params;
   const url = replaceLocalhostWithIP(product.image);
   const totalPrice = product.price_selling * quantity;
@@ -42,13 +46,49 @@ const ProductScreen = () => {
   useEffect(() => {
     if (product.category_id.name) {
       nav.setOptions({
-        title: product.category_id.name, 
+        title: product.category_id.name,
       });
     }
   }, [product.category_id.name, nav]);
 
+  async function handelIsLogin() {
+    const user = await getUserlocal();
+    if (!user) {
+      setModalDN(true);
+      return false;
+    } else {
+      setUserProfile(user);
+      return true;
+    }
+  }
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const user = await getUserlocal();
+      const islogin = await handelIsLogin()
+      if (!islogin) {
+        console.log("User not logged in. Action restricted.");
+        return
+      }
+      if (user) {
+        setUserProfile(user);
+      }
+      if (!cartId) {
+        const userCart = await get_user_cart(user._id);
+        setCartId(userCart._id);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
 
   const handleAddToCart = async () => {
+    const islogin = await handelIsLogin()
+    if (!islogin) {
+      console.log("User not logged in. Action restricted.");
+      return
+    }
     try {
       const cartItem = {
         product_id: product._id,
@@ -56,7 +96,7 @@ const ProductScreen = () => {
         total: totalPrice,
       };
 
-      const addedItem = await add_cart_item(cartItem);
+      const addedItem = await add_cart_item(cartId, cartItem);
       console.log("Cart item added successfully:", addedItem);
       eventEmitter.emit('cartUpdated');
       await handleAddToCartNotification();
@@ -68,20 +108,29 @@ const ProductScreen = () => {
   };
 
   const handleBuyNow = async () => {
-    try {
-        const cartItem = {
-            _id: product._id,
-            title: product.name,
-            price_selling: product.price_selling,
-            quantity,
-            image: url, // Add the image URL
-        };
-        nav.navigate("OrderConfirmationScreen", { selectedItems: [cartItem] });
-
-    } catch (error) {
-        console.error("Error in Buy Now:", error.message);
+    const islogin = await handelIsLogin()
+    if (!islogin) {
+      console.log("User not logged in. Action restricted.");
+      return
     }
-};
+    try {
+      const cartItem = {
+        _id: product._id,
+        title: product.name,
+        price_selling: product.price_selling,
+        quantity,
+        image: url,
+      };
+
+      closeModal();
+      setTimeout(() => {
+        nav.navigate("OrderConfirmationScreen", { selectedItems: [cartItem] });
+      }, 300);
+    } catch (error) {
+      console.error("Error in Buy Now:", error.message);
+    }
+  };
+
 
   const handleAddToCartNotification = async () => {
     if (!token) {
@@ -90,9 +139,9 @@ const ProductScreen = () => {
     }
 
     const payload = {
-      user_id: '66fe1856faa0e86597afdbae',
+      user_id: userProfile._id,
       relates_id: product._id,
-      type: 'general',
+      type: 'order',
       content: `Sản phẩm ${product.name} đã được thêm vào giỏ hàng.`,
       deviceToken: token,
     };
@@ -116,7 +165,11 @@ const ProductScreen = () => {
     }
   };
 
-  const openModal = () => {
+  const openModal = async () => {
+    const islogin = await handelIsLogin()
+    if (!islogin) {
+      return
+    }
     setShowModal(true);
     Animated.timing(animation, {
       toValue: 1,
@@ -137,7 +190,7 @@ const ProductScreen = () => {
       setQuantity(1);
     });
   };
-  
+
 
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
@@ -165,7 +218,7 @@ const ProductScreen = () => {
             }
           }}
         >
-        <MaterialIcons name="add-shopping-cart" size={23} color="black" />
+          <MaterialIcons name="add-shopping-cart" size={23} color="black" />
           <Text style={styles.buttonText}>THÊM GIỎ HÀNG</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buyButton} onPress={openModal}>
@@ -219,6 +272,27 @@ const ProductScreen = () => {
             </TouchableOpacity>
           </View>
         </Animated.View>
+      </Modal>
+
+      <Modal visible={ModalDN} animationType='slide' transparent={true} >
+        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          <View style={{ height: 180, backgroundColor: 'white', margin: 32, borderRadius: 4, alignItems: 'center', justifyContent: 'space-around' }}>
+            <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>Đăng nhập</Text>
+            <Text style={{ fontSize: 17 }}>Đăng nhập ngay để sủ dụng tính năng này ?</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={() => { setModalDN(false) }}>
+                <View style={{ height: 45, width: 120, borderWidth: 1, borderColor: colors.primary, borderRadius: 8, marginHorizontal: 12, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ color: colors.primary, fontWeight: 'bold' }}>Để sau</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { nav.navigate('LoginScreen') }}>
+                <View style={{ height: 45, width: 120, marginHorizontal: 12, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 8 }}>
+                  <Text style={{ fontWeight: 'bold', color: 'white' }}>Đồng ý</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </Modal>
 
     </View>

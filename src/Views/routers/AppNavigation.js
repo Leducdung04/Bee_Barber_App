@@ -3,33 +3,27 @@ import React, { useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './TabNavigator';
 import HomeScreen from '../screens/HomeScreen';
-
 import { Menu, Provider, TextInput } from 'react-native-paper';
 import CircleBorder from '../components/shop/CircleBorder';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoryScreen from '../components/shop/CategoryScreen';
 import ServiceByCategoryScreen from '../screens/ServiceByCategoryScreen';
-
 import AppointmentScreen from '../screens/AppointmentScreen';
 import colors from '../../Resources/styles/colors';
 import ServicesScreen from '../screens/ServicesScreen';
-
 import UserProfile from '../screens/UserProfile';
+import LoginScreen from "../screens/LoginScreen"
+import SignUpScreen from '../screens/SignUpScreen';
 import Cart from '../screens/Cart';
-
 import DetailsHistoryScreen from '../screens/DetailsHistoryScreen';
-
-import WelcomeScreen from '../screens/WellcomeScreen';
-import LoginScreen from '../screens/LoginScreen';
-import SigupScreen from '../screens/SigupScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
 import { useNavigation } from '@react-navigation/native';
-import TestZaloPay from '../screens/TestZaloPay';
-import RegisterScreen from '../screens/RegisterScreen';
 import ProductScreen from '../components/shop/ProductScreen';
-import SearchProduct from '../components/shop/SearchProduct';
 import OrderConfirmationScreen from '../components/shop/OrderConfirmationScreen';
 import OrderScreen from '../screens/OrderScreen';
-import LocationPicker from '../components/shop/LocationPicker';
+import NotificationScreen from '../screens/NotificationScreen';
+import OderHistory from '../screens/OderHistory';
+import Notification from '../screens/Notification';
 
 
 
@@ -46,12 +40,12 @@ const AppNavigation = () => {
   return (
     <Provider>
       <Stack.Navigator initialRouteName="WelcomeScreen">
-        <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{ headerShown: false }} />
+        <Stack.Screen name="OderHistory" component={OderHistory} options={{ title: 'Đơn hàng của bạn' }} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SigupScreen" component={SigupScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen } options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="Notification" component={Notification} options={{ title: 'Thông báo' }} />
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
@@ -131,7 +125,7 @@ const AppNavigation = () => {
           headerBackButtonMenuEnabled
         />
         <Stack.Screen name='AppointmentScreen' component={AppointmentScreen}
-          options={{ title: 'Đặt lịch giữ chỗ ' }} />
+          options={{ title: 'Đặt lịch giữ chỗ ', headerShown: false }} />
         <Stack.Screen name='ServiceByCategoryScreen' component={ServiceByCategoryScreen}
           options={{ title: 'Dịch vụ theo danh mục' }}
         />
@@ -167,6 +161,14 @@ const AppNavigation = () => {
           component={OrderConfirmationScreen}
           options={{
             title: 'Xác Nhận Thanh Toán',
+            headerTitleAlign: 'center',
+          }}
+        />
+        <Stack.Screen
+          name="NotificationScreen"
+          component={NotificationScreen}
+          options={{
+            title: 'Thông báo',
             headerTitleAlign: 'center',
           }}
         />
