@@ -22,21 +22,21 @@ export default function CircleBorder({
   const [userProfile, setUserProfile] = useState(null)
 
   useEffect(() => {
-    const fetchCartItems = async () => {
+    const fetchCartItems = async (user) => {
       try {
-        const user = await getUserlocal();
-        console.log(user);
-
         if (!user) {
-          console.warn('User or cart ID is missing.');
+          console.warn('User is not logged in. Skipping cart fetch.');
           setBadgeCount(0);
           return;
         }
+
         const userCart = await get_user_cart(user._id);
         if (!userCart || !userCart._id) {
-          console.error("No cart found or cart ID is undefined.");
+          console.error('No cart found or cart ID is undefined.');
+          setBadgeCount(0);
           return;
         }
+
         const cartId = userCart._id;
         const cartItems = await get_list_cart_item(cartId);
         setBadgeCount(cartItems.length);
@@ -45,22 +45,25 @@ export default function CircleBorder({
       }
     };
 
-    const getUser = async () => {
+    const getUserAndFetch = async () => {
       const user = await getUserlocal();
       console.log('Fetched user:', user);
       setUserProfile(user || {});
 
       if (!user) {
-        console.warn('User is null or undefined.');
+        setBadgeCount(0); 
+        return;
       } else {
-        fetchCartItems();
+        fetchCartItems(user);
       }
     };
 
-    getUser();
-    const listener = eventEmitter.on('cartUpdated', fetchCartItems);
+    getUserAndFetch();
+
+    const listener = eventEmitter.on('cartUpdated', () => getUserAndFetch());
     return () => listener.removeListener();
   }, []);
+
 
 
   const isImage = !['sort-variant', 'dots-three-vertical', 'search-outline'].includes(name);

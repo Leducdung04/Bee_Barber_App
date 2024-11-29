@@ -8,11 +8,10 @@ import { useBookingViewModel } from '../../ViewModels/AppointmentModel';
 import { fomatsDate } from '../../Services/utils/fomatsDate';
 import SelectedServices from '../components/Appointment/SelectedServices';
 import { deleteZaloPayload } from '../../Services/utils/ZaloPay_AsyncStorage';
-import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../Services/api/notificationhelper'
+import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendScheduleNotification } from '../../Services/api/notificationhelper'
 
 import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 const AppointmentScreen = ({ route, navigation }) => {
-
   const {
     setmodalCheck,
     setmodalIsloading,
@@ -89,34 +88,14 @@ const AppointmentScreen = ({ route, navigation }) => {
         price: parseInt(totalAmount, 10),
         pay_method_status: pay_Method == 'ZaloPay' ? 'Success' : 'Unpaid'
       }
-    }
-
-    scheduleAppointmentNotification(day_Selected.date, time_Selected);
-
+    }  
     handle_Order_Appointment(appointment)
   }
 
 
 
   const scheduleAppointmentNotification = (appointmentDate, appointmentTime) => {
-    const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}`);
-    const currentDateTime = new Date();
-
-    const timeDifference = appointmentDateTime - currentDateTime;
-
-    if (timeDifference > 0) {
-      PushNotification.localNotificationSchedule({
-        channelId: 'default-channel', 
-        title: 'Sắp có lịch hẹn',
-        message: 'You have an appointment today. Don’t forget!',
-        date: appointmentDateTime,
-        allowWhileIdle: true,
-      });
-
-      console.log('Thông báo được đặt cho ngày', appointmentDateTime);
-    } else {
-      console.warn('Giờ đặt lịch hẹn đã qua');
-    }
+    
   };
 
 

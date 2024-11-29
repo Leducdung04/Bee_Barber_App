@@ -27,7 +27,6 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
     }
   };
 
-
   const fetchDistrictsByProvince = async () => {
 
     if (!provinceParentCode) return;

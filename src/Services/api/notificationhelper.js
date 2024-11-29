@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
-import { API_SEND_NOTIFICATION, API } from '@env'
+import { API_SEND_NOTIFICATION, API, API_GET_LIST_NOTIFICATIONS,API_SEND_SCHEDULE_NOTIFICATION } from '@env'
 
 export async function requestUserPermission() {
   try {
@@ -89,11 +89,11 @@ export const sendLocalNotification = ({ channelId, title, message, data }) => {
 export const sendRemoteNotification = async ({ payload }) => {
   try {
     console.log(`Sending request to: ${API}${API_SEND_NOTIFICATION}`);
-    const response = await fetch(`${API}${API_SEND_NOTIFICATION}`, { 
+    const response = await fetch(`${API}${API_SEND_NOTIFICATION}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer YOUR_AUTH_TOKEN`, 
+        Authorization: `Bearer YOUR_AUTH_TOKEN`,
       },
       body: JSON.stringify(payload),
     });
@@ -113,4 +113,41 @@ export const sendRemoteNotification = async ({ payload }) => {
   }
 };
 
+type = "booking"
+export const get_List_Notification = async (userId, status) => {
+  try {
+    const response = await fetch(`${API}${API_GET_LIST_NOTIFICATIONS}?user_id=${id}&type=${type}&status=${status}`);
+    const data = await response.json();
+    return data;
 
+  } catch (error) {
+    console.log('Error getting list Notification', error);
+    return [];
+  }
+};
+
+export const sendScheduleNotification = async (userId, status) => {
+  try {
+    const response = await fetch(`${API}${API_SEND_SCHEDULE_NOTIFICATION}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer YOUR_AUTH_TOKEN`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      console.error("Error sending schedule notification:", errorResponse);
+      throw new Error(errorResponse.message || response.statusText);
+    }
+
+    const result = await response.json();
+    console.log("Schedule notification sent successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error sending schedule notification:", error);
+    throw error;
+  }
+}
