@@ -45,10 +45,11 @@ const AppNavigation = () => {
   const closeMenu1 = () => setVisible1(false);
   return (
     <Provider>
-      <Stack.Navigator initialRouteName="TabNavigator">
+      <Stack.Navigator initialRouteName="WelcomeScreen">
         <Stack.Screen name="TestZaloPay" component={TestZaloPay} options={{ headerShown: false }} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SigupScreen" component={SigupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen

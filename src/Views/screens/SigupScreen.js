@@ -6,7 +6,7 @@ import { isValidPhoneNumber } from '../../Services/utils/ValidPhoneNumber';
 import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
 import colors from '../../Resources/styles/colors';
 
-const LoginScreen = ({ navigation }) => {
+const SigupScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setname] = useState('')
   const [validatePhoneNumber, setValidatePhoneNumber] = useState(false)
@@ -241,4 +241,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SigupScreen;
