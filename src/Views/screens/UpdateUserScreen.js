@@ -1,56 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Alert, Image, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserInfoById, updateUserInfo } from '../../Services/utils/httpSingup'; // Đường dẫn đến hàm getUserInfoById và updateUserInfo
+import { getUserInfoById, updateUser } from '../../Services/utils/httpSingup'; // Đường dẫn đến hàm getUserInfoById và updateUser
+import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
+import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
 
 const UpdateUserScreen = ({ navigation }) => {
     const [userId, setUserId] = useState(null); // State để lưu userId
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [birthDate, setBirthDate] = useState('');
-
-    // // Lấy userId từ AsyncStorage khi component được mount
-    // useEffect(() => {
-    //     const fetchUserId = async () => {
-    //         const storedUserId = await AsyncStorage.getItem('userId'); // Lấy userId từ AsyncStorage
-    //         setUserId(storedUserId); // Lưu userId vào state
-    //     };
-
-    //     fetchUserId(); // Gọi hàm để lấy userId
-    // }, []);
-
-    // useEffect(() => {
-    //     const fetchUserInfo = async () => {
-    //         if (userId) {
-    //             const data = await getUserInfoById(userId); // Lấy thông tin người dùng từ API
-    //             setName(data.name || '');
-    //             setEmail(data.email || '');
-    //             setBirthDate(data.birthDate || ''); // Giả sử dữ liệu ngày sinh là birthDate
-    //         }
-    //     };
-    //     if (userId) {
-    //         fetchUserInfo(); // Chỉ gọi API khi đã có userId
-    //     }
-    // }, [userId]);
+    const [phone, setPhone] = useState(''); // Thêm state cho số điện thoại
 
     useEffect(() => {
         const fetchUserData = async () => {
             // Lấy userId từ AsyncStorage
-            const storedUserId = await AsyncStorage.getItem('userId');
+            const storedUserId = await getUserlocal();
             if (storedUserId) {
-                setUserId(storedUserId); // Lưu userId vào state
+                setUserId(storedUserId._id); // Lưu userId vào state
 
                 // Lấy thông tin người dùng từ API nếu có userId
-                const data = await getUserInfoById(storedUserId);
-                setName(data.name || '');
-                setEmail(data.email || '');
-                setBirthDate(data.birthDate || '');
+                const data = await getUserInfoById(storedUserId._id);
+                if (data && data.data) {
+                    setName(data.data.name || '');
+                    setEmail(data.data.email || '');
+                    setPhone(data.data.phone || ''); // Lưu số điện thoại vào state
+                }
             }
         };
 
         fetchUserData(); // Gọi hàm để lấy userId và thông tin người dùng
     }, []); // Chỉ chạy khi component được mount
-
 
     const handleUpdate = async () => {
         // Kiểm tra định dạng email
@@ -60,33 +38,20 @@ const UpdateUserScreen = ({ navigation }) => {
             return;
         }
 
-        // Kiểm tra định dạng ngày sinh
-        const birthDatePattern = /^\d{4}-\d{2}-\d{2}$/; // Định dạng YYYY-MM-DD
-        if (birthDate && !birthDatePattern.test(birthDate)) {
-            Alert.alert('Thông báo', 'Ngày sinh không hợp lệ, vui lòng nhập theo định dạng YYYY-MM-DD.');
+        // Kiểm tra số điện thoại
+        if (phone.length < 10) {
+            Alert.alert('Thông báo', 'Số điện thoại không hợp lệ.');
             return;
         }
 
-        // Tạo đối tượng thông tin người dùng
-        const userInfo = {
-            name,
-            email,
-            birthDate, // Bao gồm ngày sinh trong thông tin cập nhật
-        };
-
-        // Cập nhật thông tin người dùng
-        try {
-            const result = await updateUserInfo(userId, userInfo); // Gọi hàm cập nhật
-            console.log('Update result:', result); // Kiểm tra kết quả trả về
-            if (result.success !== false) {
-                Alert.alert('Thông báo', 'Thông tin đã được cập nhật!');
-                navigation.navigate('UserProfile');
-            } else {
-                Alert.alert('Thông báo', result.message);
-            }
-        } catch (error) {
-            console.error('Error updating user info:', error); // Log lỗi nếu có
-            Alert.alert('Thông báo', 'Có lỗi xảy ra, vui lòng thử lại.');
+        // Gọi hàm cập nhật thông tin người dùng
+        const result = await updateUser(userId, name, phone, email);
+        if (result) {
+            await setUserlocal({ _id: userId, name, phone, email });
+            Alert.alert('Thông báo', 'Cập nhật thông tin thành công!');
+            navigation.goBack(); // Quay lại màn hình trước đó
+        } else {
+            Alert.alert('Thông báo', 'Cập nhật thông tin thất bại!');
         }
     };
 
@@ -119,18 +84,19 @@ const UpdateUserScreen = ({ navigation }) => {
                     />
                 </View>
                 <View style={styles.formGroup}>
-                    <Text style={styles.text}>Ngày sinh</Text>
+                    <Text style={styles.text}>Số điện thoại*</Text>
                     <TextInput
                         style={styles.input}
-                        value={birthDate}
-                        onChangeText={setBirthDate}
-                        placeholder="Nhập ngày sinh (YYYY-MM-DD)"
+                        value={phone}
+                        onChangeText={setPhone}
+                        placeholder="Nhập số điện thoại"
+                        keyboardType="phone-pad"
                     />
                 </View>
             </View>
 
-            <TouchableOpacity style={styles.updateButton}>
-                <Text style={styles.updateText} onPress={handleUpdate}>CẬP NHẬT</Text>
+            <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
+                <Text style={styles.updateText}>CẬP NHẬT</Text>
             </TouchableOpacity>
         </View>
     );
@@ -179,7 +145,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingVertical: 2,
     },
-
     updateButton: {
         alignItems: 'center',
         paddingVertical: 15,

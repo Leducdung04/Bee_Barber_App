@@ -24,9 +24,9 @@ import OrderScreen from '../screens/OrderScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import OderHistory from '../screens/OderHistory';
 import Notification from '../screens/Notification';
-
-
-
+import UpdateUserScreen from '../screens/UpdateUserScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import TestScreen from '../screens/Test';
 const Stack = createNativeStackNavigator();
 
 const AppNavigation = () => {
@@ -42,8 +42,10 @@ const AppNavigation = () => {
       <Stack.Navigator initialRouteName="WelcomeScreen">
         <Stack.Screen name="OderHistory" component={OderHistory} options={{ title: 'Đơn hàng của bạn' }} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="TestScreen" component={TestScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SignUpScreen" component={SignUpScreen } options={{ headerShown: false }} />
+        <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen } options={{ title: '', headerTitleAlign: 'center', }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="Notification" component={Notification} options={{ title: 'Thông báo' }} />
         <Stack.Screen
@@ -135,6 +137,14 @@ const AppNavigation = () => {
         <Stack.Screen
           name="UserProfile"
           component={UserProfile}
+          options={{
+            title: 'Thông tin tài khoản',
+            headerTitleAlign: 'center',
+          }}
+        />
+        <Stack.Screen
+          name="UpdateUserScreen"
+          component={UpdateUserScreen}
           options={{
             title: 'Thông tin tài khoản',
             headerTitleAlign: 'center',
