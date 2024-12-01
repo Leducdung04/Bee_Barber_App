@@ -86,33 +86,38 @@ const OderHistory = () => {
                         source={require('../../Resources/assets/logo/Bee_Barber.png')}
                     />
                     </View>
-                    <FlatList data={item.product_id}
-                        showsVerticalScrollIndicator={false}
+                    <FlatList data={item.listProduct}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
                         renderItem={({item})=>{
                                console.log('hihi',item)
                                 const uri = replaceLocalhostWithIP(item?.image)
                                
                             return <View>
-                                <View style={{flexDirection:'row'}}>
-                                <Image style={{width:100,height:80}} source={{uri:uri}}/>
-                                <Text numberOfLines={3} style={{width:100}}>{item?.name}</Text>
+                                  <View style={{flexDirection:'row'}}>
+                                  <Image style={{width:100,height:80}} source={{uri:uri}}/>
+                                  <View>
+                                  <Text numberOfLines={2} style={{width:100}}>{item?.name}</Text>
+                                  <Text style={{color:'orange'}}>sl {item.quantity} price : {item.price_selling}</Text>
+                                  </View>
                                 </View>
+                               
                             </View>
                         }}
                     />
                     <Text style={{marginStart:12}}>Địa chỉ nhận : {item.location}</Text>
-                    <Text style={{marginStart:12,color:'orange',fontWeight:'bold'}}>{item.price} VND</Text>
+                    <Text style={{marginStart:12,color:'orange',fontWeight:'bold'}}>{item.total_price_import} VND</Text>
                     <View style={{flexDirection:'row',justifyContent:'space-evenly'}}>
                     {item.payment?.pay_method_status === 'Unpaid'? <View><Text style={{color:'red'}}>Chưa thanh toán</Text></View>:
                     item.payment?.pay_method_status === 'Success'? <View><Text style={{color:'green'}}>Đã thanh toán</Text></View>:
                     item.payment?.pay_method_status === 'canceled'? <View><Text style={{color:'orange'}}>Đã hủy lịch hoàn tiền trong 24h tới</Text></View>:
                     item.payment?.pay_method_status === 'Refunded'? <View><Text style={{color:'green'}}>Đã hoàn tiền</Text></View>:<View></View>}
-                        {item.status === 1 ? <TouchableOpacity onPress={()=>{handel(item)}}><View style={{width:100,height:40,borderWidth:1,borderColor:colors.primary300,borderRadius:24,justifyContent:'center',alignItems:'center'}}><Text style={{color:colors.primary200}}>Hủy đơn</Text></View></TouchableOpacity> :
-                        item.status === 2 ? <View style={{flexDirection:'row'}}><Text style={{color:'green'}}>Đã cắt</Text>
-                        <TouchableOpacity onPress={()=>{setisRating(true);setItemRating(item)}}><Text  style={{color:'blue'}}>     Đã xác nhận</Text></TouchableOpacity></View> :
-                        item.status === 3 ? <View><Text style={{color:'blue'}}>Đang vận chuyển</Text></View> :
-                        item.status === 4 ? <View><Text style={{color:'green'}}>Đã giao </Text></View> :
-                        item.status === 5 ? <View><Text style={{color:'red'}}>Đã hủy</Text></View> :<View></View>}
+                        {item.status === 'pending' ?<View style={{flexDirection:'row'}}><Text style={{color:'orange'}}>Chờ xác nhận   </Text><TouchableOpacity onPress={()=>{handel(item)}}><View style={{width:100,height:40,borderWidth:1,borderColor:colors.primary300,borderRadius:24,justifyContent:'center',alignItems:'center',marginTop:-8}}><Text style={{color:colors.primary200}}>Hủy đơn</Text></View></TouchableOpacity></View> :
+                        item.status === 'active' ? <View style={{flexDirection:'row'}}><Text style={{color:'green'}}>Chuẩn bị gửi hàng</Text>
+                       <Text  style={{color:'blue'}}>      Đã xác nhận</Text></View> :
+                        item.status === 'trading' ? <View><Text style={{color:'blue'}}>Đang vận chuyển</Text></View> :
+                        item.status === 'delivered' ? <View><Text style={{color:'green'}}>Đã giao </Text></View> :
+                        item.status === 'deactive' ? <View><Text style={{color:'red'}}>Đã hủy</Text></View> :<View></View>}
              </View>
             </View>
  }

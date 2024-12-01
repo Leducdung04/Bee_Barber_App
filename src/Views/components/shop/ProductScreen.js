@@ -65,6 +65,11 @@ const ProductScreen = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       const user = await getUserlocal();
+      const islogin = await handelIsLogin()
+      if (!islogin) {
+        console.log("User not logged in. Action restricted.");
+        return
+      }
       if (user) {
         setUserProfile(user);
       }
@@ -81,6 +86,7 @@ const ProductScreen = () => {
   const handleAddToCart = async () => {
     const islogin = await handelIsLogin()
     if (!islogin) {
+      console.log("User not logged in. Action restricted.");
       return
     }
     try {
@@ -102,12 +108,19 @@ const ProductScreen = () => {
   };
 
   const handleBuyNow = async () => {
+    const islogin = await handelIsLogin()
+    if (!islogin) {
+      console.log("User not logged in. Action restricted.");
+      return
+    }
     try {
       const cartItem = {
         _id: product._id,
         title: product.name,
         price_selling: product.price_selling,
         quantity,
+        import_price:product.import_price,
+        price_selling:product.price_selling,
         image: url,
       };
 

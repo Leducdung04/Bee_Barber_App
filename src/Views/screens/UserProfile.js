@@ -1,50 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserInfoById } from '../../Services/utils/httpSingup'; // Hàm lấy thông tin người dùng
+import {getUserlocal, deleteUserlocal } from '../../Services/utils/user__AsyncStorage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const UserProfile = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState(null); // Tạo state để lưu thông tin người dùng
   const [loading, setLoading] = useState(true); // Tạo state để quản lý trạng thái tải dữ liệu
-
-  // Hàm lấy thông tin người dùng
-  const fetchUserInfo = async () => {
-    try {
-      setLoading(true); // Bắt đầu tải dữ liệu
-      const userId = await AsyncStorage.getItem('userId'); // Lấy userId từ AsyncStorage (đã sửa)
-      if (userId) {
-        const data = await getUserInfoById(userId); // Gọi API lấy thông tin người dùng
-        setUserInfo(data); // Lưu thông tin vào state
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      async function getUser(){
+        
+        const user= await getUserlocal()
+        setUserInfo(user)
       }
-    } catch (error) {
-      console.error("Lỗi khi lấy userId từ AsyncStorage:", error); // In lỗi nếu có
-    } finally {
-      setLoading(false); // Kết thúc quá trình tải dữ liệu
-    }
-  };
-
-  useEffect(() => {
-    fetchUserInfo(); // Gọi fetchUserInfo khi component được mount
-
-    // Lắng nghe sự kiện focus của màn hình để tải lại thông tin người dùng khi quay lại
-    const unsubscribe = navigation.addListener('focus', () => {
-      fetchUserInfo();
-    });
-
-    // Cleanup listener khi component unmount
-    return unsubscribe;
-  }, [navigation]);
-
-
-  const handleOutPress = async () => {
-    try {
-      await AsyncStorage.removeItem('userId'); // Xóa userId khỏi AsyncStorage
-      navigation.navigate('WelcomeScreen'); // Điều hướng đến màn hình chào mừng
-    } catch (error) {
-      console.error("Lỗi khi xóa userId khỏi AsyncStorage:", error); // In lỗi nếu có
-    }
-  };
-
+      getUser()
+  
+      return () => {
+        // Cleanup nếu cần khi màn hình/tab bị unfocus
+      };
+    }, [])
+  );
+  async function outAccount(){
+    await deleteUserlocal()
+    navigation.navigate('WelcomeScreen')
+}
   
   return (
     <ScrollView style={styles.container}>
@@ -55,9 +35,9 @@ const UserProfile = ({ navigation }) => {
         />
       </View>
 
-      {loading ? ( // Hiển thị loading nếu đang tải dữ liệu
+      {/* {loading ? ( // Hiển thị loading nếu đang tải dữ liệu
         <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
+      ) : ( */}
         <View style={styles.infoSection}>
           <View style={styles.infoHeader}>
             <Text style={styles.infoTitle}>THÔNG TIN CÁ NHÂN</Text>
@@ -82,12 +62,8 @@ const UserProfile = ({ navigation }) => {
             <Text style={styles.infoValue}>{userInfo && userInfo.email ? userInfo.email : '---'}</Text>
           </View>
 
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Ngày sinh</Text>
-            <Text style={styles.infoValue}>{userInfo && userInfo.birthDate ? userInfo.birthDate : '---'}</Text>
-          </View>
         </View>
-      )}
+      {/* )} */}
 
       {/* Địa điểm */}
       {/* <View style={styles.section}>
@@ -132,7 +108,7 @@ const UserProfile = ({ navigation }) => {
 
       {/* Đăng xuất */}
       <TouchableOpacity style={styles.logoutButton}>
-        <Text style={styles.logoutText} onPress={handleOutPress}>ĐĂNG XUẤT</Text>
+        <Text style={styles.logoutText} onPress={() => outAccount()}  >ĐĂNG XUẤT</Text>
       </TouchableOpacity>
     </ScrollView>
   );

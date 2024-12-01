@@ -42,7 +42,6 @@ const WelcomeScreen = ({ navigation }) => {
         // Sau khi dữ liệu đã được tải xong
         checkUserStatus();
       } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
   
@@ -104,14 +103,14 @@ const WelcomeScreen = ({ navigation }) => {
           );
         })}
       </View>
-      <View style={[styles.dotContainer, { bottom: 170 }]}>
+      <View style={[styles.dotContainer, { bottom: 140 }]}>
         <TouchableOpacity onPress={() => { navigation.navigate('TabNavigator'); }} style={{ flex: 1 }}>
           <View style={{ flex: 1, height: 45, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100,borderWidth:1,borderColor:colors.primary }}>
             <Text style={{ textAlign: 'center', color:colors.primary, fontSize: 18 }}>Trải nghiệm ngay</Text>
           </View>
         </TouchableOpacity>
       </View>
-      <View style={[styles.dotContainer, { bottom: 110 }]}>
+      <View style={[styles.dotContainer, { bottom: 80 }]}>
         <TouchableOpacity onPress={() => { navigation.navigate('LoginScreen'); }} style={{ flex: 1 }}>
           <View style={{ flex: 1, height: 45, backgroundColor: colors.primary, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100 }}>
             <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Đăng nhập</Text>
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
   },
   dotContainer: {
     position: 'absolute',
-    bottom: 80, // Khoảng cách của dot từ dưới cùng
+    bottom: 50, // Khoảng cách của dot từ dưới cùng
     left: 0,
     right: 0,
     flexDirection: 'row',

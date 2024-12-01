@@ -10,17 +10,22 @@ import { add_user_cart } from '../../Services/utils/httpCart';
 const SignUpScreen= ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setname] = useState('')
+  const [email, setEmail] = useState('');
   const [validatePhoneNumber, setValidatePhoneNumber] = useState(false)
   const [textValidatePhone, settextValidatePhone] = useState('Số điện thoại không đúng định dạng !')
+  const [validateEmail, setValidateEmail] = useState(false);
   const [validatePassword, setvalidatePassword] = useState(false)
   const [validateName, setvalidateName] = useState(false)
   const [password, setPassword] = useState('');
   const [secureTextEntry, setSecureTextEntry] = useState(true); // Để kiểm soát trạng thái hiển thị mật khẩu
 
- 
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
   async function handleSigup(){
     if(validateAccount()){
-      const responseUres = await registerUser(phoneNumber,password,name)
+      const responseUres = await registerUser(phoneNumber,password,name, email)
       console.log('data',responseUres)
       if(responseUres.status === 200){
          try {
@@ -41,20 +46,27 @@ const SignUpScreen= ({ navigation }) => {
   }
 
   function validateAccount(){
-    if(name === ''){
-      setvalidateName(true)
+    let isValid = true;
+
+    if (name === '') {
+      setValidateName(true);
+      isValid = false;
     }
-    if(!isValidPhoneNumber(phoneNumber)){
-      settextValidatePhone('Số điện thoại không đúng định dạng !')
-      setValidatePhoneNumber(true)
+    if (!isValidPhoneNumber(phoneNumber)) {
+      setTextValidatePhone('Số điện thoại không đúng định dạng!');
+      setValidatePhoneNumber(true);
+      isValid = false;
     }
-    if(password.length<=6){
-      setvalidatePassword(true)
+    if (!isValidEmail(email)) {
+      setValidateEmail(true);
+      isValid = false;
     }
-    if(name === '' && phoneNumber === ''&& password.length<=6){
-      return false
+    if (password.length <= 6) {
+      setValidatePassword(true);
+      isValid = false;
     }
-    return true
+
+    return isValid;
   }
 
   return (
@@ -97,6 +109,26 @@ const SignUpScreen= ({ navigation }) => {
           </TouchableOpacity>
         </View>
         {validatePhoneNumber && <Text style={{color:'red'}}>{textValidatePhone}</Text>}
+        {/* Nhập email */}
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              setValidateEmail(false);
+            }}
+          />
+          <TouchableOpacity onPress={() => setEmail('')}>
+            <Image
+              source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/multiply.png' }}
+              style={styles.clearIcon}
+            />
+          </TouchableOpacity>
+        </View>
+        {validateEmail && <Text style={{ color: 'red' }}>Email không hợp lệ!</Text>}
         {/* Nhập mật khẩu */}
         <View style={styles.inputContainer}>
           <TextInput
@@ -246,7 +278,7 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     tintColor: '#000000',
-  },
+  },  
 });
 
 export default SignUpScreen;
