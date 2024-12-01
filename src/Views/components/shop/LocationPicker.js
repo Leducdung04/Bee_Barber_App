@@ -18,9 +18,10 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
 
   const fetchProvinces = async () => {
     try {
-      const response = await fetch("https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1");
+      const response = await fetch("https://esgoo.net/api-tinhthanh/1/0.htm");
       const data = await response.json();
-      setProvinceList(data.data.data);
+      console.log('tỉnh thành ',data)
+      setProvinceList(data.data);
 
     } catch (error) {
       console.error("Error fetching provinces:", error);
@@ -31,9 +32,10 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
 
     if (!provinceParentCode) return;
     try {
-      const response = await fetch(`https://vn-public-apis.fpo.vn/districts/getByProvince?provinceCode=${provinceParentCode}&limit=-1`);
+      const response = await fetch(`https://esgoo.net/api-tinhthanh/2/${provinceParentCode}.htm`);
       const data = await response.json();
-      setDistrictList(data.data.data);
+      console.log('huyện',data)
+      setDistrictList(data.data);
     } catch (error) {
       console.error("Error fetching districts:", error);
     }
@@ -42,9 +44,9 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
   const fetchCommunesByDistrict = async () => {
     if (!districtParentCode) return;
     try {
-      const response = await fetch(`https://vn-public-apis.fpo.vn/wards/getByDistrict?districtCode=${districtParentCode}&limit=-1`);
+      const response = await fetch(`https://esgoo.net/api-tinhthanh/3/${districtParentCode}.htm`);
       const data = await response.json();
-      setCommuneList(data.data.data);
+      setCommuneList(data.data);
     } catch (error) {
       console.error("Error fetching communes:", error);
     }
@@ -82,14 +84,14 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
           selectedValue={selectedProvince}
           onValueChange={(value) => {
             setSelectedProvince(value);
-            setProvinceParentCode(value?.code || null);
+            setProvinceParentCode(value?.id || null);
             console.log(value, "Selected Province");
           }}
           style={styles.picker}
         >
           <Picker.Item label="Tỉnh / Thành Phố*" value={null} />
           {provinceList?.map((item) => (
-            <Picker.Item key={item._id} label={item.name} value={item} />
+            <Picker.Item key={item.id} label={item.name} value={item} />
           ))}
         </Picker>
       </View>
@@ -98,14 +100,14 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
           selectedValue={selectedDistrict}
           onValueChange={(value) => {
             setSelectedDistrict(value);
-            setDistrictParentCode(value?.code || null);
+            setDistrictParentCode(value?.id || null);
           }}
           style={styles.picker}
           enabled={!!selectedProvince}
         >
           <Picker.Item label="Quận / Huyện*" value={null} />
           {districtList?.map((item) => (
-            <Picker.Item key={item._id} label={item.name} value={item} />
+            <Picker.Item key={item.id} label={item.name} value={item} />
           ))}
         </Picker>
       </View>
@@ -119,7 +121,7 @@ const LocationPicker = ({ userLocation,onLocationChange }) => {
         >
           <Picker.Item label="Xã / Thị trấn*" value={null} />
           {communeList?.map((item) => (
-            <Picker.Item key={item._id} label={item.name} value={item} />
+            <Picker.Item key={item.id} label={item.name} value={item} />
           ))}
         </Picker>
       </View>

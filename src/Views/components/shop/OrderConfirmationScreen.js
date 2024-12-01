@@ -57,14 +57,25 @@ const OrderConfirmationScreen = ({navigation}) => {
         }
         const currentDate = new Date();
         const currentTime = currentDate.toLocaleTimeString('en-US', { hour12: false });
+
+        let total_price_import = 0
+        let total_price_sold = 0
+
+        products.forEach((item)=>{
+            console.log('hihi',item)
+            total_price_import += item.import_price * item.quantity
+            total_price_sold += item.price_selling * item.quantity
+        })
+
         const orderData = {
             order:{
                 user_id:UserProfile._id,
-                location: locationDetails.commune.path_with_type + ", "+ locationDetails.street,
-                product_id: products.map(product =>product.id),
-                price: parseInt(totalPrice + shippingFee, 10),
-                paymentMethod: method,
+                location: locationDetails.province.name + locationDetails.district.name + locationDetails.commune.name  + ", "+ locationDetails.street,
+                listProduct: products,
+                paymentMethod: method ==1 ?"cash":"ZaloPay",
                 order_date:currentDate.toISOString().split("T")[0],
+                total_price_import: total_price_import + shippingFee,
+                total_price_sold: total_price_sold,
             },
             payment: {
                 user_id: UserProfile._id,
@@ -89,19 +100,22 @@ const OrderConfirmationScreen = ({navigation}) => {
         price: item.price_selling,
         quantity: item.quantity,
         image: item.image,
-        import : item.import_price
+        import_price:item.import_price,
+        price_selling:item.price_selling
+
     })) || [];
 
     const totalPrice = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
-    const shippingFee = 50000;
+    const shippingFee = 21000;
     const discount = 100000;
 
     useEffect(() => {
-        getUserDetailById().then((data) => {
-            setUserDetails(data.data);
-            console.log("Fetched user details:", data.data);
-        });
-    }, []);
+        async function get_product_detail(){
+           const data= await  getUserDetailById()
+                setUserDetails(data.data);
+        }
+        get_product_detail()
+    }, [navigation]);
 
     const data = [
         {

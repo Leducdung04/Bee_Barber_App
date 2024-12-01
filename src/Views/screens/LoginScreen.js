@@ -14,6 +14,7 @@ const LoginScreen = ({ navigation }) => {
   const [validatePassword, setvalidatePassword] = useState(false)
   const [textPhone, settextPhone] = useState('Vui lòng nhập số điện thoại')
   const [textPassword, settextPassword] = useState('Mật khẩu phải lớn hơn 6 ký tự')
+  
 
 
   const handleLogin = async () => {
@@ -109,7 +110,7 @@ const LoginScreen = ({ navigation }) => {
         {/* Quên mật khẩu và Chưa có tài khoản */}
         <View style={styles.footerContainer}>
           <TouchableOpacity onPress={() => Alert.alert('Quên mật khẩu', 'Chức năng này chưa được triển khai.')}>
-            <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
+            <Text style={styles.forgotPasswordText} onPress={() => navigation.navigate('ForgotPasswordScreen')}>Quên mật khẩu?</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}>
             <Text style={styles.signUpText}>Chưa có tài khoản?</Text>

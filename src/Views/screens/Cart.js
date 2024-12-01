@@ -29,7 +29,6 @@ const Cart = () => {
         }
 
         setUserProfile(user);
-
         const userCart = await get_user_cart(user._id);
         if (!userCart || !userCart._id) {
           console.error("No cart found or cart ID is undefined.");
@@ -67,7 +66,7 @@ const Cart = () => {
             image: replaceLocalhostWithIP(product.image),
             title: product.name,
             price_selling: product.price_selling,
-            import_price : product.import_price
+            import_price: product.import_price
           };
         });
         setCartItems(updatedItems);

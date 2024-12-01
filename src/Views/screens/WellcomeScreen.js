@@ -30,31 +30,35 @@ const WelcomeScreen = ({ navigation }) => {
 
   // Gọi API khi component được render
   useEffect(() => {
-    dispatch(fetchBarbers());
-    dispatch(fetchCategorys())
-    dispatch(fetchBanners())
-    dispatch(fetchcategoryProduct())
-    dispatch(fetchServices())
-  }, [dispatch]);
-
-  useEffect(() => {
-    const checkUserStatus = async () => {
-      const userId = await AsyncStorage.getItem('userLocal');
-      if (userId) {
-        setTimeout(() => {
-          navigation.replace('TabNavigator');
-        }, 3000);
-      } else {
-        setTimeout(() => {
-          setIsLoadingData(false);
-        }, 3000);
+    const fetchData = async () => {
+      try {
+        await Promise.all([
+          dispatch(fetchBarbers()),
+          dispatch(fetchCategorys()),
+          dispatch(fetchBanners()),
+          dispatch(fetchcategoryProduct()),
+          dispatch(fetchServices()),
+        ]);
+        // Sau khi dữ liệu đã được tải xong
+        checkUserStatus();
+      } catch (error) {
       }
     };
-
-    checkUserStatus();
-    // Cleanup khi component unmount
-    return () => clearTimeout();
-  }, [navigation]);
+  
+    fetchData();
+  }, [dispatch]);
+  
+  const checkUserStatus = async () => {
+    const userId = await AsyncStorage.getItem('userLocal');
+    if (userId) {
+        navigation.replace('TabNavigator');
+    } else {
+      setTimeout(() => {
+        setIsLoadingData(false);
+      }, 3000);
+    }
+  };
+  
 
   // Hàm xử lý cuộn và cập nhật chỉ số hình ảnh
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
@@ -99,14 +103,14 @@ const WelcomeScreen = ({ navigation }) => {
           );
         })}
       </View>
-      <View style={[styles.dotContainer, { bottom: 170 }]}>
+      <View style={[styles.dotContainer, { bottom: 140 }]}>
         <TouchableOpacity onPress={() => { navigation.navigate('TabNavigator'); }} style={{ flex: 1 }}>
           <View style={{ flex: 1, height: 45, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100,borderWidth:1,borderColor:colors.primary }}>
             <Text style={{ textAlign: 'center', color:colors.primary, fontSize: 18 }}>Trải nghiệm ngay</Text>
           </View>
         </TouchableOpacity>
       </View>
-      <View style={[styles.dotContainer, { bottom: 110 }]}>
+      <View style={[styles.dotContainer, { bottom: 80 }]}>
         <TouchableOpacity onPress={() => { navigation.navigate('LoginScreen'); }} style={{ flex: 1 }}>
           <View style={{ flex: 1, height: 45, backgroundColor: colors.primary, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100 }}>
             <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Đăng nhập</Text>
@@ -133,7 +137,7 @@ const styles = StyleSheet.create({
   },
   dotContainer: {
     position: 'absolute',
-    bottom: 80, // Khoảng cách của dot từ dưới cùng
+    bottom: 50, // Khoảng cách của dot từ dưới cùng
     left: 0,
     right: 0,
     flexDirection: 'row',

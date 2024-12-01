@@ -1,7 +1,7 @@
-import { API, API_REGISTER_ACCOUNT, API_LOGIN_PHONE } from "@env";
+import { API, API_REGISTER_ACCOUNT, API_LOGIN_PHONE,API_GET_USER_DETAIL, API_SEND_OTP, API_VERIFY_OTP, API_UPDATE_PASSWORD, API_UPDATE_USER  } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const registerUser = async (phone, password,name) => {
+export const registerUser = async (phone, password,name, email) => {
     try {
         const fcmToken = await AsyncStorage.getItem('fcmToken')
         const response = await fetch(`${API}${API_REGISTER_ACCOUNT}`, {
@@ -13,7 +13,8 @@ export const registerUser = async (phone, password,name) => {
                 phone: phone,
                 password: password,
                 deviceTokens:fcmToken,
-                name:name
+                name:name,
+                email:email
             }),
         });
 
@@ -66,8 +67,96 @@ export const getUserInfoById = async(id) => {
         console.log("Lấy dữ liệu người dùng thành công", data);
         return data;
     } catch (error) {
-        console.log('Lấy dữ liệu người dùng thất bại', error.message);
-        console.log(IP);
+        
+
         return [];
     }
 }
+
+// Cập nhật thông tin người dùng
+export const updateUser = async (id, name, phone, email) => {
+    try {
+        const response = await fetch(`${API}${API_UPDATE_USER}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                phone: phone,
+                email: email
+            }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } 
+    } catch (error) {
+        console.error("Lỗi khi cập nhật thông tin người dùng", error);
+        return false;
+    }
+};
+
+
+
+
+// Gửi mã OTP
+export const sendOtp = async (email) => {
+    try {
+        const response = await fetch(`${API}${API_SEND_OTP}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        
+            const data = await response.json();
+            return data;
+         
+    } catch (error) {
+        return false;
+    }
+};
+
+// Xác thực mã OTP
+export const verifyOtp = async (email, otp) => {
+    try {
+        const response = await fetch(`${API}${API_VERIFY_OTP}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, otp }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } 
+    } catch (error) {
+        return false;
+    }
+};
+
+// Đổi mật khẩu
+export const updatePassword = async (email, newPassword) => {
+    try {
+        const response = await fetch(`${API}${API_UPDATE_PASSWORD}/${email}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ newPassword }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } 
+    } catch (error) {
+        return false;
+    }
+};
