@@ -30,31 +30,36 @@ const WelcomeScreen = ({ navigation }) => {
 
   // Gọi API khi component được render
   useEffect(() => {
-    dispatch(fetchBarbers());
-    dispatch(fetchCategorys())
-    dispatch(fetchBanners())
-    dispatch(fetchcategoryProduct())
-    dispatch(fetchServices())
-  }, [dispatch]);
-
-  useEffect(() => {
-    const checkUserStatus = async () => {
-      const userId = await AsyncStorage.getItem('userLocal');
-      if (userId) {
-        setTimeout(() => {
-          navigation.replace('TabNavigator');
-        }, 3000);
-      } else {
-        setTimeout(() => {
-          setIsLoadingData(false);
-        }, 3000);
+    const fetchData = async () => {
+      try {
+        await Promise.all([
+          dispatch(fetchBarbers()),
+          dispatch(fetchCategorys()),
+          dispatch(fetchBanners()),
+          dispatch(fetchcategoryProduct()),
+          dispatch(fetchServices()),
+        ]);
+        // Sau khi dữ liệu đã được tải xong
+        checkUserStatus();
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
     };
-
-    checkUserStatus();
-    // Cleanup khi component unmount
-    return () => clearTimeout();
-  }, [navigation]);
+  
+    fetchData();
+  }, [dispatch]);
+  
+  const checkUserStatus = async () => {
+    const userId = await AsyncStorage.getItem('userLocal');
+    if (userId) {
+        navigation.replace('TabNavigator');
+    } else {
+      setTimeout(() => {
+        setIsLoadingData(false);
+      }, 3000);
+    }
+  };
+  
 
   // Hàm xử lý cuộn và cập nhật chỉ số hình ảnh
   const onViewableItemsChanged = useRef(({ viewableItems }) => {

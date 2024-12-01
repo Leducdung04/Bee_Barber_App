@@ -17,7 +17,7 @@ import LoginScreen from "../screens/LoginScreen"
 import SignUpScreen from '../screens/SignUpScreen';
 import Cart from '../screens/Cart';
 import DetailsHistoryScreen from '../screens/DetailsHistoryScreen';
-import WelcomeScreen from '../screens/WelcomeScreen';
+import WelcomeScreen from '../screens/WellcomeScreen';
 import { useNavigation } from '@react-navigation/native';
 import ProductScreen from '../components/shop/ProductScreen';
 import OrderConfirmationScreen from '../components/shop/OrderConfirmationScreen';
@@ -40,7 +40,7 @@ const AppNavigation = () => {
   const closeMenu1 = () => setVisible1(false);
   return (
     <Provider>
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator initialRouteName="WelcomeScreen">
         <Stack.Screen name="OderHistory" component={OderHistory} options={{ title: 'Đơn hàng của bạn' }} />
         <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
