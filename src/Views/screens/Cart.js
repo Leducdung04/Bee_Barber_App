@@ -67,6 +67,7 @@ const Cart = () => {
             image: replaceLocalhostWithIP(product.image),
             title: product.name,
             price_selling: product.price_selling,
+            import_price : product.import_price
           };
         });
         setCartItems(updatedItems);

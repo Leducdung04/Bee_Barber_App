@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
-import { get_List_Notification } from '../../Services/utils/httpNotification';
+import { get_List_Notification } from '../../Services/api/notificationhelper';
 import CustomButton from '../components/shop/CustomButton';
 import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
 
@@ -10,7 +10,7 @@ const NotificationScreen = () => {
   const [statusFilter, setStatusFilter] = useState("unread");
   const [userId, setuserId] = useState(null)
 
-  const type = "";
+  const type = "appointment";
 
   const fetchNotifications = async () => {
     setLoading(true);

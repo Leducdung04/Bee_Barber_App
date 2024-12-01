@@ -88,15 +88,57 @@ const AppointmentScreen = ({ route, navigation }) => {
         price: parseInt(totalAmount, 10),
         pay_method_status: pay_Method == 'ZaloPay' ? 'Success' : 'Unpaid'
       }
-    }  
+    }
+    console.log(appointment, "Hello");
+
     handle_Order_Appointment(appointment)
+    scheduleAppointmentNotification(day_Selected.date, time_Selected, barber_Selected)
   }
 
+  const scheduleAppointmentNotification = async (date, time, barber_Selected) => {
+    const [year, month, day] = date.split("-");
+    const [hours, minutes] = time.split(":");
 
+    const appointmentDate = new Date(Date.UTC(
+      parseInt(year, 10),
+      parseInt(month, 10) - 1,
+      parseInt(day, 10),
+      parseInt(hours, 10) - 7,
+      parseInt(minutes, 10)
+    ));
 
-  const scheduleAppointmentNotification = (appointmentDate, appointmentTime) => {
-    
+    appointmentDate.setFullYear(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
+    appointmentDate.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+
+    const formattedDate = appointmentDate.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+    });
+
+    sendLocalNotification({
+      channelId: 'default-channel',
+      title: 'Đặt Lịch Thành Công',
+      message: `Bạn đã đặt lịch vào ${time}, ${formattedDate}`,
+      data: { user_id: UserProfile._id },
+    });
+
+    const notificationPayload = {
+      user_id: UserProfile._id,
+      relates_id: barber_Selected?._id,
+      type: "booking",
+      content: `Bạn có lịch vào hôm nay vào ${time}`,
+      schedule: appointmentDate.toISOString(),
+    };
+
+    console.log(notificationPayload, "Hello Again");
+
+    try {
+      await sendScheduleNotification(notificationPayload);
+    } catch (err) {
+      console.error("Error scheduling notification:", err);
+    }
   };
+
 
 
 

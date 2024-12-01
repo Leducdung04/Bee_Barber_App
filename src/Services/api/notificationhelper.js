@@ -126,13 +126,12 @@ export const get_List_Notification = async (userId, status) => {
   }
 };
 
-export const sendScheduleNotification = async (userId, status) => {
+export const sendScheduleNotification = async (payload) => {
   try {
     const response = await fetch(`${API}${API_SEND_SCHEDULE_NOTIFICATION}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer YOUR_AUTH_TOKEN`,
       },
       body: JSON.stringify(payload),
     });
@@ -150,4 +149,4 @@ export const sendScheduleNotification = async (userId, status) => {
     console.error("Error sending schedule notification:", error);
     throw error;
   }
-}
+};

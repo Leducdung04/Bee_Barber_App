@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, ActivityIndicator, FlatList } from "react-native";
 import LocationPicker from "./LocationPicker";
 import CustomRadioButton from "./CustomRadioButton";
-import MessageInput from "./MessageInput";
 import { useRoute } from "@react-navigation/native";
 import color from '../../../Resources/styles/colors'
 import { getUserDetailById } from "../../../Services/utils/httpSingup";
@@ -14,7 +13,7 @@ import { deleteZaloPayload } from "../../../Services/utils/ZaloPay_AsyncStorage"
 
 const OrderConfirmationScreen = ({navigation}) => {
 
-    const {handle_Order,isModalSuccc,modalIsloading,modalCheck,dataChechZaloPay}=OderProduct()
+    const {handle_Order,isModalSuccc,modalIsloading,modalCheck,dataChechZaloPay }=OderProduct()
     const [locationDetails, setLocationDetails] = useState({
         province: null,
         district: null,
@@ -83,14 +82,14 @@ const OrderConfirmationScreen = ({navigation}) => {
       
       
       };
-      
-
+    
     const products = selectedItems?.map(item => ({
         id: item._id,
         name: item.title,
         price: item.price_selling,
         quantity: item.quantity,
         image: item.image,
+        import : item.import_price
     })) || [];
 
     const totalPrice = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
