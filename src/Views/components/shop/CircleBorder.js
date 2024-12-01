@@ -49,7 +49,6 @@ export default function CircleBorder({
       const user = await getUserlocal();
       console.log('Fetched user:', user);
       setUserProfile(user || {});
-
       if (!user) {
         setBadgeCount(0); 
         return;

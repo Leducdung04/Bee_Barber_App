@@ -99,26 +99,31 @@ const AppointmentScreen = ({ route, navigation }) => {
     const [year, month, day] = date.split("-");
     const [hours, minutes] = time.split(":");
 
-    const appointmentDate = new Date(Date.UTC(
+    const localTime = new Date(
       parseInt(year, 10),
       parseInt(month, 10) - 1,
       parseInt(day, 10),
-      parseInt(hours, 10) - 7,
+      parseInt(hours, 10),
       parseInt(minutes, 10)
-    ));
+    );
 
-    appointmentDate.setFullYear(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
-    appointmentDate.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+    const utcTime = new Date(localTime.getTime() - localTime.getTimezoneOffset() * 60000);
 
-    const formattedDate = appointmentDate.toLocaleDateString('vi-VN', {
+    const formattedDate = localTime.toLocaleDateString('vi-VN', {
       day: '2-digit',
       month: '2-digit',
+      year: 'numeric',
+    });
+
+    const formattedTime = localTime.toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
     });
 
     sendLocalNotification({
       channelId: 'default-channel',
       title: 'Đặt Lịch Thành Công',
-      message: `Bạn đã đặt lịch vào ${time}, ${formattedDate}`,
+      message: `Bạn đã đặt lịch với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
       data: { user_id: UserProfile._id },
     });
 
@@ -126,8 +131,8 @@ const AppointmentScreen = ({ route, navigation }) => {
       user_id: UserProfile._id,
       relates_id: barber_Selected?._id,
       type: "booking",
-      content: `Bạn có lịch vào hôm nay vào ${time}`,
-      schedule: appointmentDate.toISOString(),
+      content: `Bạn có lịch hẹn với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
+      schedule: utcTime.toISOString(), 
     };
 
     console.log(notificationPayload, "Hello Again");
@@ -138,8 +143,6 @@ const AppointmentScreen = ({ route, navigation }) => {
       console.error("Error scheduling notification:", err);
     }
   };
-
-
 
 
   const Item_Barber = ({ item }) => {

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
-import { API_SEND_NOTIFICATION, API, API_GET_LIST_NOTIFICATIONS,API_SEND_SCHEDULE_NOTIFICATION } from '@env'
+import { API_SEND_NOTIFICATION, API, API_GET_LIST_NOTIFICATIONS, API_SEND_SCHEDULE_NOTIFICATION,API_UPDATE_NOTIFICATION} from '@env'
 
 export async function requestUserPermission() {
   try {
@@ -113,13 +113,11 @@ export const sendRemoteNotification = async ({ payload }) => {
   }
 };
 
-type = "booking"
-export const get_List_Notification = async (userId, status) => {
+export const get_List_Notification = async (userId, status,type) => {
   try {
-    const response = await fetch(`${API}${API_GET_LIST_NOTIFICATIONS}?user_id=${id}&type=${type}&status=${status}`);
+    const response = await fetch(`${API}${API_GET_LIST_NOTIFICATIONS}?user_id=${userId}&status=${status}`);
     const data = await response.json();
     return data;
-
   } catch (error) {
     console.log('Error getting list Notification', error);
     return [];
@@ -150,3 +148,18 @@ export const sendScheduleNotification = async (payload) => {
     throw error;
   }
 };
+
+export const updateNotificationStatus = async (id) => {
+  try {
+    const response = await fetch(`${API}${API_UPDATE_NOTIFICATION}/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({status : 'read'}),
+    });
+  } catch (error) {
+    console.error("Error updating notification:", error);
+    throw error;
+  }
+}
