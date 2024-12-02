@@ -160,7 +160,7 @@ const ProductScreen = () => {
         channelId: 'default-channel',
         title: 'Sản phẩm đã được thêm vào giỏ hàng',
         message: `Sản phẩm ${product.name} đã được thêm vào giỏ hàng.`,
-        data: { relates_id: product._id, user_id: '66fe1856faa0e86597afdbae' },
+        data: { relates_id: product._id, user_id: userProfile._id },
       });
     } catch (error) {
       console.error('Error sending notifications:', error);

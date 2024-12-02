@@ -8,11 +8,10 @@ import { useBookingViewModel } from '../../ViewModels/AppointmentModel';
 import { fomatsDate } from '../../Services/utils/fomatsDate';
 import SelectedServices from '../components/Appointment/SelectedServices';
 import { deleteZaloPayload } from '../../Services/utils/ZaloPay_AsyncStorage';
-import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../Services/api/notificationhelper'
+import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendScheduleNotification } from '../../Services/api/notificationhelper'
 
 import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 const AppointmentScreen = ({ route, navigation }) => {
-
   const {
     setmodalCheck,
     setmodalIsloading,
@@ -90,35 +89,59 @@ const AppointmentScreen = ({ route, navigation }) => {
         pay_method_status: pay_Method == 'ZaloPay' ? 'Success' : 'Unpaid'
       }
     }
-
-    scheduleAppointmentNotification(day_Selected.date, time_Selected);
+    console.log(appointment, "Hello");
 
     handle_Order_Appointment(appointment)
+    scheduleAppointmentNotification(day_Selected.date, time_Selected, barber_Selected,UserProfile._id)
   }
 
+  const scheduleAppointmentNotification = async (date, time, barber_Selected, user) => {
+    const [year, month, day] = date.split("-");
+    const [hours, minutes] = time.split(":");
 
+    const localTime = new Date(
+      parseInt(year, 10),
+      parseInt(month, 10) - 1,
+      parseInt(day, 10),
+      parseInt(hours, 10),
+      parseInt(minutes, 10)
+    );
 
-  const scheduleAppointmentNotification = (appointmentDate, appointmentTime) => {
-    const appointmentDateTime = new Date(`${appointmentDate}T${appointmentTime}`);
-    const currentDateTime = new Date();
+    const utcTime = new Date(localTime.getTime() - localTime.getTimezoneOffset() * 60000);
 
-    const timeDifference = appointmentDateTime - currentDateTime;
+    const formattedDate = localTime.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
 
-    if (timeDifference > 0) {
-      PushNotification.localNotificationSchedule({
-        channelId: 'default-channel', 
-        title: 'Sắp có lịch hẹn',
-        message: 'You have an appointment today. Don’t forget!',
-        date: appointmentDateTime,
-        allowWhileIdle: true,
-      });
+    const formattedTime = localTime.toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
-      console.log('Thông báo được đặt cho ngày', appointmentDateTime);
-    } else {
-      console.warn('Giờ đặt lịch hẹn đã qua');
+    sendLocalNotification({
+      channelId: 'default-channel',
+      title: 'Đặt Lịch Thành Công',
+      message: `Bạn đã đặt lịch với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
+      data: { user_id: UserProfile._id },
+    });
+
+    const notificationPayload = {
+      user_id: user,
+      relates_id: barber_Selected?._id,
+      type: "booking",
+      content: `Bạn có lịch hẹn với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
+      schedule: utcTime.toISOString(), 
+    };
+    console.log(notificationPayload, "Hello Again");
+
+    try {
+      await sendScheduleNotification(notificationPayload);
+    } catch (err) {
+      console.error("Error scheduling notification:", err);
     }
   };
-
 
 
   const Item_Barber = ({ item }) => {

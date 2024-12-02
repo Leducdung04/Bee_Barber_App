@@ -2,25 +2,25 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView, Image, TouchableOpacity, ActivityIndicator, FlatList } from "react-native";
 import LocationPicker from "./LocationPicker";
 import CustomRadioButton from "./CustomRadioButton";
-import MessageInput from "./MessageInput";
 import { useRoute } from "@react-navigation/native";
 import color from '../../../Resources/styles/colors'
-import { getUserDetailById } from "../../../Services/utils/httpSingup";
+import { getUserInfoById } from "../../../Services/utils/httpSingup";
 import { getUserlocal } from "../../../Services/utils/user__AsyncStorage";
 import { OderProduct } from "../../../ViewModels/OderProduct";
 import { Modal } from "react-native-paper";
 import colors from "../../../Resources/styles/colors";
 import { deleteZaloPayload } from "../../../Services/utils/ZaloPay_AsyncStorage";
 
-const OrderConfirmationScreen = ({navigation}) => {
-
-    const {handle_Order,isModalSuccc,modalIsloading,modalCheck,dataChechZaloPay}=OderProduct()
+const OrderConfirmationScreen = ({ navigation }) => {
+    
+    const { handle_Order, isModalSuccc, modalIsloading, modalCheck, dataChechZaloPay } = OderProduct()
     const [locationDetails, setLocationDetails] = useState({
         province: null,
         district: null,
         commune: null,
         street: "",
     });
+
     const [method, setMethod] = useState(null)
     const [userDetails, setUserDetails] = useState(null);
     const route = useRoute();
@@ -39,20 +39,20 @@ const OrderConfirmationScreen = ({navigation}) => {
     ];
     const [UserProfile, setUserProfile] = useState(null)
 
-  useEffect(() => {
-     async function getUser(){
-      const user= await getUserlocal()
-      setUserProfile(user)
-    }
-    getUser()
-  }, [])
+    useEffect(() => {
+        async function getUser() {
+            const user = await getUserlocal()
+            setUserProfile(user)
+        }
+        getUser()
+    }, [])
 
     const handlePayment = () => {
         if (!locationDetails.province || !locationDetails.district || !locationDetails.commune || !locationDetails.street) {
-          alert("Vui lòng nhập đầy đủ thông tin địa chỉ.");
-          return;
+            alert("Vui lòng nhập đầy đủ thông tin địa chỉ.");
+            return;
         }
-        if(!method){
+        if (!method) {
             alert("Vui lòng chọn phương thức thanh toán.");
             return;
         }
@@ -62,39 +62,38 @@ const OrderConfirmationScreen = ({navigation}) => {
         let total_price_import = 0
         let total_price_sold = 0
 
-        products.forEach((item)=>{
-            console.log('hihi',item)
+        products.forEach((item) => {
+            console.log('hihi', item)
             total_price_import += item.import_price * item.quantity
             total_price_sold += item.price_selling * item.quantity
         })
 
         const orderData = {
-            order:{
-                user_id:UserProfile._id,
-                location: locationDetails.province.name + locationDetails.district.name + locationDetails.commune.name  + ", "+ locationDetails.street,
+            order: {
+                user_id: UserProfile._id,
+                location: locationDetails.province.name + locationDetails.district.name + locationDetails.commune.name + ", " + locationDetails.street,
                 listProduct: products,
-                paymentMethod: method ==1 ?"cash":"ZaloPay",
-                order_date:currentDate.toISOString().split("T")[0],
+                paymentMethod: method == 1 ? "cash" : "ZaloPay",
+                order_date: currentDate.toISOString().split("T")[0],
                 total_price_import: total_price_import + shippingFee,
                 total_price_sold: total_price_sold,
             },
             payment: {
                 user_id: UserProfile._id,
                 pay_type: "oder",
-                pay_method: method ==1 ?"cash":"ZaloPay",
+                pay_method: method == 1 ? "cash" : "ZaloPay",
                 time: currentTime,
                 date: currentDate.toISOString().split("T")[0],
                 price: parseInt(totalPrice + shippingFee, 10),
-                pay_method_status: method ==2 ? 'Success':'Unpaid'
-                }
-           
+                pay_method_status: method == 2 ? 'Success' : 'Unpaid'
+            }
+
         };
         handle_Order(orderData)
         console.log("Order Data:", orderData);
-      
-      
-      };
-      
+
+
+    };
 
     const products = selectedItems?.map(item => ({
         id: item._id,
@@ -102,8 +101,8 @@ const OrderConfirmationScreen = ({navigation}) => {
         price: item.price_selling,
         quantity: item.quantity,
         image: item.image,
-        import_price:item.import_price,
-        price_selling:item.price_selling
+        import_price: item.import_price,
+        price_selling: item.price_selling
 
     })) || [];
 
@@ -112,9 +111,9 @@ const OrderConfirmationScreen = ({navigation}) => {
     const discount = 100000;
 
     useEffect(() => {
-        async function get_product_detail(){
-           const data= await  getUserDetailById()
-                setUserDetails(data.data);
+        async function get_product_detail() {
+            const data = await getUserInfoById()
+            setUserDetails(data.data);
         }
         get_product_detail()
     }, [navigation]);
@@ -122,7 +121,7 @@ const OrderConfirmationScreen = ({navigation}) => {
     const data = [
         {
             title: 'Thông Tin Nhận Hàng',
-            component: <LocationPicker userLocation={userDetails} onLocationChange={(location) => setLocationDetails(location)}/>
+            component: <LocationPicker userLocation={userDetails} onLocationChange={(location) => setLocationDetails(location)} />
         },
         {
             title: 'Sản Phẩm',
@@ -182,58 +181,57 @@ const OrderConfirmationScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View>
             <Modal visible={modalCheck} animationType='fade' transparent={true}>
-                 <View style={{backgroundColor:colors.background,paddingVertical:100}}>
-                       <Text style={{textAlign:'center',marginTop:32,fontSize:20,fontWeight:'bold',color:'green'}}>Bạn đang có giao dịch </Text>
-                       <View style={{marginHorizontal:24,borderRadius:24,marginTop:24,alignItems:'center'}}>
-                         <Image source={require('../../../Resources/assets/logo/Bee_Barber.png')} style={{width:120,height:22,margin:12}}/>
-                       </View>
-                       <View style={{width:'100%',alignItems:'center',marginTop:40}}>
-                          <Image style={{width:80,height:80}} source={dataChechZaloPay?.return_code ===1 ? require('../../../Resources/assets/icons/Success.png') :require('../../../Resources/assets/icons/filled.png') }/>
-                       </View>
-                      
-                       <Text style={{textAlign:'center',marginTop:12,fontSize:16,color:dataChechZaloPay?.return_code ===1 ?'green':'red'}}>{dataChechZaloPay?.return_message}</Text>
-                       
-                       {dataChechZaloPay?.return_code ===1 ? <View style={{alignItems:'center'}}>
-                        <TouchableOpacity onPress={()=>{navigation.navigate('title4')}}>
-                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,backgroundColor:colors.primary}}>
-                             <Text style={{fontWeight:'bold',color:'white'}}>OK</Text>
-                           </View>
-                        </TouchableOpacity>
-                       </View> : 
-                       <View style={{flexDirection:'row',justifyContent:'space-around'}}>
-                        <TouchableOpacity onPress={()=>{deleteZaloPayload();navigation.navigate('title1')}}>
-                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,}}>
-                             <Text style={{fontWeight:'bold',color:'black'}}>Hủy</Text>
-                           </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>{handlePayment()}}>
-                           <View style={{paddingHorizontal:12,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40,backgroundColor:colors.primary}}>
-                             <Text style={{fontWeight:'bold',color:'white'}}>Thanh toán lại</Text>
-                           </View>
-                        </TouchableOpacity>
-                      </View>}
-                 </View>
-          </Modal>
+                <View style={{ backgroundColor: colors.background, paddingVertical: 100 }}>
+                    <Text style={{ textAlign: 'center', marginTop: 32, fontSize: 20, fontWeight: 'bold', color: 'green' }}>Bạn đang có giao dịch </Text>
+                    <View style={{ marginHorizontal: 24, borderRadius: 24, marginTop: 24, alignItems: 'center' }}>
+                        <Image source={require('../../../Resources/assets/logo/Bee_Barber.png')} style={{ width: 120, height: 22, margin: 12 }} />
+                    </View>
+                    <View style={{ width: '100%', alignItems: 'center', marginTop: 40 }}>
+                        <Image style={{ width: 80, height: 80 }} source={dataChechZaloPay?.return_code === 1 ? require('../../../Resources/assets/icons/Success.png') : require('../../../Resources/assets/icons/filled.png')} />
+                    </View>
 
-            <Modal visible={isModalSuccc} animationType='fade' transparent={true}>
-                 <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'white',paddingVertical:100}}>
-                        <Text style={{fontSize:20,marginBottom:60,color:'green'}}>Đặt đơn thành công</Text>
-                        <Image source={require('../../../Resources/assets/icons/Success.png')} style={{width:80,height:80}} />
-                        <TouchableOpacity onPress={()=>{navigation.navigate('title4')}}>
-                           <View style={{width:100,height:45,borderWidth:1,borderColor:colors.primary100,borderRadius:8,justifyContent:'center',alignItems:'center',marginTop:40}}>
-                             <Text style={{fontWeight:'bold',color:colors.primary}}>OK</Text>
-                           </View>
+                    <Text style={{ textAlign: 'center', marginTop: 12, fontSize: 16, color: dataChechZaloPay?.return_code === 1 ? 'green' : 'red' }}>{dataChechZaloPay?.return_message}</Text>
+
+                    {dataChechZaloPay?.return_code === 1 ? <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate('title4') }}>
+                            <View style={{ width: 100, height: 45, borderWidth: 1, borderColor: colors.primary100, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40, backgroundColor: colors.primary }}>
+                                <Text style={{ fontWeight: 'bold', color: 'white' }}>OK</Text>
+                            </View>
                         </TouchableOpacity>
-                 </View>
+                    </View> :
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <TouchableOpacity onPress={() => { deleteZaloPayload(); navigation.navigate('title1') }}>
+                                <View style={{ width: 100, height: 45, borderWidth: 1, borderColor: colors.primary, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40, }}>
+                                    <Text style={{ fontWeight: 'bold', color: 'black' }}>Hủy</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { handlePayment() }}>
+                                <View style={{ paddingHorizontal: 12, height: 45, borderWidth: 1, borderColor: colors.primary100, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40, backgroundColor: colors.primary }}>
+                                    <Text style={{ fontWeight: 'bold', color: 'white' }}>Thanh toán lại</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>}
+                </View>
             </Modal>
-        
-          <Modal visible={modalIsloading} animationType='fade' transparent={true}>
-                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                        <View style={{width:120,height:120,backgroundColor:'white',justifyContent:'center',alignItems:'center',borderRadius:12}}>
-                          <ActivityIndicator size={50} color={colors.primary} />
+            <Modal visible={isModalSuccc} animationType='fade' transparent={true}>
+                <View style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'white', paddingVertical: 100 }}>
+                    <Text style={{ fontSize: 20, marginBottom: 60, color: 'green' }}>Đặt đơn thành công</Text>
+                    <Image source={require('../../../Resources/assets/icons/Success.png')} style={{ width: 80, height: 80 }} />
+                    <TouchableOpacity onPress={() => { navigation.navigate('title4') }}>
+                        <View style={{ width: 100, height: 45, borderWidth: 1, borderColor: colors.primary100, borderRadius: 8, justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
+                            <Text style={{ fontWeight: 'bold', color: colors.primary }}>OK</Text>
                         </View>
-                 </View>
-          </Modal>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
+
+            <Modal visible={modalIsloading} animationType='fade' transparent={true}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ width: 120, height: 120, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', borderRadius: 12 }}>
+                        <ActivityIndicator size={50} color={colors.primary} />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
