@@ -10,38 +10,13 @@ import { useNavigation } from '@react-navigation/native';
 import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 import colors from '../../Resources/styles/colors';
 
-
-const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
-  <View style={styles.cartItem}>
-    <CheckBox value={item.selected} onValueChange={() => onSelect(item._id)} />
-    <Image source={{ uri: item.image }} style={styles.image} />
-    <View style={styles.details}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.price}>{item.price_selling.toLocaleString('vi-VN')} đ</Text>
-      <View style={styles.quantityContainer}>
-        <TouchableOpacity onPress={() => onRemove(item._id)} style={styles.quantityButton}>
-          <Text style={styles.quantityText}> - </Text>
-        </TouchableOpacity>
-        <Text style={styles.quantity}>{item.quantity}</Text>
-        <TouchableOpacity onPress={() => onAdd(item._id)} style={styles.quantityButton}>
-          <Text style={styles.quantityText}> + </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-    <TouchableOpacity onPress={() => onDelete(item._id)} style={styles.deleteButton}>
-      <Text style={styles.deleteButtonText}>🗑️</Text>
-    </TouchableOpacity>
-  </View>
-);
-
-
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [userProfile, setUserProfile] = useState(null)
   const [cartId, setCartId] = useState(null)
   const [ModalDN, setModalDN] = useState(false); // Modal for sign-in check
-
+  const [deleteModal, setDeleteModal] = useState(null)
 
   const nav = useNavigation()
   useEffect(() => {
@@ -49,7 +24,7 @@ const Cart = () => {
       try {
         const user = await getUserlocal();
         if (!user) {
-          setModalDN(true); 
+          setModalDN(true);
           return;
         }
 
@@ -128,8 +103,6 @@ const Cart = () => {
     }
   };
 
-
-
   const handleRemove = async (id) => {
     const item = cartItems.find((i) => i._id === id);
 
@@ -196,7 +169,13 @@ const Cart = () => {
       <FlatList
         data={cartItems}
         renderItem={({ item }) => (
-          <Product item={item} onAdd={handleAdd} onRemove={handleRemove} onDelete={handleDelete} onSelect={handleSelect} />
+          <Product
+            item={item}
+            onAdd={handleAdd}
+            onRemove={handleRemove}
+            onDelete={(id) => setDeleteModal(id)}
+            onSelect={handleSelect}
+          />
         )}
         keyExtractor={(item) => item._id}
       />
@@ -242,10 +221,58 @@ const Cart = () => {
           </View>
         </View>
       </Modal>
+      {/* Kiểm tra xóa */}
+      <Modal visible={deleteModal !== null} animationType="slide" transparent={true}>
+        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          <View style={{ height: 180, backgroundColor: 'white', margin: 32, borderRadius: 4, alignItems: 'center', justifyContent: 'space-around' }}>
+            <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>Xóa Giỏ Hàng</Text>
+            <Text style={{ fontSize: 17 }}>Bạn muốn xóa sản phẩm này khỏi giỏ hàng?</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={() => setDeleteModal(null)}>
+                <View style={{ height: 45, width: 120, borderWidth: 1, borderColor: colors.primary, borderRadius: 8, marginHorizontal: 12, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text style={{ color: colors.primary, fontWeight: 'bold' }}>Không</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                handleDelete(deleteModal);
+                setDeleteModal(null);
+              }}>
+                <View style={{ height: 45, width: 120, marginHorizontal: 12, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 8 }}>
+                  <Text style={{ fontWeight: 'bold', color: 'white' }}>Có</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
     </View>
   );
 };
+
+const Product = ({ item, onAdd, onRemove, onDelete, onSelect }) => (
+  <View style={styles.cartItem}>
+    <CheckBox value={item.selected} onValueChange={() => onSelect(item._id)} />
+    <Image source={{ uri: item.image }} style={styles.image} />
+    <View style={styles.details}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.price}>{item.price_selling.toLocaleString('vi-VN')} đ</Text>
+      <View style={styles.quantityContainer}>
+        <TouchableOpacity onPress={() => onRemove(item._id)} style={styles.quantityButton}>
+          <Text style={styles.quantityText}> - </Text>
+        </TouchableOpacity>
+        <Text style={styles.quantity}>{item.quantity}</Text>
+        <TouchableOpacity onPress={() => onAdd(item._id)} style={styles.quantityButton}>
+          <Text style={styles.quantityText}> + </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+    <TouchableOpacity onPress={() => onDelete(item._id)} style={styles.deleteButton}>
+      <Text style={styles.deleteButtonText}>🗑️</Text>
+    </TouchableOpacity>
+
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {

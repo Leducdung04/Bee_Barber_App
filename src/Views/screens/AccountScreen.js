@@ -49,7 +49,7 @@ const AccountScreen = ({navigation}) => {
               <Text>id {UserProfile?._id}</Text>
             </View>
           </View>
-          <TouchableOpacity onPress={() => handlePress('Tùy chọn khác')}>
+          <TouchableOpacity onPress={() => navigation.navigate("UserProfile")}>
             <Image
               source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
               style={styles.chevronIcon}

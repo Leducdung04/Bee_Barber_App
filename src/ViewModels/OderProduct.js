@@ -1,7 +1,7 @@
 // ViewModels/BookingViewModel.js
-import {useEffect, useState} from 'react';
-import {checkZaloPay, OrderZaloPay} from '../Services/api/httpZalopay';
-import {Alert, AppState, Linking} from 'react-native';
+import { useEffect, useState } from 'react';
+import { checkZaloPay, OrderZaloPay } from '../Services/api/httpZalopay';
+import { Alert, AppState, Linking } from 'react-native';
 import { getNext7DaysWithWeekdays } from '../Services/utils/getNext7DaysWithWeekdays';
 import { Add_Appointment_API } from '../Services/api/httpAppointment';
 import { deleteZaloPayload, getZaloPay, setZaloPayload } from '../Services/utils/ZaloPay_AsyncStorage';
@@ -18,12 +18,12 @@ export const OderProduct = () => {
   const [modalCheck, setmodalCheck] = useState(false)
 
   async function check() {
-    const ZaloPayLocal =await getZaloPay()
-    if (ZaloPayLocal !== null){
+    const ZaloPayLocal = await getZaloPay()
+    if (ZaloPayLocal !== null) {
       const Checking = await checkZaloPay(ZaloPayLocal?.app_trans_id)
-      if(Checking.return_code === 1){
-         // tạo đơn
-        const data=await getZaloPay()
+      if (Checking.return_code === 1) {
+        // tạo đơn
+        const data = await getZaloPay()
         await Add_Oder_API(data.data)
         setmodalIsloading(false)
         // setisModalSuccc(true)
@@ -32,15 +32,15 @@ export const OderProduct = () => {
         return
       }
       setdataChechZaloPay(Checking)
-      console.log('status',dataChechZaloPay)
+      console.log('status', dataChechZaloPay)
       setmodalIsloading(false)
-      setisModallFail=(true)
-      console.log('status',Checking);
+      setisModallFail = (true)
+      console.log('status', Checking);
       // setmodalCheck(true)
     }
-}
+  }
 
-  
+
   const [appState, setAppState] = useState(AppState.currentState);
   useEffect(() => {
     const handleAppStateChange = (nextAppState) => {
@@ -56,21 +56,21 @@ export const OderProduct = () => {
 
   // xử lý orde Zalo pay
   const handleZaloPay = async order => {
-console.log('oder',order)
+    console.log('oder', order)
     const responseOrder = await OrderZaloPay(order.payment.price);
-   // setapp_trans_id(responseOrder?.app_trans_id)
+    // setapp_trans_id(responseOrder?.app_trans_id)
     if (responseOrder === false) {
       Alert.alert('Xảy ra lỗi vui lòng thử lại sau');
     } else {
-      const ZaloPayLocal={
-        app_trans_id:responseOrder.app_trans_id,
-        order_url:responseOrder.data.order_url,
-        data:order,
-        type:'booking'
+      const ZaloPayLocal = {
+        app_trans_id: responseOrder.app_trans_id,
+        order_url: responseOrder.data.order_url,
+        data: order,
+        type: 'booking'
       }
-     await deleteZaloPayload()
-     await setZaloPayload(ZaloPayLocal)
-          openPaymentUrl(responseOrder.data.order_url);
+      await deleteZaloPayload()
+      await setZaloPayload(ZaloPayLocal)
+      openPaymentUrl(responseOrder.data.order_url);
     }
   };
   const openPaymentUrl = async orderUrl => {
@@ -81,17 +81,17 @@ console.log('oder',order)
     }
   };
 
-  const handle_Order = async(order)=>{
+  const handle_Order = async (order) => {
     setmodalIsloading(true)
-      if(order?.payment?.pay_method === 'ZaloPay'){
-          handleZaloPay(order)
-      }else if(order?.payment?.pay_method === 'cash'){
-         const dataOrde = await Add_Oder_API(order)
-       if(dataOrde){
-         setmodalIsloading(false)
-         setisModalSuccc(true)
-       }
+    if (order?.payment?.pay_method === 'ZaloPay') {
+      handleZaloPay(order)
+    } else if (order?.payment?.pay_method === 'cash') {
+      const dataOrde = await Add_Oder_API(order)
+      if (dataOrde) {
+        setmodalIsloading(false)
+        setisModalSuccc(true)
       }
+    }
   }
 
   return {

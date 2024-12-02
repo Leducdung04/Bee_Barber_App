@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, View, RefreshControl } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { getNotification } from '../../Services/api/httpNotification';
+import { getNotification } from '../../Services/api/notificationhelper';
 
 const Notification = ({ navigation }) => {
     const [listNotification, setlistNotification] = useState([]);
