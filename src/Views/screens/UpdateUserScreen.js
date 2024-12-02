@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, Alert, Image, TouchableOpacity } fro
 import { getUserInfoById, updateUser } from '../../Services/utils/httpSingup'; // Đường dẫn đến hàm getUserInfoById và updateUser
 import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
+import colors from '../../Resources/styles/colors';
 
 const UpdateUserScreen = ({ navigation }) => {
     const [userId, setUserId] = useState(null); // State để lưu userId
@@ -59,7 +60,7 @@ const UpdateUserScreen = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Image
-                    source={require('../../Resources/assets/images/Avata.jpg')} // Placeholder cho ảnh đại diện
+                    source={require('../../Resources/assets/images/men.png')} // Placeholder cho ảnh đại diện
                     style={styles.profileImage}
                 />
             </View>
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f4f4f4',
     },
     header: {
-        backgroundColor: '#153A80',
+        backgroundColor: colors.primary300,
         paddingVertical: 0,
         alignItems: 'center',
         justifyContent: 'center',
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
         width: 90,
         height: 90,
         borderRadius: 50,
-        backgroundColor: '#ccc',
+        backgroundColor:colors.primary300,
         borderWidth: 3,
         borderColor: '#fff',
     },
