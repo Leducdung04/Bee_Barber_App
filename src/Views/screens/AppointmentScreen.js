@@ -92,10 +92,10 @@ const AppointmentScreen = ({ route, navigation }) => {
     console.log(appointment, "Hello");
 
     handle_Order_Appointment(appointment)
-    scheduleAppointmentNotification(day_Selected.date, time_Selected, barber_Selected)
+    scheduleAppointmentNotification(day_Selected.date, time_Selected, barber_Selected,UserProfile._id)
   }
 
-  const scheduleAppointmentNotification = async (date, time, barber_Selected) => {
+  const scheduleAppointmentNotification = async (date, time, barber_Selected, user) => {
     const [year, month, day] = date.split("-");
     const [hours, minutes] = time.split(":");
 
@@ -128,13 +128,12 @@ const AppointmentScreen = ({ route, navigation }) => {
     });
 
     const notificationPayload = {
-      user_id: UserProfile._id,
+      user_id: user,
       relates_id: barber_Selected?._id,
       type: "booking",
       content: `Bạn có lịch hẹn với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
       schedule: utcTime.toISOString(), 
     };
-
     console.log(notificationPayload, "Hello Again");
 
     try {

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
-import { API_SEND_NOTIFICATION, API, API_GET_LIST_NOTIFICATIONS, API_SEND_SCHEDULE_NOTIFICATION,API_UPDATE_NOTIFICATION} from '@env'
+import { API_SEND_NOTIFICATION, API, API_GET_LIST_NOTIFICATIONS, API_SEND_SCHEDULE_NOTIFICATION, API_UPDATE_NOTIFICATION } from '@env'
 
 export async function requestUserPermission() {
   try {
@@ -113,7 +113,7 @@ export const sendRemoteNotification = async ({ payload }) => {
   }
 };
 
-export const get_List_Notification = async (userId, status,type) => {
+export const get_List_Notification = async (userId, status, type) => {
   try {
     const response = await fetch(`${API}${API_GET_LIST_NOTIFICATIONS}?user_id=${userId}&status=${status}`);
     const data = await response.json();
@@ -126,6 +126,8 @@ export const get_List_Notification = async (userId, status,type) => {
 
 export const sendScheduleNotification = async (payload) => {
   try {
+    console.log(payload,"Pausususus");
+    
     const response = await fetch(`${API}${API_SEND_SCHEDULE_NOTIFICATION}`, {
       method: 'POST',
       headers: {
@@ -141,6 +143,7 @@ export const sendScheduleNotification = async (payload) => {
     }
 
     const result = await response.json();
+
     console.log("Schedule notification sent successfully:", result);
     return result;
   } catch (error) {
@@ -149,6 +152,7 @@ export const sendScheduleNotification = async (payload) => {
   }
 };
 
+
 export const updateNotificationStatus = async (id) => {
   try {
     const response = await fetch(`${API}${API_UPDATE_NOTIFICATION}/${id}`, {
@@ -156,7 +160,7 @@ export const updateNotificationStatus = async (id) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({status : 'read'}),
+      body: JSON.stringify({ status: 'read' }),
     });
   } catch (error) {
     console.error("Error updating notification:", error);
