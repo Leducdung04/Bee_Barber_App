@@ -3,7 +3,7 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, FlatList } from 'react-native';
 import colors from '../../Resources/styles/colors';
 
-const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect }) => {
+const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect,listTimes }) => {
   // Split the time slots into rows of 3 items each
   const timesInRows = [];
   for (let i = 0; i < availableTimes.length; i += 3) {
@@ -17,17 +17,31 @@ const TimeSelectionComponent = ({ availableTimes, selectedTime, onTimeSelect }) 
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.timeGrid}
-      renderItem={({ item }) => (
+      renderItem={({ item }) =>(
         <View style={styles.row}>
-          {item.map((time) => (
-            <TouchableOpacity
+          {item.map((time) => {
+            if(listTimes?.includes(time)){
+              return <View
+              key={time}
+              style={{padding: 12,
+                width: 80,
+                backgroundColor:'gray',
+                borderRadius: 8,
+                marginVertical: 4,
+                alignItems: 'center',}}
+            >
+              <Text style={{ color:'white'}}>{time}</Text>
+            </View>
+            }else{
+              return <TouchableOpacity
               key={time}
               style={[styles.timeButton, selectedTime === time && styles.selectedTimeButton]}
               onPress={() => onTimeSelect(time)}
             >
               <Text style={{ color: selectedTime === time ? 'white' : 'black' }}>{time}</Text>
             </TouchableOpacity>
-          ))}
+            } 
+      })}
         </View>
       )}
     />

@@ -200,12 +200,12 @@ const AppointmentHistoryScreen = ({navigation}) => {
           />
          
         </View>
-       <Text style={{color:colors.primary100,marginVertical:2}}>Thanh toán {item.payment.pay_method=='cash'? 'tại quầy' :'ZaloPay'} {item.price} VND</Text>
+       <Text style={{color:colors.primary100,marginVertical:2}}>Thanh toán {item.payment?.pay_method=='cash'? 'tại quầy' :'ZaloPay'} {item.price} VND</Text>
        <View style={{flexDirection:'row',justifyContent:'space-evenly'}}>
-          {item.payment.pay_method_status === 'Unpaid'? <View><Text style={{color:'red'}}>Chưa thanh toán</Text></View>:
-          item.payment.pay_method_status === 'Success'? <View><Text style={{color:'green'}}>Đã thanh toán</Text></View>:
-          item.payment.pay_method_status === 'Norefundyet'? <View><Text style={{color:'orange'}}>Đã hủy lịch hoàn tiền trong 24h tới</Text></View>:
-          item.payment.pay_method_status === 'Refunded'? <View><Text style={{color:'green'}}>Đã hoàn tiền</Text></View>:<View></View>}
+          {item.payment?.pay_method_status === 'Unpaid'? <View><Text style={{color:'red'}}>Chưa thanh toán</Text></View>:
+          item.payment?.pay_method_status === 'Success'? <View><Text style={{color:'green'}}>Đã thanh toán</Text></View>:
+          item.payment?.pay_method_status === 'Norefundyet'? <View><Text style={{color:'orange'}}>Đã hủy lịch hoàn tiền trong 24h tới</Text></View>:
+          item.payment?.pay_method_status === 'Refunded'? <View><Text style={{color:'green'}}>Đã hoàn tiền</Text></View>:<View></View>}
             {item.appointment_status === 'pending' ? <TouchableOpacity onPress={()=>{HandalModalHuyLich(item)}}><View style={{width:100,height:40,borderWidth:1,borderColor:colors.primary300,borderRadius:24,justifyContent:'center',alignItems:'center'}}><Text style={{color:colors.primary200}}>Hủy lịch</Text></View></TouchableOpacity> :
             item.appointment_status === 'completed' ? <View style={{flexDirection:'row'}}><Text style={{color:'green'}}>Đã cắt</Text>
             <TouchableOpacity onPress={()=>{setisRating(true);setItemRating(item)}}><Text  style={{color:'blue'}}>     Đánh giá ngay</Text></TouchableOpacity></View> :

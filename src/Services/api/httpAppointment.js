@@ -105,3 +105,22 @@ export const updateAppointmentStatusFalse = async (appointmentId) => {
     return false;
   }
 };
+
+
+export const getTime_Appointment = async (barberId, appointmentDate ) => {
+  try {
+    if(barberId === null || appointmentDate === null){
+      return []
+    }else{
+      const response = await fetch(`${API}getBookedTimesForBarber/${barberId}/${appointmentDate}`)
+      console.log("API",`${API}getBookedTimesForBarber/${barberId}/${appointmentDate}`)
+      const data = await response.json();
+      if (response.ok) {
+        return data.bookedTimes;
+      }
+    }
+  } catch (error) {
+    console.log('lỗi khi lấy time out');
+    return [];
+  }
+};
