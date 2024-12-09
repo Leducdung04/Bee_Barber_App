@@ -47,10 +47,9 @@ export default function CircleBorder({
 
     const getUserAndFetch = async () => {
       const user = await getUserlocal();
-      console.log('Fetched user:', user);
       setUserProfile(user || {});
       if (!user) {
-        setBadgeCount(0); 
+        setBadgeCount(0);
         return;
       } else {
         fetchCartItems(user);
@@ -59,9 +58,15 @@ export default function CircleBorder({
 
     getUserAndFetch();
 
-    const listener = eventEmitter.on('cartUpdated', () => getUserAndFetch());
-    return () => listener.removeListener();
-  }, []);
+    let listener;
+    if (userProfile) {
+      listener = eventEmitter.on('cartUpdated', () => getUserAndFetch());
+    }
+
+    return () => {
+      if (listener) listener.removeListener();
+    };
+  }, [userProfile]);
 
 
 

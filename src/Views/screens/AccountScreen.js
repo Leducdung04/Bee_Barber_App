@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Image, Mod
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { deleteUserlocal, getUserlocal } from '../../Services/utils/user__AsyncStorage';
 import colors from '../../Resources/styles/colors';
+import eventEmitter from '../../Services/utils/event';
 
 const AccountScreen = ({navigation}) => {
 
@@ -34,6 +35,7 @@ const AccountScreen = ({navigation}) => {
 
   async function outAccount(){
       await deleteUserlocal()
+      eventEmitter.removeAllListeners('cartUpdated');
       navigation.navigate('WelcomeScreen')
   }
   return (
