@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator } from 'react-native';
 import {getUserlocal, deleteUserlocal } from '../../Services/utils/user__AsyncStorage';
 import { useFocusEffect } from '@react-navigation/native';
+import colors from '../../Resources/styles/colors';
 
 const UserProfile = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState(null); // Tạo state để lưu thông tin người dùng
@@ -30,7 +31,7 @@ const UserProfile = ({ navigation }) => {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require('../../Resources/assets/images/Avata.jpg')} // Placeholder cho ảnh đại diện lớn
+          source={require('../../Resources/assets/images/men.png')} // Placeholder cho ảnh đại diện lớn
           style={styles.profileImage}
         />
       </View>
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    backgroundColor: '#153A80',
+    backgroundColor: colors.primary300,
     paddingVertical: 0,
     alignItems: 'center',
     justifyContent: 'center', // Center the content vertically
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 50,
-    backgroundColor: '#ccc',
+    backgroundColor: colors.primary300,
     borderWidth: 3, // Optional: Add a border around the profile image
     borderColor: '#fff', // Optional: Color of the border
   },

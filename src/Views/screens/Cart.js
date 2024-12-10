@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   activeButton: {
-    backgroundColor: '#FF0000', // Màu đỏ cho nút hoạt động
+    backgroundColor:colors.primary, // Màu đỏ cho nút hoạt động
   },
   inactiveButton: {
     backgroundColor: '#ccc', // Màu xám cho nút không hoạt động

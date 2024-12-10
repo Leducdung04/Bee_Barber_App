@@ -11,6 +11,7 @@ import { deleteZaloPayload } from '../../Services/utils/ZaloPay_AsyncStorage';
 import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendScheduleNotification } from '../../Services/api/notificationhelper'
 
 import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
+import { getTime_Appointment } from '../../Services/api/httpAppointment';
 const AppointmentScreen = ({ route, navigation }) => {
   const {
     setmodalCheck,
@@ -36,6 +37,7 @@ const AppointmentScreen = ({ route, navigation }) => {
   const [totalAmount, settotalAmount] = useState(0)
   const [token, setToken] = useState(null);
   const [UserProfile, setUserProfile] = useState(null)
+  const [time, settime] = useState([])
 
   useEffect(() => {
     async function getUser() {
@@ -64,6 +66,65 @@ const AppointmentScreen = ({ route, navigation }) => {
   useEffect(() => {
     console.log('dữ liệu code zalopay', dataChechZaloPay)
   }, [dataChechZaloPay])
+  // xử lý lấy ra giờ đã hẹn 
+
+
+  // xử lý giờ tại ngày hôm nay 
+  const filterAvailableTimes = () => {
+    // Hàm chuyển đổi thời gian từ HH:MM sang số phút từ 00:00
+    const convertToMinutes = (time) => {
+        const [hour, minute] = time.split(":").map(num => parseInt(num));
+        return hour * 60 + minute;
+    };
+
+    // Lấy ngày hiện tại
+    const today = new Date();
+    const selectedDay = new Date(day_Selected?.date);
+    console.log("ngày được chọn",selectedDay)
+
+    // Kiểm tra nếu ngày chọn là hôm nay
+    if (selectedDay.toDateString() !== today.toDateString()) {
+        // Nếu ngày chọn không phải hôm nay, trả về mảng rỗng
+        return [];
+    }
+
+    const currentMinutes = today.getHours() * 60 + today.getMinutes(); // Lấy số phút hiện tại từ 00:00
+
+    // Lọc các thời gian từ giờ hiện tại trở về trước và không vượt quá 8:00 sáng
+    const filteredTimes = listTimes?.filter(time => {
+        const timeInMinutes = convertToMinutes(time);
+        return timeInMinutes <= currentMinutes && timeInMinutes >= convertToMinutes('08:00');
+    });
+
+    return filteredTimes;
+};
+ 
+// useEffect(() => {
+//   const filteredTimes = filterAvailableTimes() || [];
+//   if (filteredTimes.length > 0 && !filteredTimes.every((item, index) => item === (time && time[index]))) {
+//     settime(prevTimes => [...(prevTimes || []), ...filteredTimes]);
+//   }
+// }, [navigation,day_Selected]);
+
+
+  useEffect(() => {
+      async function getTime(barber_Selected,day_Selected) {
+        console.log("data",day_Selected)
+           const time= await getTime_Appointment(barber_Selected,day_Selected)
+           settime(time)
+          //  console.log("kk",time)
+           if (time?.includes(time_Selected)) {
+              settime_Selected(null)
+            } 
+            const filteredTimes = filterAvailableTimes() || [];
+            if (filteredTimes.length > 0 && !filteredTimes.every((item, index) => item === (time && time[index]))) {
+              settime(prevTimes => [...(prevTimes || []), ...filteredTimes]);
+            }
+      }
+      getTime(barber_Selected?._id,day_Selected?.date)
+
+  }, [barber_Selected,day_Selected])
+  
 
   const onHandel_Order = async () => {
     setmodalIsloading(true)
@@ -315,6 +376,7 @@ const AppointmentScreen = ({ route, navigation }) => {
               </View>
               <TimeSelectionComponent
                 availableTimes={listTimes}
+                listTimes={time}
                 selectedTime={time_Selected}
                 onTimeSelect={handleTimeSelect}
               />
