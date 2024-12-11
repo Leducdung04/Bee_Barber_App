@@ -126,8 +126,8 @@ export const get_List_Notification = async (userId, status, type) => {
 
 export const sendScheduleNotification = async (payload) => {
   try {
-    console.log(payload,"Pausususus");
-    
+    console.log(payload, "Pausususus");
+
     const response = await fetch(`${API}${API_SEND_SCHEDULE_NOTIFICATION}`, {
       method: 'POST',
       headers: {

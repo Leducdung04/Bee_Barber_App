@@ -21,55 +21,6 @@ export default function CircleBorder({
   const [badgeCount, setBadgeCount] = useState(0);
   const [userProfile, setUserProfile] = useState(null)
 
-  useEffect(() => {
-    const fetchCartItems = async (user) => {
-      try {
-        if (!user) {
-          console.warn('User is not logged in. Skipping cart fetch.');
-          setBadgeCount(0);
-          return;
-        }
-
-        const userCart = await get_user_cart(user._id);
-        if (!userCart || !userCart._id) {
-          console.error('No cart found or cart ID is undefined.');
-          setBadgeCount(0);
-          return;
-        }
-
-        const cartId = userCart._id;
-        const cartItems = await get_list_cart_item(cartId);
-        setBadgeCount(cartItems.length);
-      } catch (error) {
-        console.error('Error fetching cart items:', error.message);
-      }
-    };
-
-    const getUserAndFetch = async () => {
-      const user = await getUserlocal();
-      setUserProfile(user || {});
-      if (!user) {
-        setBadgeCount(0);
-        return;
-      } else {
-        fetchCartItems(user);
-      }
-    };
-
-    getUserAndFetch();
-
-    let listener;
-    if (userProfile) {
-      listener = eventEmitter.on('cartUpdated', () => getUserAndFetch());
-    }
-
-    return () => {
-      if (listener) listener.removeListener();
-    };
-  }, [userProfile]);
-
-
-
   const isImage = !['sort-variant', 'dots-three-vertical', 'search-outline'].includes(name);
 
   const renderIcon = () => {

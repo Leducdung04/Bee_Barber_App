@@ -81,16 +81,27 @@ const Cart = () => {
 
   const handleAdd = async (id) => {
     const item = cartItems.find((i) => i._id === id);
+    console.log(item,"Item");
+    
     if (!item) {
       console.error(`Item with id ${id} not found in cart.`);
       return;
     }
-    try {
+    try {  
+      
+      console.log(item.product_id,"Id");
+      console.log(item.quantity,"Quantity");
+      console.log( item.price_selling * (item.quantity + 1),"Total");
+      
       await add_cart_item(cartId, {
         product_id: item.product_id,
         quantity: item.quantity + 1,
         total: item.price_selling * (item.quantity + 1),
       });
+
+    
+      
+      
 
       setCartItems(
         cartItems.map((i) =>
