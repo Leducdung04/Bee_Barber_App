@@ -13,7 +13,6 @@ export default function CircleBorder({
   onPress,
 }) {
   const { badgeCount } = useCart(); 
-
   const isImage = !['sort-variant', 'dots-three-vertical', 'search-outline'].includes(name);
 
   const renderIcon = () => {
