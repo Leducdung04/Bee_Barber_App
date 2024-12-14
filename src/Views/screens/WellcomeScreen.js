@@ -9,6 +9,7 @@ import { fetchBarbers } from '../../stores/features/barbersSlice';
 import { fetchCategorys } from '../../stores/features/categorySlice';
 import { fetchBanners } from '../../stores/features/bannerSlice';
 import { fetchcategoryProduct } from '../../stores/features/categoryProductListSlice';
+import eventEmitter from '../../Services/utils/event';
 import { fetchServices } from '../../stores/features/servicesSline';
 
 const { width: widthScreen, height: heightScreen } = Dimensions.get('window');
@@ -51,6 +52,7 @@ const WelcomeScreen = ({ navigation }) => {
   const checkUserStatus = async () => {
     const userId = await AsyncStorage.getItem('userLocal');
     if (userId) {
+        eventEmitter.emit('userLoggedIn');
         navigation.replace('TabNavigator');
     } else {
       setTimeout(() => {

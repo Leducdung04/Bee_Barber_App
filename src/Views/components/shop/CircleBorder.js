@@ -1,25 +1,18 @@
+import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
 import { Badge } from 'react-native-paper';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/Entypo';
-import { get_list_cart_item } from '../../../Services/utils/httpCartItem';
-import { get_user_cart } from '../../../Services/utils/httpCart';
-import eventEmitter from '../../../Services/utils/event';
-import { getUserlocal } from '../../../Services/utils/user__AsyncStorage'
+import { useCart } from '../../../Services/utils/cartContext';
 
 export default function CircleBorder({
-  border = 'white',
   name,
   size,
   color = 'black',
   onPress,
-  circleSize = 31,
-  background = 'white',
 }) {
-  const [badgeCount, setBadgeCount] = useState(0);
-  const [userProfile, setUserProfile] = useState(null)
+  const { badgeCount } = useCart(); 
 
   const isImage = !['sort-variant', 'dots-three-vertical', 'search-outline'].includes(name);
 
@@ -47,6 +40,7 @@ export default function CircleBorder({
         );
     }
   };
+
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
