@@ -14,7 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { replaceLocalhostWithIP } from '../../../Services/utils/replaceLocalhostWithIP';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { API_SEND_NOTIFICATION, API } from '@env'
-import { add_cart_item } from '../../../Services/utils/httpCartItem';
+import { get_list_cart_item, add_cart_item } from '../../../Services/utils/httpCartItem';
 import { getToken, requestUserPermission, initializeFCM, sendLocalNotification, sendRemoteNotification } from '../../../Services/api/notificationhelper'
 import eventEmitter from '../../../Services/utils/event';
 import colors from '../../../Resources/styles/colors';
@@ -29,8 +29,10 @@ const ProductScreen = () => {
   const [quantity, setQuantity] = useState(1);
   const [token, setToken] = useState(null);
   const [ModalDN, setModalDN] = useState(false)
+  const [ModalQuantity, setModalQuantity] = useState(false)
   const [userProfile, setUserProfile] = useState(null)
   const [cartId, setCartId] = useState(null)
+  const [itemQuantity, setItemQuantity] = useState(null)
   const product = route.params;
   const url = replaceLocalhostWithIP(product.image);
   const totalPrice = product.price_selling * quantity;
@@ -65,31 +67,58 @@ const ProductScreen = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       const user = await getUserlocal();
-      const islogin = await handelIsLogin()
+      const islogin = await handelIsLogin();
       if (!islogin) {
         console.log("User not logged in. Action restricted.");
-        return
+        return;
       }
       if (user) {
         setUserProfile(user);
-      }
-      if (!cartId) {
-        const userCart = await get_user_cart(user._id);
-        setCartId(userCart._id);
+        if (!cartId) {
+          const userCart = await get_user_cart(user._id);
+          setCartId(userCart._id);
+        }
       }
     };
 
     fetchUserProfile();
   }, []);
 
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        if (cartId) {
+          const cartItems = await get_list_cart_item(cartId);
+          console.log("Fetched Cart Items:", cartItems);
+        } else {
+          console.log("Cart ID is not available yet.");
+        }
+      } catch (error) {
+        console.error("Error fetching cart items:", error.message);
+      }
+    };
+    if (cartId) {
+      fetchCartItems();
+    }
+  }, []);
+
 
   const handleAddToCart = async () => {
-    const islogin = await handelIsLogin()
-    if (!islogin) {
+    const isLogin = await handelIsLogin();
+    if (!isLogin) {
       console.log("User not logged in. Action restricted.");
-      return
+      return;
     }
     try {
+      const cartItems = await get_list_cart_item(cartId);
+      const existingItem = cartItems.find(item => item.product_id === product._id);
+      const currentQuantity = existingItem ? existingItem.quantity : 0;
+
+      if (currentQuantity + quantity > product.quantity) {
+        setModalQuantity(true);
+        return;
+      }
+
       const cartItem = {
         product_id: product._id,
         quantity,
@@ -100,12 +129,19 @@ const ProductScreen = () => {
       console.log("Cart item added successfully:", addedItem);
       eventEmitter.emit('cartUpdated');
       await handleAddToCartNotification();
-
       nav.navigate("Cart");
     } catch (error) {
-      console.error("Error adding product to cart:", error.message);
+      if (error.response) {
+        const errorMsg = error.response.data.msg;
+        console.error("Cart Error:", errorMsg);
+        alert(errorMsg);
+      } else {
+        console.error("Unknown Error:", error);
+        alert("Something went wrong. Please try again.");
+      }
     }
   };
+
 
   const handleBuyNow = async () => {
     const islogin = await handelIsLogin()
@@ -119,8 +155,8 @@ const ProductScreen = () => {
         title: product.name,
         price_selling: product.price_selling,
         quantity,
-        import_price:product.import_price,
-        price_selling:product.price_selling,
+        import_price: product.import_price,
+        price_selling: product.price_selling,
         image: url,
       };
 
@@ -161,6 +197,8 @@ const ProductScreen = () => {
         title: 'Sản phẩm đã được thêm vào giỏ hàng',
         message: `Sản phẩm ${product.name} đã được thêm vào giỏ hàng.`,
         data: { relates_id: product._id, user_id: userProfile._id },
+        smallIcon: null,
+        largeIcon: null,
       });
     } catch (error) {
       console.error('Error sending notifications:', error);
@@ -194,7 +232,14 @@ const ProductScreen = () => {
   };
 
 
-  const increaseQuantity = () => setQuantity(quantity + 1);
+  const increaseQuantity = () => {
+    if (quantity < product.quantity) {
+      setQuantity(quantity + 1);
+    } else {
+      alert(`Số lượng tối đa bạn có thể mua là ${product.quantity}`);
+    }
+  };
+
   const decreaseQuantity = () => {
     if (quantity > 1) setQuantity(quantity - 1);
   };
@@ -209,6 +254,10 @@ const ProductScreen = () => {
           </Text>
           <Text style={styles.productName}>{product.name}</Text>
           <Text style={styles.productDescription}>{product.description}</Text>
+          {/* <View style={styles.quantityContainer}>
+            <Text style={styles.quantityLabel}>Số lượng còn lại:</Text>
+            <Text style={styles.quantityValue}>{product.quantity}</Text>
+          </View> */}
         </View>
       </ScrollView>
       <View style={styles.buttonContainer}>
@@ -293,6 +342,22 @@ const ProductScreen = () => {
                 </View>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={ModalQuantity} animationType="slide" transparent={true}>
+        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          <View style={{ height: 180, backgroundColor: 'white', margin: 32, borderRadius: 4, alignItems: 'center', justifyContent: 'space-around' }}>
+            <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>Thông báo</Text>
+            <Text style={{ fontSize: 17, textAlign: 'center' }}>
+              Số lượng sản phẩm trong đang tồn không đủ.
+            </Text>
+            <TouchableOpacity onPress={() => setModalQuantity(false)}>
+              <View style={{ height: 45, width: 120, marginTop: 16, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 8 }}>
+                <Text style={{ fontWeight: 'bold', color: 'white' }}>Đóng</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -407,7 +472,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     alignItems: 'center',
-    elevation: 10, // Add a shadow for modern look
+    elevation: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
@@ -487,4 +552,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#4B5563',
   },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  quantityLabel: {
+    fontSize: 13,
+    color: '#374151',
+    marginRight: 4,
+  },
+  quantityValue: {
+    fontSize: 14,
+    color: '#EF4444',
+    fontWeight: '700',
+  },
+
 });

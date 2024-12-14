@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { checkPhoneAndGetId, loginPhone } from '../../Services/utils/httpSingup'; // Đảm bảo đường dẫn đúng
 import { isValidPhoneNumber } from '../../Services/utils/ValidPhoneNumber';
 import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
+import eventEmitter from '../../Services/utils/event';
 import colors from '../../Resources/styles/colors';
 
 const LoginScreen = ({ navigation }) => {
@@ -22,6 +23,7 @@ const LoginScreen = ({ navigation }) => {
       const responseUres= await loginPhone(phoneNumber,password)
         if(responseUres?.code ===200){
           await setUserlocal(responseUres.data)
+          eventEmitter.emit('userLoggedIn');
           navigation.navigate('TabNavigator')
         }else if(responseUres?.code === 210){
             settextPhone('Số điện thoại không tồn tại')

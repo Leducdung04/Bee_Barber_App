@@ -172,32 +172,35 @@ const TabNavigator = () => {
           headerRight: () => (
             <View style={styles.headerRight}>
               <CircleBorder onPress={() => nav.navigate("Cart")} />
-                <View style={{marginStart:12}}></View>
+              <TouchableOpacity onPress={() => nav.navigate("NotificationScreen")}>
+                <Image source={require('../../Resources/assets/icons/notification.png')}
+                  style={{ marginStart: 4, height: 26, width: 26, marginHorizontal: 12 }} />
+              </TouchableOpacity>
             </View>
           ),
         }}
       />
-        <CurvedBottomBar.Screen
-          name="title3"
-          component={AppointmentHistoryScreen}
-          position="RIGHT"
-          options={{
-            title:'',
-            headerShown:true,
-            headerTitleAlign: 'center',
-            headerBackground: () => (
-              <View  style={{backgroundColor:'white',height:65,justifyContent:'center'}}>
-                  <Text style={globalStyles.titleStyle}>Lịch sử cắt ✂</Text>
-              </View>
-            ),
-          }}
-        />
-        <CurvedBottomBar.Screen
-          name="title4"
-          component={AccountScreen}
-          position="RIGHT"
-        />
-      </CurvedBottomBar.Navigator>
+      <CurvedBottomBar.Screen
+        name="title3"
+        component={AppointmentHistoryScreen}
+        position="RIGHT"
+        options={{
+          title: '',
+          headerShown: true,
+          headerTitleAlign: 'center',
+          headerBackground: () => (
+            <View style={{ backgroundColor: 'white', height: 65, justifyContent: 'center' }}>
+              <Text style={globalStyles.titleStyle}>Lịch sử cắt ✂</Text>
+            </View>
+          ),
+        }}
+      />
+      <CurvedBottomBar.Screen
+        name="title4"
+        component={AccountScreen}
+        position="RIGHT"
+      />
+    </CurvedBottomBar.Navigator>
   )
 }
 

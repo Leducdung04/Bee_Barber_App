@@ -1,4 +1,4 @@
-import { API, API_GET_LIST_CART_ITEM, API_ADD_CART_ITEM, API_DELETE_CART_ITEM } from '@env';
+import { API, API_GET_LIST_CART_ITEM, API_ADD_CART_ITEM, API_DELETE_CART_ITEM, API_UPDATE_CART_ITEM } from '@env';
 
 export const get_list_cart_item = async (cartId) => {
     try {
@@ -44,3 +44,23 @@ export const delete_cart_item = async (itemId) => {
         throw error;
     }
 };
+
+export const update_cart_item_quantity = async (itemId, newQuantity) => {
+    try {
+        const response = await fetch(`${API}${API_UPDATE_CART_ITEM}/${itemId}/quantity`, {
+            method: 'PATCH', 
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                quantity: newQuantity, 
+            }),
+        });
+        if (!response.ok) throw new Error("Failed to update cart item quantity.");
+        return await response.json();
+    } catch (error) {
+        console.error("Error updating cart item quantity:", error.message);
+        throw error;
+    }
+};
+
