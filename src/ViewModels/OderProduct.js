@@ -8,6 +8,7 @@ import { deleteZaloPayload, getZaloPay, setZaloPayload } from '../Services/utils
 import { lightGreen100 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import { get_list_barber } from '../Services/api/httpStylist';
 import { Add_Oder_API } from '../Services/api/httpOder';
+import { delete_cart_item } from '../Services/utils/httpCartItem';
 
 export const OderProduct = () => {
   const [isModalSuccc, setisModalSuccc] = useState(false)
@@ -86,11 +87,14 @@ export const OderProduct = () => {
     if (order?.payment?.pay_method === 'ZaloPay') {
       handleZaloPay(order)
     } else if (order?.payment?.pay_method === 'cash') {
-      const dataOrde = await Add_Oder_API(order)
-      if (dataOrde) {
-        setmodalIsloading(false)
-        setisModalSuccc(true)
-      }
+      const dataOrde = await Add_Oder_API(order);
+        if (dataOrde) {
+            for (const product of order.order.listProduct) {
+                await delete_cart_item(product.cartItem_id);
+            }
+            setmodalIsloading(false);
+            setisModalSuccc(true);
+        }
     }
   }
 

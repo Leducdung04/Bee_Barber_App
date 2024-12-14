@@ -113,9 +113,9 @@ export const sendRemoteNotification = async ({ payload }) => {
   }
 };
 
-export const get_List_Notification = async (userId, status, type) => {
+export const get_List_Notification = async (userId) => {
   try {
-    const response = await fetch(`${API}${API_GET_LIST_NOTIFICATIONS}?user_id=${userId}&status=${status}`);
+    const response = await fetch(`${API}${API_GET_LIST_NOTIFICATIONS}?user_id=${userId}`);
     const data = await response.json();
     return data;
   } catch (error) {
