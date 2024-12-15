@@ -4,7 +4,7 @@ import { API, API_GET_LIST_BARBER } from '@env'; // Nhập các biến môi trư
 export const get_list_barber = async () => {
     try {
         // Gửi yêu cầu GET đến API để lấy danh sách barber
-        const response = await fetch(`${API}${API_GET_LIST_BARBER}`);
+        const response = await fetch(`${API}${API_GET_LIST_BARBER}?status=true`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }

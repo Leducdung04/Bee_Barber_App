@@ -2,7 +2,7 @@ import {API, API_GET_LIST_CATEGORY} from '@env';
 
 export const get_List_Category = async () => {
   try {
-    const response = await fetch(`${API}${API_GET_LIST_CATEGORY}`);
+    const response = await fetch(`${API}${API_GET_LIST_CATEGORY}?status=true`);
     const data = await response.json();
     console.log('lấy dữ liệu Sản Phẩm thành công');
     return data;
