@@ -158,6 +158,7 @@ const ProductScreen = () => {
         import_price: product.import_price,
         price_selling: product.price_selling,
         image: url,
+        idProduct:product._id
       };
 
       closeModal();
