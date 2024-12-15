@@ -69,7 +69,8 @@ const Cart = () => {
             price_selling: product.price_selling,
             import_price: product.import_price,
             product_quantity: product.quantity,
-            cartItem_id :item._id
+            cartItem_id :item._id,
+            idProduct: product._id
           };
         });
         setCartItems(updatedItems);

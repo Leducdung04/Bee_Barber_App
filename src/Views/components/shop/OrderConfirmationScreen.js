@@ -102,9 +102,10 @@ const OrderConfirmationScreen = ({ navigation }) => {
         image: item.image,
         import_price: item.import_price,
         price_selling: item.price_selling,
-        cartItem_id : item. cartItem_id
+        cartItem_id : item.cartItem_id,
+        idProduct: item.idProduct
     })) || [];
-    
+
     const totalPrice = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
     const shippingFee = 21000;
     const discount = 100000;
