@@ -160,11 +160,11 @@ const AppointmentHistoryScreen = ({navigation}) => {
           <Image
             source={require('../../Resources/assets/logo/Bee_Barber.png')}
           />
-          <TouchableOpacity onPress={()=>{HandalDeleteModal(item)}}>
+          {/* <TouchableOpacity onPress={()=>{HandalDeleteModal(item)}}>
           <Image
             style={{width:20,height:20,marginStart:8}}
             source={require('../../Resources/assets/icons/delete.png')}
-          /></TouchableOpacity>
+          /></TouchableOpacity> */}
           </View>
         </View>
         <View style={{flexDirection:'row',justifyContent:'space-around',marginVertical:4}}>

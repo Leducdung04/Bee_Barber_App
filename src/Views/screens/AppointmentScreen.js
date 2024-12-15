@@ -38,11 +38,17 @@ const AppointmentScreen = ({ route, navigation }) => {
   const [token, setToken] = useState(null);
   const [UserProfile, setUserProfile] = useState(null)
   const [time, settime] = useState([])
+  const [ModalDN, setModalDN] = useState(false)
 
   useEffect(() => {
     async function getUser() {
       const user = await getUserlocal()
-      setUserProfile(user)
+      if (user) {
+        setUserProfile(user)
+      }else{
+        setModalDN(true)
+      }
+      
     }
     getUser()
   }, [])
@@ -530,6 +536,22 @@ const AppointmentScreen = ({ route, navigation }) => {
               </View>
             </View>
           </Modal>
+          <Modal visible={ModalDN} animationType='slide' transparent={true} >
+           <View style={{flex:1,justifyContent:'center',backgroundColor:'rgba(0, 0, 0, 0.2)'}}>
+              <View style={{height:180,backgroundColor:'white',margin:32,borderRadius:4,alignItems:'center',justifyContent:'space-around'}}>
+                   <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Đăng nhập</Text>
+                   <Text style={{fontSize:17}}>Đăng nhập ngay để sủ dụng tính năng này ?</Text>
+                   <View style={{flexDirection:'row'}}>
+                    
+                     <TouchableOpacity onPress={()=>{navigation.navigate('LoginScreen')}}>
+                       <View style={{height:45,width:120,marginHorizontal:12,backgroundColor:colors.primary,justifyContent:'center',alignItems:'center',borderRadius:8}}>
+                       <Text style={{fontWeight:'bold',color:'white'}}>Đồng ý</Text>
+                       </View>
+                     </TouchableOpacity>
+                   </View>
+              </View>
+           </View>
+      </Modal>
         </View>
       </ScrollView>
     </SafeAreaView >
