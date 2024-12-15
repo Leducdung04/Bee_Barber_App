@@ -6,6 +6,7 @@ import { isValidPhoneNumber } from '../../Services/utils/ValidPhoneNumber';
 import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
 import colors from '../../Resources/styles/colors';
 import { add_user_cart } from '../../Services/utils/httpCart';
+import eventEmitter from '../../Services/utils/event';
 
 const SignUpScreen= ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -36,6 +37,7 @@ const SignUpScreen= ({ navigation }) => {
                 console.error("Failed to add cart:", error.message);
             }
         await setUserlocal(responseUres.data)
+        
         navigation.navigate('TabNavigator')
       }else if(responseUres.status ===210){
         setValidatePhoneNumber(true)
@@ -49,11 +51,11 @@ const SignUpScreen= ({ navigation }) => {
     let isValid = true;
 
     if (name === '') {
-      setValidateName(true);
+      setvalidateName(true);
       isValid = false;
     }
     if (!isValidPhoneNumber(phoneNumber)) {
-      setTextValidatePhone('Số điện thoại không đúng định dạng!');
+      settextValidatePhone('Số điện thoại không đúng định dạng!');
       setValidatePhoneNumber(true);
       isValid = false;
     }
@@ -62,7 +64,7 @@ const SignUpScreen= ({ navigation }) => {
       isValid = false;
     }
     if (password.length <= 6) {
-      setValidatePassword(true);
+      setvalidatePassword(true);
       isValid = false;
     }
 

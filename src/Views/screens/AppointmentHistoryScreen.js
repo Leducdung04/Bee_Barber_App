@@ -17,6 +17,7 @@ import {get_Appointment_history, updateAppointmentStatusFalse, updateAppointment
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
 import { Add_Review_API } from '../../Services/api/httpReview';
 import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 const AppointmentHistoryScreen = ({navigation}) => {
   const nav = useNavigation();
@@ -77,7 +78,8 @@ const AppointmentHistoryScreen = ({navigation}) => {
       setModalHuyLich(true)
     }
     const Handalcanceled=async()=>{
-            if(ItemCancedel?.payment.pay_method === "ZaloPay"){
+      console.log("item",ItemCancedel)
+            if(ItemCancedel.payment?.pay_method == "ZaloPay"){
               setisCancedal(true)
               setModalHuyLich(false)
             }else{

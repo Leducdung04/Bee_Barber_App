@@ -63,7 +63,6 @@ const OrderConfirmationScreen = ({ navigation }) => {
         let total_price_sold = 0
 
         products.forEach((item) => {
-            console.log('hihi', item)
             total_price_import += item.import_price * item.quantity
             total_price_sold += item.price_selling * item.quantity
         })
@@ -71,7 +70,7 @@ const OrderConfirmationScreen = ({ navigation }) => {
         const orderData = {
             order: {
                 user_id: UserProfile._id,
-                location: locationDetails.province.name + locationDetails.district.name + locationDetails.commune.name + ", " + locationDetails.street,
+                location: locationDetails.province.name + ", " + locationDetails.district.name + ", " + locationDetails.commune.name + ", " + locationDetails.street,
                 listProduct: products,
                 paymentMethod: method == 1 ? "cash" : "ZaloPay",
                 order_date: currentDate.toISOString().split("T")[0],
@@ -102,8 +101,9 @@ const OrderConfirmationScreen = ({ navigation }) => {
         quantity: item.quantity,
         image: item.image,
         import_price: item.import_price,
-        price_selling: item.price_selling
-
+        price_selling: item.price_selling,
+        cartItem_id : item.cartItem_id,
+        idProduct: item.idProduct
     })) || [];
 
     const totalPrice = products.reduce((sum, product) => sum + product.price * product.quantity, 0);

@@ -23,7 +23,6 @@ const AccountScreen = ({navigation}) => {
       getUser()
   
       return () => {
-        // Cleanup nếu cần khi màn hình/tab bị unfocus
       };
     }, [])
   );
@@ -32,12 +31,12 @@ const AccountScreen = ({navigation}) => {
     Alert.alert('Thông báo', `Bạn đã nhấn vào: ${item}`);
   };
   
-
   async function outAccount(){
-      await deleteUserlocal()
-      eventEmitter.removeAllListeners('cartUpdated');
+      await deleteUserlocal()  
+      eventEmitter.emit('userLoggedOut');
       navigation.navigate('WelcomeScreen')
   }
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>

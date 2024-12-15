@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { get_List_Notification, updateNotificationStatus } from '../../Services/api/notificationhelper';
 import CustomButton from '../components/shop/CustomButton';
+
 import { getUserlocal } from '../../Services/utils/user__AsyncStorage';
 
 const NotificationScreen = () => {
@@ -23,7 +24,7 @@ const NotificationScreen = () => {
     if (!userId) return;
     setLoading(true);
     try {
-      const data = await get_List_Notification(userId, statusFilter);
+      const data = await get_List_Notification(userId);
       setNotifications(data.data || []);
       console.log(data, "Hello");
 
@@ -49,53 +50,21 @@ const NotificationScreen = () => {
   }, [statusFilter, userId]);
 
 
-  const renderNotification = ({ _id, type, content, created_at }) => {
-    switch (type) {
-      case "booking":
-        return (
-          <TouchableOpacity style={styles.notificationItem} onPress={() => handleNotificationClick(_id)} >
-            <Text style={styles.title}>{content}</Text>
-            <Text>Thông Báo</Text>
-            <Text style={styles.date}>📆 {new Date(created_at).toLocaleString()}</Text>
-          </TouchableOpacity>
-        );
-      case "order":
-        return (
-          <TouchableOpacity style={styles.notificationItem} onPress={() => handleNotificationClick(_id)} >
-            <Text style={styles.title}>{content}</Text>
-            <Text>Thông Báo</Text>
-            <Text style={styles.date}>📆 {new Date(created_at).toLocaleString()}</Text>
-          </TouchableOpacity>
-        );
-      default:
-        return (
-          <TouchableOpacity style={styles.notificationItem} onPress={() => handleNotificationClick(_id)}>
-            <Text style={styles.title}>{content}</Text>
-            <Text>Thông Báo</Text>
-            <Text style={styles.date}>📆 {new Date(created_at).toLocaleString()}</Text>
-          </TouchableOpacity>
-        );
-    }
+  const renderNotification = ({ _id, type, content, created_at, status }) => {
+    const isUnread = status === "unread"; 
+    return (
+      <TouchableOpacity style={[styles.notificationItem, isUnread && styles.unreadNotification]} onPress={() => handleNotificationClick(_id)}>
+        <View style={styles.notificationContent}>
+          <Text style={styles.title}>{content}</Text>
+          <Text>Thông Báo</Text>
+          <Text style={styles.date}>📆 {new Date(created_at).toLocaleString()}</Text>
+        </View>
+       
+      </TouchableOpacity>
+    );
   };
-
-
   return (
     <View style={styles.container}>
-      <View style={styles.filterContainer}>
-        <View style={styles.buttonGroup}>
-          <CustomButton
-            title="Đã Đọc"
-            onPress={() => setStatusFilter("read")}
-            style={statusFilter === "read" ? styles.activeButton : styles.inactiveButton}
-          />
-          <CustomButton
-            title="Chưa Đọc"
-            onPress={() => setStatusFilter("unread")}
-            style={statusFilter === "unread" ? styles.activeButton : styles.inactiveButton}
-          />
-        </View>
-      </View>
-
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -144,6 +113,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  unreadNotification: {
+    backgroundColor: '#e8f7ff', 
+  },
+  notificationContent: {
+    flex: 1,
   },
   title: {
     fontSize: 16,
@@ -155,6 +132,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
   },
+  date: {
+    fontSize: 12,
+    color: '#888',
+  },
+  badge: {
+    backgroundColor: '#ff6347',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    alignSelf: 'flex-start',
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
   emptyText: {
     textAlign: 'center',
     marginTop: 20,
@@ -163,6 +156,7 @@ const styles = StyleSheet.create({
   },
   buttonGroup: {
     flexDirection: 'row',
-    gap: 12
-  }
+    gap: 12,
+  },
 });
+

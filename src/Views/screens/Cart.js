@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import { get_list_cart_item, add_cart_item, delete_cart_item } from '../../Services/utils/httpCartItem';
+import { get_list_cart_item, add_cart_item, delete_cart_item, update_cart_item_quantity } from '../../Services/utils/httpCartItem';
 import { get_user_cart } from '../../Services/utils/httpCart';
 import { get_product_detail } from '../../Services/utils/httpProduct';
 import { replaceLocalhostWithIP } from '../../Services/utils/replaceLocalhostWithIP';
@@ -17,6 +17,7 @@ const Cart = () => {
   const [cartId, setCartId] = useState(null)
   const [ModalDN, setModalDN] = useState(false); // Modal for sign-in check
   const [deleteModal, setDeleteModal] = useState(null)
+  const [ModalQuantity, setModalQuantity] = useState(false)
 
   const nav = useNavigation()
   useEffect(() => {
@@ -66,7 +67,10 @@ const Cart = () => {
             image: replaceLocalhostWithIP(product.image),
             title: product.name,
             price_selling: product.price_selling,
-            import_price: product.import_price
+            import_price: product.import_price,
+            product_quantity: product.quantity,
+            cartItem_id :item._id,
+            idProduct: product._id
           };
         });
         setCartItems(updatedItems);
@@ -81,20 +85,24 @@ const Cart = () => {
 
   const handleAdd = async (id) => {
     const item = cartItems.find((i) => i._id === id);
+
     if (!item) {
       console.error(`Item with id ${id} not found in cart.`);
       return;
     }
-    try {
-      await add_cart_item(cartId, {
-        product_id: item.product_id,
-        quantity: item.quantity + 1,
-        total: item.price_selling * (item.quantity + 1),
-      });
 
+    const newQuantity = item.quantity + 1;
+
+    if (newQuantity > item.product_quantity) {
+      setModalQuantity(true);
+      return;
+    }
+
+    try {
+      await update_cart_item_quantity(item._id, newQuantity);
       setCartItems(
         cartItems.map((i) =>
-          i._id === id ? { ...i, quantity: i.quantity + 1 } : i
+          i._id === id ? { ...i, quantity: newQuantity } : i
         )
       );
       eventEmitter.emit('cartUpdated');
@@ -102,6 +110,7 @@ const Cart = () => {
       console.error(`Error adding item with id ${id}:`, error.message);
     }
   };
+
 
   const handleRemove = async (id) => {
     const item = cartItems.find((i) => i._id === id);
@@ -113,7 +122,7 @@ const Cart = () => {
 
     if (item.quantity > 1) {
       try {
-
+        await update_cart_item_quantity(id, item.quantity - 1);
         setCartItems(cartItems.map((i) =>
           i._id === id ? { ...i, quantity: i.quantity - 1 } : i
         ));
@@ -154,6 +163,8 @@ const Cart = () => {
 
   const handlePlaceOrder = () => {
     const selectedItems = cartItems.filter((i) => i.selected);
+    console.log(selectedItems);
+    
     if (selectedItems.length > 0) {
       nav.navigate("OrderConfirmationScreen", { selectedItems })
     } else {
@@ -245,7 +256,21 @@ const Cart = () => {
           </View>
         </View>
       </Modal>
-
+      <Modal visible={ModalQuantity} animationType="slide" transparent={true}>
+        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+          <View style={{ height: 180, backgroundColor: 'white', margin: 32, borderRadius: 4, alignItems: 'center', justifyContent: 'space-around' }}>
+            <Text style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>Thông báo</Text>
+            <Text style={{ fontSize: 17, textAlign: 'center' }}>
+              Số lượng sản phẩm trong đang tồn không đủ.
+            </Text>
+            <TouchableOpacity onPress={() => setModalQuantity(false)}>
+              <View style={{ height: 45, width: 120, marginTop: 16, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 8 }}>
+                <Text style={{ fontWeight: 'bold', color: 'white' }}>Đóng</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -395,7 +420,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   activeButton: {
-    backgroundColor:colors.primary, // Màu đỏ cho nút hoạt động
+    backgroundColor: colors.primary, // Màu đỏ cho nút hoạt động
   },
   inactiveButton: {
     backgroundColor: '#ccc', // Màu xám cho nút không hoạt động

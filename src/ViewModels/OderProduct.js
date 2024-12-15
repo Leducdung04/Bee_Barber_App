@@ -7,7 +7,9 @@ import { Add_Appointment_API } from '../Services/api/httpAppointment';
 import { deleteZaloPayload, getZaloPay, setZaloPayload } from '../Services/utils/ZaloPay_AsyncStorage';
 import { lightGreen100 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import { get_list_barber } from '../Services/api/httpStylist';
+import eventEmitter from '../Services/utils/event';
 import { Add_Oder_API } from '../Services/api/httpOder';
+import { delete_cart_item } from '../Services/utils/httpCartItem';
 
 export const OderProduct = () => {
   const [isModalSuccc, setisModalSuccc] = useState(false)
@@ -82,18 +84,30 @@ export const OderProduct = () => {
   };
 
   const handle_Order = async (order) => {
-    setmodalIsloading(true)
+    setmodalIsloading(true);
     if (order?.payment?.pay_method === 'ZaloPay') {
-      handleZaloPay(order)
-    } else if (order?.payment?.pay_method === 'cash') {
-      const dataOrde = await Add_Oder_API(order)
-      if (dataOrde) {
-        setmodalIsloading(false)
-        setisModalSuccc(true)
+      handleZaloPay(order);
+    } 
+    else if (order?.payment?.pay_method === 'cash') {
+      const dataOrder = await Add_Oder_API(order);
+      if (dataOrder) {
+        if (dataOrder?.order?.listProduct) {
+          const products = dataOrder.order.listProduct;
+          if (products.cartItem_id) {
+            try {
+              await delete_cart_item(products.cartItem_id);
+              eventEmitter.emit('cartUpdated');
+            } catch (error) {
+              console.error("Error deleting cart item:", error.message);
+            }
+          }
+          setmodalIsloading(false);
+          setisModalSuccc(true);
+        }
       }
     }
-  }
-
+  };
+  
   return {
     dataChechZaloPay,
     modalCheck,
