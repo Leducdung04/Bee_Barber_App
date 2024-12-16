@@ -13,7 +13,7 @@ const BarberList = ({onScrollStart, onScrollEnd,barberList}) => {
   
         return <View style={{margin:8,alignItems:'center'}}>
               <View style={{backgroundColor:'#c2dcf7',borderRadius:12}}>
-              <Image  source={typeof imageUrl === 'string' ? { uri: imageUrl } : imageUrl} style={{width:130,height:220,borderRadius:12}}/>
+              <Image  source={typeof imageUrl === 'string' ? { uri: imageUrl } : imageUrl} style={{width:110,height:200,borderRadius:12}}/>
               </View>
               <Text style={{color:colors.primary,marginTop:6,fontWeight:'bold'}}>{item.name}</Text>
         </View>

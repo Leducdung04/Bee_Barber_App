@@ -7,6 +7,7 @@ import { Add_Appointment_API } from '../Services/api/httpAppointment';
 import { deleteZaloPayload, getZaloPay, setZaloPayload } from '../Services/utils/ZaloPay_AsyncStorage';
 import { useSelector } from 'react-redux';
 import { getUserlocal } from '../Services/utils/user__AsyncStorage';
+import { sendLocalNotification, sendScheduleNotification } from '../Services/api/notificationhelper';
 
 export const useBookingViewModel = () => {
   const listTimes = [
@@ -148,7 +149,7 @@ export const useBookingViewModel = () => {
       channelId: 'default-channel',
       title: 'Đặt Lịch Thành Công',
       message: `Bạn đã đặt lịch với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
-      data: { user_id: UserProfile._id },
+      data: { user_id: userProfile._id },
     });
 
     const notificationPayload = {
