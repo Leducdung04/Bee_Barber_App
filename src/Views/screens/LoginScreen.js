@@ -6,6 +6,7 @@ import { isValidPhoneNumber } from '../../Services/utils/ValidPhoneNumber';
 import { setUserlocal } from '../../Services/utils/user__AsyncStorage';
 import eventEmitter from '../../Services/utils/event';
 import colors from '../../Resources/styles/colors';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const LoginScreen = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -70,6 +71,7 @@ const LoginScreen = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Số điện thoại"
+            placeholderTextColor={'gray'}
             keyboardType="phone-pad"
             value={phoneNumber}
             onChangeText={text =>{ setPhoneNumber(text);setValidatePhoneNumber(false)}}
@@ -86,6 +88,7 @@ const LoginScreen = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Mật khẩu"
+            placeholderTextColor={'gray'}
             secureTextEntry={secureTextEntry}
             value={password}
             onChangeText={text =>{ setPassword(text);setvalidatePassword(false)}}

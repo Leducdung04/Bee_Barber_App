@@ -105,16 +105,16 @@ const WelcomeScreen = ({ navigation }) => {
           );
         })}
       </View>
-      <View style={[styles.dotContainer, { bottom: 140 }]}>
+      <View style={[styles.dotContainer, { bottom: 120 }]}>
         <TouchableOpacity onPress={() => { navigation.navigate('TabNavigator'); }} style={{ flex: 1 }}>
-          <View style={{ flex: 1, height: 45, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100,borderWidth:1,borderColor:colors.primary }}>
+          <View style={{ flex: 1, height: 45, borderRadius: 12, justifyContent: 'center', marginHorizontal: 80,borderWidth:1,borderColor:colors.primary }}>
             <Text style={{ textAlign: 'center', color:colors.primary, fontSize: 18 }}>Trải nghiệm ngay</Text>
           </View>
         </TouchableOpacity>
       </View>
-      <View style={[styles.dotContainer, { bottom: 80 }]}>
+      <View style={[styles.dotContainer, { bottom: 60 }]}>
         <TouchableOpacity onPress={() => { navigation.navigate('LoginScreen'); }} style={{ flex: 1 }}>
-          <View style={{ flex: 1, height: 45, backgroundColor: colors.primary, borderRadius: 12, justifyContent: 'center', marginHorizontal: 100 }}>
+          <View style={{ flex: 1, height: 45, backgroundColor: colors.primary, borderRadius: 12, justifyContent: 'center', marginHorizontal: 80 }}>
             <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}>Đăng nhập</Text>
           </View>
         </TouchableOpacity>
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   dotContainer: {
     position: 'absolute',
-    bottom: 50, // Khoảng cách của dot từ dưới cùng
+    bottom: 30, // Khoảng cách của dot từ dưới cùng
     left: 0,
     right: 0,
     flexDirection: 'row',
