@@ -3,7 +3,7 @@ import { API, API_GET_LIST_SERVICES,API_GET_SERVICE_BY_CATEGORY } from '@env'; /
 // Hàm lấy danh sách cuộc hẹn từ API
 export const get_List_Services = async () => {
     try {
-        const response = await fetch(`${API}${API_GET_LIST_SERVICES}?status=true`);
+        const response = await fetch(`${API}${API_GET_LIST_SERVICES}`);
         console.log("API URL:", `${API}${API_GET_LIST_SERVICES}`); // In ra URL để kiểm tra
         
         if (!response.ok) {
@@ -22,7 +22,7 @@ export const get_List_Services = async () => {
 
 export const get_Service_By_Category= async (id_category)=>{
     try {
-        const response = await fetch(`${API}${API_GET_SERVICE_BY_CATEGORY}/${id_category}`);
+        const response = await fetch(`${API}${API_GET_SERVICE_BY_CATEGORY}?id_category=${id_category}&status=true`);
         const data = await response.json();
         return data;
     } catch (error) {
