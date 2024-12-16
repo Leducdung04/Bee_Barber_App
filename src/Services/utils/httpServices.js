@@ -22,7 +22,7 @@ export const get_List_Services = async () => {
 
 export const get_Service_By_Category= async (id_category)=>{
     try {
-        const response = await fetch(`${API}${API_GET_SERVICE_BY_CATEGORY}/${id_category}`);
+        const response = await fetch(`${API}${API_GET_SERVICE_BY_CATEGORY}?id_category=${id_category}&status=true`);
         const data = await response.json();
         return data;
     } catch (error) {

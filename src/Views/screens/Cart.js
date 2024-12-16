@@ -69,7 +69,7 @@ const Cart = () => {
             price_selling: product.price_selling,
             import_price: product.import_price,
             product_quantity: product.quantity,
-            cartItem_id :item._id,
+            cartItem_id: item._id,
             idProduct: product._id
           };
         });
@@ -164,7 +164,7 @@ const Cart = () => {
   const handlePlaceOrder = () => {
     const selectedItems = cartItems.filter((i) => i.selected);
     console.log(selectedItems);
-    
+
     if (selectedItems.length > 0) {
       nav.navigate("OrderConfirmationScreen", { selectedItems })
     } else {
@@ -205,8 +205,9 @@ const Cart = () => {
           </View>
           <TouchableOpacity style={[
             styles.placeOrderButton,
-            selectedItemCount > 0 ? styles.activeButton : styles.inactiveButton,
-          ]} onPress={handlePlaceOrder}>
+            selectedItemCount > 0 && userProfile ? styles.activeButton : styles.inactiveButton,
+          ]} onPress={handlePlaceOrder}
+            disabled={!userProfile || selectedItemCount === 0}>
             <Text style={styles.buttonText}>ĐẶT HÀNG</Text>
           </TouchableOpacity>
         </View>

@@ -17,8 +17,8 @@ const CategoryProductList = ({ onScrollStart, onScrollEnd, categoryProductList }
     return (
       <TouchableOpacity onPress={() => nav.navigate("CategoryScreen",{ category:item})}>
         <View style={{ marginHorizontal: 8 }} >
-          <ImageBackground source={require('../../../Resources/assets/images/backgrougCategoryPt.png')} style={{ width: 62, height: 62, margin: 12, justifyContent: 'center', alignItems: 'center' }}>
-            <Image source={{ uri: url }} style={{ width: 36, height: 36 }} />
+          <ImageBackground source={require('../../../Resources/assets/images/backgrougCategoryPt.png')} style={{ width: 52, height: 52, margin: 12, justifyContent: 'center', alignItems: 'center' }}>
+            <Image source={{ uri: url }} style={{ width: 32, height: 32 }} />
           </ImageBackground>
           <Text style={{ width: 80, textAlign: 'center', color: 'black' }}>{item.name}</Text>
         </View>

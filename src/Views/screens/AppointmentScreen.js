@@ -159,56 +159,56 @@ const AppointmentScreen = ({ route, navigation }) => {
     console.log(appointment, "Hello");
 
     handle_Order_Appointment(appointment)
-    scheduleAppointmentNotification(day_Selected.date, time_Selected, barber_Selected,UserProfile._id)
+    // scheduleAppointmentNotification(day_Selected.date, time_Selected, barber_Selected,UserProfile._id)
   }
 
-  const scheduleAppointmentNotification = async (date, time, barber_Selected, user) => {
-    const [year, month, day] = date.split("-");
-    const [hours, minutes] = time.split(":");
+  // const scheduleAppointmentNotification = async (date, time, barber_Selected, user) => {
+  //   const [year, month, day] = date.split("-");
+  //   const [hours, minutes] = time.split(":");
 
-    const localTime = new Date(
-      parseInt(year, 10),
-      parseInt(month, 10) - 1,
-      parseInt(day, 10),
-      parseInt(hours, 10),
-      parseInt(minutes, 10)
-    );
+  //   const localTime = new Date(
+  //     parseInt(year, 10),
+  //     parseInt(month, 10) - 1,
+  //     parseInt(day, 10),
+  //     parseInt(hours, 10),
+  //     parseInt(minutes, 10)
+  //   );
 
-    const utcTime = new Date(localTime.getTime() - localTime.getTimezoneOffset() * 60000);
+  //   const utcTime = new Date(localTime.getTime() - localTime.getTimezoneOffset() * 60000);
 
-    const formattedDate = localTime.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
+  //   const formattedDate = localTime.toLocaleDateString('vi-VN', {
+  //     day: '2-digit',
+  //     month: '2-digit',
+  //     year: 'numeric',
+  //   });
 
-    const formattedTime = localTime.toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  //   const formattedTime = localTime.toLocaleTimeString('vi-VN', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   });
 
-    sendLocalNotification({
-      channelId: 'default-channel',
-      title: 'Đặt Lịch Thành Công',
-      message: `Bạn đã đặt lịch với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
-      data: { user_id: UserProfile._id },
-    });
+  //   sendLocalNotification({
+  //     channelId: 'default-channel',
+  //     title: 'Đặt Lịch Thành Công',
+  //     message: `Bạn đã đặt lịch với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
+  //     data: { user_id: UserProfile._id },
+  //   });
 
-    const notificationPayload = {
-      user_id: user,
-      relates_id: barber_Selected?._id,
-      type: "booking",
-      content: `Bạn có lịch hẹn với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
-      schedule: utcTime.toISOString(), 
-    };
-    console.log(notificationPayload, "Hello Again");
+  //   const notificationPayload = {
+  //     user_id: user,
+  //     relates_id: barber_Selected?._id,
+  //     type: "booking",
+  //     content: `Bạn có lịch hẹn với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
+  //     schedule: utcTime.toISOString(), 
+  //   };
+  //   console.log(notificationPayload, "Hello Again");
 
-    try {
-      await sendScheduleNotification(notificationPayload);
-    } catch (err) {
-      console.error("Error scheduling notification:", err);
-    }
-  };
+  //   try {
+  //     await sendScheduleNotification(notificationPayload);
+  //   } catch (err) {
+  //     console.error("Error scheduling notification:", err);
+  //   }
+  // };
 
 
   const Item_Barber = ({ item }) => {

@@ -14,6 +14,7 @@ const UserProfile = ({ navigation }) => {
         
         const user= await getUserlocal()
         setUserInfo(user)
+        console.log("ures",user)
       }
       getUser()
   

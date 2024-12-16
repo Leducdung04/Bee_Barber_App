@@ -6,6 +6,7 @@ import { getNext7DaysWithWeekdays } from '../Services/utils/getNext7DaysWithWeek
 import { Add_Appointment_API } from '../Services/api/httpAppointment';
 import { deleteZaloPayload, getZaloPay, setZaloPayload } from '../Services/utils/ZaloPay_AsyncStorage';
 import { useSelector } from 'react-redux';
+import { getUserlocal } from '../Services/utils/user__AsyncStorage';
 
 export const useBookingViewModel = () => {
   const listTimes = [
@@ -25,8 +26,18 @@ export const useBookingViewModel = () => {
   const [modalSucces, setmodalSucces] = useState(false)
   const [modalIsloading, setmodalIsloading] = useState(false)
   const [dataChechZaloPay, setdataChechZaloPay] = useState(null)
-
+  const [userProfile, setUserProfile] = useState(null)
   const  stylists  = useSelector((state) => state.barbers.barbers);
+ useEffect(() => {
+    async function getUser() {
+      const user = await getUserlocal()
+      if (user) {
+        setUserProfile(user)
+      }
+      
+    }
+    getUser()
+  }, [])
 
   async function check() {
     const ZaloPayLocal =await getZaloPay()
@@ -36,7 +47,8 @@ export const useBookingViewModel = () => {
          // tạo đơn
         const data=await getZaloPay()
         console.log('dữ liệu lấy từ dien thoại', data)
-        await Add_Appointment_API(data.data)
+        const respons=  await Add_Appointment_API(data.data)
+        scheduleAppointmentNotification(respons.appointment.appointment_date.split('T')[0],respons.appointment.appointment_time,"Bee Barber",userProfile._id)
         setmodalIsloading(false)
       }
       setdataChechZaloPay(Checking)
@@ -70,7 +82,6 @@ export const useBookingViewModel = () => {
 
   // xử lý orde Zalo pay
   const handleZaloPay = async appointment => {
-
     const responseOrder = await OrderZaloPay(appointment.appointment.price);
     setapp_trans_id(responseOrder.app_trans_id)
     if (responseOrder === false) {
@@ -102,9 +113,59 @@ export const useBookingViewModel = () => {
        const dataOrde = await Add_Appointment_API(appointment)
        if(dataOrde){
          setmodalSucces(true)
+         console.log("đặt lịch thành công",dataOrde)
+         scheduleAppointmentNotification(dataOrde.appointment.appointment_date.split('T')[0],dataOrde.appointment.appointment_time,"Bee Barber",userProfile._id)
        }
       }
   }
+
+  const scheduleAppointmentNotification = async (date, time, barber_Selected, user) => {
+    const [year, month, day] = date.split("-");
+    const [hours, minutes] = time.split(":");
+
+    const localTime = new Date(
+      parseInt(year, 10),
+      parseInt(month, 10) - 1,
+      parseInt(day, 10),
+      parseInt(hours, 10),
+      parseInt(minutes, 10)
+    );
+
+    const utcTime = new Date(localTime.getTime() - localTime.getTimezoneOffset() * 60000);
+
+    const formattedDate = localTime.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+
+    const formattedTime = localTime.toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    sendLocalNotification({
+      channelId: 'default-channel',
+      title: 'Đặt Lịch Thành Công',
+      message: `Bạn đã đặt lịch với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
+      data: { user_id: UserProfile._id },
+    });
+
+    const notificationPayload = {
+      user_id: user,
+      relates_id: barber_Selected?._id,
+      type: "booking",
+      content: `Bạn có lịch hẹn với ${barber_Selected?.name || "thợ cắt"} vào lúc ${formattedTime} ngày ${formattedDate}.`,
+      schedule: utcTime.toISOString(), 
+    };
+    console.log(notificationPayload, "Hello Again");
+
+    try {
+      await sendScheduleNotification(notificationPayload);
+    } catch (err) {
+      console.error("Error scheduling notification:", err);
+    }
+  };
 
   return {
     setmodalCheck,
@@ -123,3 +184,4 @@ export const useBookingViewModel = () => {
     dataChechZaloPay
   };
 };
+

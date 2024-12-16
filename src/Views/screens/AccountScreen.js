@@ -27,9 +27,7 @@ const AccountScreen = ({navigation}) => {
     }, [])
   );
   
-  const handlePress = (item) => {
-    Alert.alert('Thông báo', `Bạn đã nhấn vào: ${item}`);
-  };
+ 
   
   async function outAccount(){
       await deleteUserlocal()  
@@ -116,7 +114,7 @@ const AccountScreen = ({navigation}) => {
 
         {/* Nhóm chức năng có khoảng cách */}
         <View style={styles.groupWithMargin}>
-          <TouchableOpacity style={styles.item} onPress={() => handlePress('Ưu đãi')}>
+          {/* <TouchableOpacity style={styles.item} onPress={() => handlePress('Ưu đãi')}>
             <View style={styles.itemContainer}>
               <Image
                 source={require('../../Resources/assets/images/Endow.png')} // Placeholder cho icon
@@ -128,7 +126,7 @@ const AccountScreen = ({navigation}) => {
               source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
               style={styles.chevronIcon}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity style={styles.item} onPress={() =>{navigation.navigate('title3')}}>
             <View style={styles.itemContainer}>
@@ -150,19 +148,19 @@ const AccountScreen = ({navigation}) => {
         <View style={styles.groupWithMargin}>
          
 
-          <TouchableOpacity style={styles.item} onPress={() => handlePress('Thông tin hỗ trợ khách hàng')}>
+          {/* <TouchableOpacity style={styles.item} onPress={() => handlePress('Thông tin hỗ trợ khách hàng')}>
             <View style={styles.itemContainer}>
               <Image
                 source={require('../../Resources/assets/images/support.png')} // Placeholder cho icon
                 style={styles.icon}
               />
-              <Text style={styles.itemText}>Thông tin hỗ trợ khách hàng</Text>
+              <Text style={styles.itemText}>Thông tin liên hệ</Text>
             </View>
             <Image
               source={{ uri: 'https://img.icons8.com/ios-glyphs/30/000000/chevron-right.png' }} // Placeholder cho mũi tên
               style={styles.chevronIcon}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity style={styles.item} onPress={() => outAccount()}>
             <View style={styles.itemContainer}>
@@ -201,6 +199,12 @@ const AccountScreen = ({navigation}) => {
                    </View>
               </View>
            </View>
+      </Modal>
+           {/* thông tin hỗ trợ khách hàng  */}
+      <Modal visible={false}>
+         <View style={{flex:1}}>
+                <Text style={{textAlign:'center',fontSize:20,marginTop:24}}>Thông tin liên hệ </Text>
+         </View>
       </Modal>
       </ScrollView>
     </View>

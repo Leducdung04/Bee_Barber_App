@@ -425,6 +425,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#e5e7eb',
     borderTopWidth: 1,
     paddingHorizontal: 15,
+    gap:8,
     paddingVertical: 10,
   },
   cartButton: {
@@ -441,17 +442,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 8,
     borderRadius: 10,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
     color: 'black',
     marginLeft: 8,
   },
   buyButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: 'white',
   },

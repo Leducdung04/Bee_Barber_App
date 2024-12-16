@@ -50,7 +50,7 @@ const Item_Category = ({index, item, widthItem}) => {
           numberOfLines={2}
             style={[
               globalStyles.textTitle,
-              {textAlign: 'center', marginHorizontal: 12, fontSize: 19.5},
+              {textAlign: 'center', marginHorizontal: 12, fontSize: 15},
             ]}>
             {item.name}
           </Text>
@@ -61,7 +61,7 @@ const Item_Category = ({index, item, widthItem}) => {
                 textAlign: 'center',
                 marginHorizontal: 12,
                 fontWeight: 'condensed',
-                fontSize: 15,
+                fontSize: 13,
               },
             ]}>
             Tìm hiểu thêm ➪

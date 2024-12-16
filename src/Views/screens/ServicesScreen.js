@@ -126,7 +126,7 @@ const ServicesScreen = ({ navigation }) => {
             </TouchableOpacity>
             <View style={styles.serviceTextContainer}>
               <Text style={styles.serviceTextBold}>Chọn dịch vụ </Text>
-              <Text style={styles.serviceTextRegular}>(1K = 1000đ)</Text>
+              {/* <Text style={styles.serviceTextRegular}>(1K = 1000đ)</Text> */}
             </View>
             {/* <View style={styles.topbarRight}>
             <View style={styles.khung}>
@@ -219,7 +219,7 @@ const ServicesScreen = ({ navigation }) => {
                     </Text> */}
                       <Text style={StyleSheet.flatten([
                         styles.itemText7,
-                        {
+                        { fontSize:13,
                           backgroundColor: selectedServices.some(service => service.name === item.name) ? 'white' : colors.primary,
                           color: selectedServices.some(service => service.name === item.name) ? colors.primary : 'white'
                         }
@@ -256,7 +256,7 @@ const ServicesScreen = ({ navigation }) => {
           <Image source={require('../../Resources/assets/logo/Bee_Barber.png')} style={styles.imageFooter} />
         </View>
 
-        <View style={styles.footerLine}></View>
+        {/* <View style={styles.footerLine}></View> */}
 
         {/* Vocher */}
             {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -324,6 +324,7 @@ const styles = StyleSheet.create({
   serviceTextBold: {
     color: '#000099',
     fontWeight: 'bold',
+    fontSize:18
   },
   serviceTextRegular: {
     color: '#000099',
