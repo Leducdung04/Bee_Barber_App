@@ -196,13 +196,16 @@ const Cart = () => {
             <CheckBox value={selectAll} onValueChange={handleSelectAll} />
             <Text style={styles.selectAllText}>Tất Cả</Text>
           </View>
+         
+
           <View style={styles.subtotalContainer}>
             <View style={styles.subtotalContainer1}>
-              <Text style={styles.subtotalLabel}>Tạm tính: </Text>
-              <Text style={styles.subtotalValue}>{subtotal.toLocaleString('vi-VN')} đ</Text>
             </View>
-            <Text style={styles.subtotal1}>({selectedItemCount} sản phẩm)</Text>
+            
           </View>
+          <View>
+          <Text style={styles.subtotalLabel}>Tạm tính: <Text style={styles.subtotalValue}>{subtotal.toLocaleString('vi-VN')} đ</Text></Text>
+          <Text style={styles.subtotal1}>({selectedItemCount} sản phẩm)</Text>
           <TouchableOpacity style={[
             styles.placeOrderButton,
             selectedItemCount > 0 && userProfile ? styles.activeButton : styles.inactiveButton,
@@ -210,6 +213,7 @@ const Cart = () => {
             disabled={!userProfile || selectedItemCount === 0}>
             <Text style={styles.buttonText}>ĐẶT HÀNG</Text>
           </TouchableOpacity>
+          </View>
         </View>
       </View>
       {/* Kiểm tra đăng nhập */}
@@ -378,7 +382,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -391,15 +395,16 @@ const styles = StyleSheet.create({
   },
   subtotalContainer: {
     flex: 1,
-    alignItems: 'flex-end',
-    margin:
-      10,
+    height:120
+    // alignItems: 'flex-end',
+    // margin:1,
   },
   subtotalContainer1: {
     flexDirection: 'row', // Hiển thị theo hàng ngang
     alignItems: 'center', // Căn giữa theo chiều dọc
   },
   subtotalLabel: {
+  
     fontSize: 16,
     color: '#000', // Màu của phần "Tạm tính"
     fontWeight: 'bold',
@@ -410,6 +415,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', // Bạn có thể tăng độ đậm của chữ nếu muốn
   },
   subtotal1: {
+    marginBottom:8,
     fontSize: 16,
     textAlign: 'right',
     color: '#000000',

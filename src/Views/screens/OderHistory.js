@@ -124,14 +124,14 @@ const OderHistory = () => {
 
   return (
     <View style={{flex:1,backgroundColor:colors.background}}>
-        <FlatList data={statuses}
+        {/* <FlatList data={statuses}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             keyExtractor={item=>item}
             renderItem={({item})=><TouchableOpacity><View style={{margin:12,backgroundColor:'white',height:30,paddingHorizontal:12,justifyContent:'center',alignItems:'center',borderRadius:12}}>
               <Text>{item}</Text>
               </View></TouchableOpacity>}
-        />
+        /> */}
         <FlatList 
           data={ListOder}
           keyExtractor={Item=>Item._id}  
